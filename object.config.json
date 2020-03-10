@@ -1,0 +1,11 @@
+{
+  "txTimeout": 300000,
+  "skipInit": true,
+  "controllers": [
+    {
+      "name": "object-cc",
+      "version": "file:./packages/object-cc",
+      "controller": "ObjectController"
+    }
+  ]
+}
