@@ -1,0 +1,17 @@
+{
+  "channels": ["ch1"],
+  "topology": {
+    "SocialHousing": {
+      "channels": ["ch1"],
+      "users": ["Sultan"]
+    },
+    "TableMaker": {
+      "channels": ["ch1"],
+      "users": ["Zeki"]
+    },
+    "WoodGatherer": {
+      "channels": ["ch1"],
+      "users": ["Casper", "Daan", "Naqib", "Tim"]
+    }
+  }
+}
