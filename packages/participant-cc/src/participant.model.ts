@@ -1,5 +1,11 @@
 import * as yup from 'yup';
-import {ConvectorModel, FlatConvectorModel, ReadOnly, Required, Validate} from '@worldsibu/convector-core';
+import {
+  ConvectorModel, 
+  FlatConvectorModel, 
+  ReadOnly, 
+  Required, 
+  Validate
+} from '@worldsibu/convector-core';
 
 export class x509Identities extends ConvectorModel<x509Identities> {
   @ReadOnly()
@@ -8,6 +14,7 @@ export class x509Identities extends ConvectorModel<x509Identities> {
   @Validate(yup.boolean())
   @Required()
   status: boolean;
+  
   @Validate(yup.string())
   @Required()
   fingerprint: string;
