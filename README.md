@@ -1,103 +1,74 @@
-# circularHousing - participant
+# Circular Housing Blockchain
 
-This awesome project was created automatically with <a href="https://github.com/worldsibu/convector-cli" target="_blank">Convector CLI</a>.
-By default new Convector projects locally include <a href="https://github.com/worldsibu/hurley">Hurley</a> to manage your development environment seamlessly, so you don't have to worry about setting up the network and hard ways to install  and upgrade your chaincodes.
+## Setup
+To run this project, you first need to setup Convector and Hurley. See <a href="https://docs.covalentx.com/article/71-getting-started" target="_blank">their docs</a> for instructions on how to do this (note there are separate instructions for Ubuntu 18.04 users). Make sure to install Hurley globally. 
 
-## Start
-
+## Run the project
+Once Convector/Hurley/Fabric are all setup, run the following commands to get the project running:
 ```
-# Install dependencies - From the root of your project
+# Clone the repo and go into the root folder
+git clone https://github.com/daanwerf/CircularHousing.git
+cd CircularHousing
+# Install all node dependencies
 npm i
-# Create a new development blockchain network  - From the root of your project
-npm run env:restart
-# Install your smart contract
-npm run cc:start -- participant
-# Make a testing call to create a record in the ledger
-# Beware that the first call may fail with a timeout! Just happens the first time
-hurl invoke participant participant_create "{\"name\":\"my first request\",\"id\":\"0001\",\"created\":0,\"modified\":0}"
+# Create a new development blockchain network as specified in network.config.json
+hurl new -n ./network.config.json
+# Create an identities manager (currently only works for the first organisation specified in network.config.json)
+node ./packages/admin/registerIdManager.js SocialHousing
+
+# Package smart contract's code
+npm run cc:package -- participant
+# Install the chaincode to the blockchain (for debug mode, add --debug to the end of the command) to the organizations defined in network.config.json file
+hurl install participant node -P ./chaincode-participant -o SocialHousing -o TableMaker -o WoodGatherer
+
+# Register a participant for SocialHousing organization with id part1 and name "Participant 1", invoking it as admin.
+hurl invoke participant participant_register SultanPart "Participant Sultan" -o SocialHousing -u Sultan
+# Get the information of the participant you just added
+hurl invoke participant participant_get SultanPart -o SocialHousing -u Sultan
+
+# Try to update the fingerprint (i.e. X509 certificate) of participant Sultan.
+# This should give an error since it is invoked with user Sultan, who is not authorized to change certficiates
+hurl invoke participant participant_changeIdentity SultanPart RandomID -o SocialHousing -u Sultan
+# Update the fingerprint with chaincodeAdmin (created earlier) who is authorized to do this, so this should work.
+hurl invoke participant participant_changeIdentity SultanPart RandomID -o SocialHousing -u chaincodeAdmin
+# Inspect the participant again and notice the changed fingerprint
+hurl invoke participant participant_get SultanPart -o SocialHousing -u Sultan
+
+# TODO: SHOW USECASE WITH ITEMS (BECAUSE NOW SultanPart has wrong fingerprint so not allowed to do anything with items) and then change back to correct identity to see how it then works again
 ```
 
-## About Hurley
-
-You may as well install **Hurley** globally for easier and more flexible management. 
-
-`npm i -g @worldsibu/hurley`
-
-Since with Hurley globally you have control over everything, some things that you can do, for example, is installing a Convector Smart Contract with a different name than the one you used for your project.
-
+## Install or upgrade chaincode
+To install and/or upgrade chaincode, the following commands from the root of the project can be run (see <a href="https://www.npmjs.com/package/@worldsibu/hurley" target="_blank">Hurley docs</a> for full specification):
 ```
-# Use the same package
-# Install a new chaincode with the same source code but the name 'anothernameforyourcc'
-hurl install anothernameforyourcc node
-```
+# Regardless of installation or upgrading, first chaincode needs to be packaged
+npm run cc:package -- <mychaincode>
 
-Other complex tasks you may need is installing to a different channel.
+# Install <mychaincode> to blockchain (replace <mychaincode> with the name of the chaincode you want to install and <org1> with the organisation to which you want to install the chaincode. It is possible to install to multiple organisations at once.
+hurl install <mychaincode> node -P ./chaincode-<mychaincode> -o <org1>
 
-```
-# Use the same package
-# Be sure you started your environment with more than one channel running 'hurl new --channels 2'. Otherwise this will throw an error.
-hurl install anothernameforyourcc node --channel ch2
+# Upgrade existing chaincode (replace <versionno> by the version number you want to give the upgraded chaincode)
+hurl upgrade <mychaincode> node <versionno> -P ./chaincode-<mychaincode> -o <org1>
 ```
 
----
-
-If you don't want to, don't worries! This project works right away.
-
-## Start - if you have Hurley globally
-
-### Bring your project to life 
-
+## Clear network
+To remove all network nodes:
 ```
-# Install dependencies - From the root of your project
-npm i
-# Create a new development blockchain network  - From the root of your project
-hurl new
+hurl clean
 ```
 
-###  Install and upgrade chaincodes
+## Network setup
+Every user in the network (users are predefined in the `network.config.json` file) can register itself in the network (by invoking participant_register). Once a user registers itself on the blockchain as a participant, it can perform actions on the blockchain (like creating a new item). A participant has a number of fields, one of which is its identity, consisting of a fingerprint and a boolean value status. The fingerprint is the X509 certificate of the user and `status` indicates whether the certificate is still valid. 
 
-```
-# Package your smart contract's code  - From the root of your project
-npm run cc:package -- participant org1
-# Install to your blockchain - From the root of your project
-hurl install participant node -P ./chaincode-participant
-# Install in debug mode, this will run the chaincode server locally so you can debug
-hurl install participant node -P ./chaincode-participant --debug
+When a participant tries to perform actions on the blockchain, like updating an item, the logic in the chaincode checks to see if the X509 certificate of the user invoking that action, is the same as the X509 certficiate of the participant that owns the item. If this is the case, the user is allowed to update the item, otherwise it is not. This is why the Participant model is useful, because it allows to implement logic on the blockchain to see if an invoker of a smart contract is the real owner. 
 
-# Upgrade your existing chaincode - From the root of your project
-hurl upgrade participant node 1.2 -P ./chaincode-participant
-```
-
-## Start - if you don't have Hurley globally
-
-### Bring your project to life 
-
-```
-# Install dependencies - From the root of your project
-npm i
-# Create a new development blockchain network  - From the root of your project
-npm run env:restart
-```
-
-###  Install and upgrade chaincodes
-
-```
-# Install to your blockchain - From the root of your project
-npm run cc:start -- participant
-
-# Upgrade your existing chaincode - From the root of your project
-npm run cc:upgrade -- participant 1.2
-```
+It can happen that X509 certificates need to be changed or revoked from participants. To this end, there is an admin user (that needs to be enrolled once the network is started) which has a specific attribute field called "admin" that can call `changeIdentity` which changes the CA certficate of a participant. Only the user with this "admin" attribute can perform this action. This is called Attribute-Based Access Control, more information can be found <a href="https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/users-guide.html#attribute-based-access-control" target="_blank">here</a> and <a href="https://github.com/worldsibu/convector-identity-patterns" target="_blank">here</a>.
 
 ## Tests
-
+To run tests use:
 ```
 npm run test
 ```
 
-> Check all the information to work with Convector <a href="https://docs.covalentx.com/convector" target="_blank">in the DOCS site</a>.
-
-## Collaborate to the Convector Suite projects
-
-* <a href="https://community.covalentx.com" target="_blank">Discord chat with the community</a>
-* <a href="https://github.com/worldsibu" target="_blank">Convector projects</a>
+# TODO:
+* Write complete usecase example
+* Explain how the network is set up (network file)
