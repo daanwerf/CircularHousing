@@ -13,28 +13,34 @@ cd CircularHousing
 npm i
 # Create a new development blockchain network as specified in network.config.json
 hurl new -n ./network.config.json
-# Create an identities manager (currently only works for the first organisation specified in network.config.json)
+# Create an identities manager (currently only works for the first organisation 
+# specified in network.config.json)
 node ./packages/admin/registerIdManager.js SocialHousing
 
 # Package smart contract's code
 npm run cc:package -- participant
-# Install the chaincode to the blockchain (for debug mode, add --debug to the end of the command) to the organizations defined in network.config.json file
+# Install the chaincode to the blockchain (for debug mode, add --debug to the end of the command)
+# to the organizations defined in network.config.json file
 hurl install participant node -P ./chaincode-participant -o SocialHousing -o TableMaker -o WoodGatherer
 
-# Register a participant for SocialHousing organization with id part1 and name "Participant 1", invoking it as admin.
+# Register a participant for SocialHousing organization with id SultanPart 
+# and name "Participant Sultan", invoking as user Sultan
 hurl invoke participant participant_register SultanPart "Participant Sultan" -o SocialHousing -u Sultan
 # Get the information of the participant you just added
 hurl invoke participant participant_get SultanPart -o SocialHousing -u Sultan
 
-# Try to update the fingerprint (i.e. X509 certificate) of participant Sultan.
-# This should give an error since it is invoked with user Sultan, who is not authorized to change certficiates
+# Try to update the fingerprint (i.e. X509 certificate) of participant Sultan. This should give 
+# an error since it is invoked with user Sultan, who is not authorized to change certficates
 hurl invoke participant participant_changeIdentity SultanPart RandomID -o SocialHousing -u Sultan
-# Update the fingerprint with chaincodeAdmin (created earlier) who is authorized to do this, so this should work.
+# Update the fingerprint with chaincodeAdmin (created earlier) who is authorized to do this, 
+# so this should work.
 hurl invoke participant participant_changeIdentity SultanPart RandomID -o SocialHousing -u chaincodeAdmin
 # Inspect the participant again and notice the changed fingerprint
 hurl invoke participant participant_get SultanPart -o SocialHousing -u Sultan
 
-# TODO: SHOW USECASE WITH ITEMS (BECAUSE NOW SultanPart has wrong fingerprint so not allowed to do anything with items) and then change back to correct identity to see how it then works again
+# TODO: SHOW USECASE WITH ITEMS 
+# (BECAUSE NOW SultanPart has wrong fingerprint so not allowed to do anything with items) 
+# and then change back to correct identity to see how it then works again
 ```
 
 ## Install or upgrade chaincode
@@ -43,10 +49,12 @@ To install and/or upgrade chaincode, the following commands from the root of the
 # Regardless of installation or upgrading, first chaincode needs to be packaged
 npm run cc:package -- <mychaincode>
 
-# Install <mychaincode> to blockchain (replace <mychaincode> with the name of the chaincode you want to install and <org1> with the organisation to which you want to install the chaincode. It is possible to install to multiple organisations at once.
+# Install <mychaincode> to blockchain (replace <mychaincode> with the name of the chaincode 
+# you want to install and <org1> with the organisation to which you want to install the chaincode. 
+# It is possible to install to multiple organisations at once.
 hurl install <mychaincode> node -P ./chaincode-<mychaincode> -o <org1>
 
-# Upgrade existing chaincode (replace <versionno> by the version number you want to give the upgraded chaincode)
+# Upgrade existing chaincode (replace <versionno> by a version number of your choice)
 hurl upgrade <mychaincode> node <versionno> -P ./chaincode-<mychaincode> -o <org1>
 ```
 
