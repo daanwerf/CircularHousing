@@ -1,0 +1,39 @@
+<head>
+  <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-serialize-object/2.5.0/jquery.serialize-object.min.js"></script>
+</head>
+<body>
+<div class="ui container">
+  <div class="ui celled vertically divided grid">
+    <div class="two column row">
+      <div class="column">
+        <h1 class="ui header">Participants</h1>
+        <button id="load-participants" class="ui button">View participants</button>
+        <div class="ui middle aligned divided loading list">
+        </div>
+      </div>
+      <div class="column">
+        <h1 class="ui header">Add a participant</h1>
+        <form class="ui form">
+          <div class="field">
+            <label>ID</label>
+            <input type="text" name="id">
+          </div>
+          <div class="field">
+            <label>Name</label>
+            <input type="text" name="name">
+          </div>
+          <button type="submit" class="ui submit button">Add participant</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="api.js"></script>
+</body>

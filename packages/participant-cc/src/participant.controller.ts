@@ -1,10 +1,10 @@
 import * as yup from 'yup';
 
 import {
-  BaseStorage, 
-  Controller, 
-  ConvectorController, 
-  Invokable, 
+  BaseStorage,
+  Controller,
+  ConvectorController,
+  Invokable,
   Param
 } from '@worldsibu/convector-core';
 
@@ -25,6 +25,11 @@ export class ParticipantController extends ConvectorController {
     @Param(yup.string())
       name: string,
   ) {
+    let isAdmin = this.fullIdentity.getAttributeValue('admin');
+    if (!isAdmin) {
+      throw new Error('Unauthorized. Requester identity is not an admin');
+    }
+
     // Retrieve to see if exists
     const existing = await Participant.getOne(id);
 
@@ -66,11 +71,11 @@ export class ParticipantController extends ConvectorController {
     }
 
     if (existing.msp != requesterMSP) {
-      throw new Error('Unathorized. MSPs do not match');
+      throw new Error('Unauthorized. MSPs do not match');
     }
 
     if (!isAdmin) {
-      throw new Error('Unathorized. Requester identity is not an admin');
+      throw new Error('Unauthorized. Requester identity is not an admin');
     }
 
     // Disable previous identities!
@@ -103,7 +108,7 @@ export class ParticipantController extends ConvectorController {
   @Invokable()
   public async getAll() {
     // Simply gets all participants with type 'io.worldsibu.examples.participant'
-    // regardless of organisation. Useful for debugging. 
+    // regardless of organisation. Useful for debugging.
     let personIds = await Participant.getAll('io.worldsibu.examples.participant');
     console.log(personIds);
     return personIds;
