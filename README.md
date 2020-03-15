@@ -15,7 +15,7 @@ npm i
 hurl new -n ./network.config.json
 # Create an identities manager (currently only works for the first organisation 
 # specified in network.config.json)
-node ./packages/admin/registerIdManager.js SocialHousing
+node ./packages/admin/registerIdManager.js Government
 
 # Package smart contract's code
 npm run cc:package -- participant
