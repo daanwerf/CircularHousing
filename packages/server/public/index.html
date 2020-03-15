@@ -22,7 +22,14 @@
         <h1 class="ui header">Add a participant</h1>
         <form class="ui form">
           <div class="field">
-            <label>ID</label>
+            <label>Requester identity</label>
+            <select name="user">
+              <option value="Sultan">Sultan</option>
+              <option value="chaincodeAdmin">chaincodeAdmin</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Participant identity</label>
             <input type="text" name="id">
           </div>
           <div class="field">
@@ -31,6 +38,17 @@
           </div>
           <button type="submit" class="ui submit button">Add participant</button>
         </form>
+        <div class="ui row">
+          <div class="messages">
+<!--            <div class="ui message">-->
+<!--              <i class="close icon"></i>-->
+<!--              <div class="header">-->
+<!--                Welcome back!-->
+<!--              </div>-->
+<!--              <p>This is a special notification which you can dismiss if you're bored with it.</p>-->
+<!--            </div>-->
+          </div>
+        </div>
       </div>
     </div>
   </div>
