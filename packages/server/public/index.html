@@ -37,16 +37,30 @@
             <input type="text" name="name">
           </div>
           <button type="submit" class="ui submit button">Add participant</button>
+          <div class="messages"></div>
         </form>
-        <div class="ui row">
-          <div class="messages">
-<!--            <div class="ui message">-->
-<!--              <i class="close icon"></i>-->
-<!--              <div class="header">-->
-<!--                Welcome back!-->
-<!--              </div>-->
-<!--              <p>This is a special notification which you can dismiss if you're bored with it.</p>-->
-<!--            </div>-->
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <h1 class="ui header">
+          Items
+        </h1>
+        <button id="load-items" class="ui button">View items</button>
+        <div class="ui cards">
+          <div class="card">
+            <div class="content">
+              <div class="header">Name</div>
+              <div class="meta">(hashcode/id)</div>
+              <div class="description">
+                <p>
+                Created: {created}<br>
+                Description: <br>
+                Quality: {quality}<br>
+                Owner: {owner}<br>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
