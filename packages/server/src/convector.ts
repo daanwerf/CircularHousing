@@ -1,29 +1,20 @@
 import { join, resolve } from "path";
-import { keyStore, channel, chaincode, networkProfile } from './env';
+import { keyStore, networkProfile } from './env';
 import * as fs from 'fs';
 import { FabricControllerAdapter } from '@worldsibu/convector-adapter-fabric';
 import { ClientFactory } from '@worldsibu/convector-core';
 import { ParticipantController } from 'participant-cc';
+import {ItemController} from "item-cc";
 
-export async function backend(identityName, identityOrg) {
-  // const contextPath = join(keyStore(identityOrg) + '/' + identityName);
-  // await fs.readFile(contextPath, 'utf8', async function (err, data) {
-  //   if (err) {
-  //     throw new Error('Context in ' + contextPath
-  //       + ' does not exist. Make sure that path resolves to your key stores folder');
-  //   } else {
-  //     console.log('Context path with cryptographic materials exists');
-  //   }
-  // });
-
+export async function backend(identityName, identityOrg, controller, chaincode, channel) {
   const keystorePath = keyStore(identityOrg);
   const networkProfilePath = networkProfile(identityOrg);
 
   let adapter = new FabricControllerAdapter({
     txTimeout: 300000,
     user: identityName,
-    channel,
-    chaincode,
+    channel: channel,
+    chaincode: chaincode,
     keyStore: resolve(__dirname, keystorePath),
     networkProfile: resolve(__dirname, networkProfilePath),
     userMspPath: resolve(__dirname, keystorePath)
@@ -31,5 +22,13 @@ export async function backend(identityName, identityOrg) {
 
   await adapter.init();
 
-  return ClientFactory(ParticipantController, adapter);
+  return ClientFactory(controller, adapter);
+}
+
+export async function ParticipantControllerBackend(identityName, identityOrg) {
+  return backend(identityName, identityOrg, ParticipantController, 'participant', 'ch1');
+}
+
+export async function ItemControllerBackend(identityName, identityOrg) {
+  return backend(identityName, identityOrg, ItemController, 'item', 'ch1');
 }

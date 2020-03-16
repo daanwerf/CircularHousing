@@ -1,7 +1,7 @@
 $.fn.api.settings.api = {
   'get participants': '/participant/getAll/{org}/{user}',
   'register participant': '/participant/register',
-  'get items': '/items/getAll/{org}/{user}',
+  'get items': '/item/getAll/{org}/{user}',
 };
 
 $('#load-participants').api({
@@ -22,7 +22,7 @@ $('#load-items').api({
   action: 'get items',
   urlData: {
     org: "SocialHousing",
-    user: "Sultan"
+    user: "Sultan"//TODO hardcoded username
   },
   onSuccess(res) {
     $('.cards').empty();
@@ -50,7 +50,7 @@ $('form .submit.button').api({
   action: 'register participant',
   method: 'POST',
   data: {
-    org: "SocialHousing"
+    org: "SocialHousing"//TODO hardcoded org
   },
   serializeForm: true,
   onComplete: function (response) {

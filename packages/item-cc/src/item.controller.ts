@@ -2,7 +2,6 @@ import {ChaincodeTx} from '@worldsibu/convector-platform-fabric';
 import {Controller, ConvectorController, Invokable, Param} from '@worldsibu/convector-core';
 
 import {Item} from './item.model';
-import {Participant} from "participant-cc";
 
 @Controller('item')
 export class ItemController extends ConvectorController<ChaincodeTx> {
@@ -12,5 +11,10 @@ export class ItemController extends ConvectorController<ChaincodeTx> {
       item: Item
   ) {
     await item.save();
+  }
+
+  @Invokable()
+  public async getAll() {
+    return await Item.getAll('io.worldsibu.item');
   }
 }
