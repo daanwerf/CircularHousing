@@ -10,19 +10,6 @@ export class Item extends ConvectorModel<Item> {
   @Validate(yup.string())
   public name: string;
 
-  @ReadOnly()
-  @Required()
-  @Validate(yup.number())
-  public created: number;
-
-  @Required()
-  @Validate(yup.number())
-  public modified: number;
-
-  @Default(Quality.Good)
-  @Validate(yup.number())
-  public quality: Quality;
-
   //The name of the owner (Participant) encoded as a string
   @Required()
   @Validate(yup.string())

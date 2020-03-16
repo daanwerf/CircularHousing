@@ -1,3 +1,6 @@
+npx lerna add participant-cc --scope item-cc --include-filtered-dependencies
+npx lerna bootstrap
+
 import {ChaincodeTx} from '@worldsibu/convector-platform-fabric';
 import {Controller, ConvectorController, Invokable, Param} from '@worldsibu/convector-core';
 
