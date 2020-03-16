@@ -23,8 +23,8 @@ export class Item extends ConvectorModel<Item> {
 
   // An enum to indicate the current quality of the item
   @Required()
-  @Validate(yup.mixed<keyof typeof Quality>().oneOf(Object.values(Quality)))
-  public quality: Quality;
+  @Validate(yup.number())
+  public quality: number;
 
   // A list of strings describing the materials of which the item constists
   @Required()

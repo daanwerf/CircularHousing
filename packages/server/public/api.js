@@ -2,13 +2,14 @@ $.fn.api.settings.api = {
   'get participants': '/participant/getAll/{org}/{user}',
   'register participant': '/participant/register',
   'get items': '/item/getAll/{org}/{user}',
+  'add item': '/item/add',
 };
 
 $('#load-participants').api({
   action: 'get participants',
   urlData: {//TODO remove code
-    org: "SocialHousing",
-    user: "Sultan"
+    org: "Government",
+    user: "chaincodeAdmin"
   },
   onSuccess(res) {
     $('.list').empty();
@@ -21,10 +22,11 @@ $('#load-participants').api({
 $('#load-items').api({
   action: 'get items',
   urlData: {
-    org: "SocialHousing",
-    user: "Sultan"//TODO hardcoded username
+    org: "Government",
+    user: "chaincodeAdmin"//TODO hardcoded username
   },
   onSuccess(res) {
+    console.log(JSON.stringify(res));
     $('.cards').empty();
     $.each(res, function (index, item) {
       $('.cards').append(`
@@ -34,23 +36,29 @@ $('#load-items').api({
               <div class="meta">${item._id}</div>
               <div class="description">
                 <p>
-                Created: ${item._created}<br>
-                Description: <br>
+                Created: ${item._creationDate}<br>
                 Quality: ${item._quality}<br>
-                Owner: ${item._owner}<br>
                 </p>
+                Materials:
+                <ul id="materials-${item._id}">
+</ul>
               </div>
             </div>
           </div>`);
+      if (item && item.hasOwnProperty("_materials")) {
+        item._materials.forEach(function (material) {
+          $(`#materials-${item._id}`).append(`<li>${material}</li>`);
+        })
+      }
     });
   }
 });
 
-$('form .submit.button').api({
+$('form#participant-form .submit.button').api({
   action: 'register participant',
   method: 'POST',
   data: {
-    org: "SocialHousing"//TODO hardcoded org
+    org: "Government"//TODO hardcoded org
   },
   serializeForm: true,
   onComplete: function (response) {
@@ -61,14 +69,46 @@ $('form .submit.button').api({
   },
   onFailure: function (response) {
     if (response) {
-      console.log(JSON.stringify(response))
-      $(".messages").append(`<div class="ui warning message">
+      console.log(JSON.stringify(response));
+      // cogoToast.error(response.message);
+      $('.messages').append(`<div class="ui warning message">
             <i class="close icon"></i>
             <div class="header">
               Request failed
             </div>
             <p>${response.message}</p>
-          </div>`)
+          </div>`);
+      $('.message').show();
+      refreshMessageHandler();
+    }
+  }
+});
+
+$('form#item-form .submit.button').api({
+  action: 'add item',
+  method: 'POST',
+  data: {
+    org: "Government"//TODO hardcoded org
+  },
+  serializeForm: true,
+  onComplete: function (response) {
+    console.log(JSON.stringify(response))
+  },
+  onSuccess: function (response) {
+    console.log("Success: " + JSON.stringify(response))
+  },
+  onFailure: function (response) {
+    if (response) {
+      console.log(JSON.stringify(response));
+      // cogoToast.error(response.message);
+      $('.messages').append(`<div class="ui warning message">
+            <i class="close icon"></i>
+            <div class="header">
+              Request failed
+            </div>
+            <p>${response.message}</p>
+          </div>`);
+      $('.message').show();
       refreshMessageHandler();
     }
   }
@@ -79,7 +119,6 @@ function refreshMessageHandler() {
     .on('click', function () {
       $(this)
         .closest('.message')
-        .transition('fade')
-      ;
+        .transition('fade');
     });
 }

@@ -15,7 +15,7 @@ export class ItemController extends ConvectorController {
       name: string,
     @Param(yup.string())
       ownerID: string,
-    @Param(yup.string())
+    @Param(yup.number())
       quality: string,
     @Param(yup.string())
       materials: string,
@@ -25,22 +25,22 @@ export class ItemController extends ConvectorController {
     item.name = name;
     item.itemOwner = ownerID;
 
-    var d : Number = new Date().getDate()
+    var d: Number = new Date().getDate()
     item.creationDate = d;
 
     if (quality == 'Good') {
       item.quality = Quality.Good;
     } else if (quality == 'Usable') {
-        item.quality = Quality.Usable;
+      item.quality = Quality.Usable;
     } else if (quality == 'Bad') {
-        item.quality == Quality.Bad;
+      item.quality = Quality.Bad;
     } else if (quality == 'Broken') {
-        item.quality = Quality.Broken;
+      item.quality = Quality.Broken;
     } else {
-        throw new Error('Illegal argument given for quality')
+      throw new Error('Illegal argument given for quality')
     }
 
-    var a : Array<String> = materials.split(',');
+    var a: Array<String> = materials.split(',');
     console.log(a)
     item.materials = a;
 
@@ -61,7 +61,7 @@ export class ItemController extends ConvectorController {
     }
 
     const owner = await Participant.getOne(item.itemOwner);
-    if(!owner || !owner.id || !owner.identities) {
+    if (!owner || !owner.id || !owner.identities) {
       throw new Error('Given participant does not currently exist on the ledger')
     }
 
@@ -88,7 +88,7 @@ export class ItemController extends ConvectorController {
     }
 
     const owner = await Participant.getOne(item.itemOwner);
-    if(!owner || !owner.id || !owner.identities) {
+    if (!owner || !owner.id || !owner.identities) {
       throw new Error('Given participant as owner does not currently exist on the ledger')
     }
 
@@ -97,13 +97,13 @@ export class ItemController extends ConvectorController {
       if (quality == 'Good') {
         item.quality = Quality.Good;
       } else if (quality == 'Usable') {
-          item.quality = Quality.Usable;
+        item.quality = Quality.Usable;
       } else if (quality == 'Bad') {
-          item.quality == Quality.Bad;
+        item.quality == Quality.Bad;
       } else if (quality == 'Broken') {
-          item.quality = Quality.Broken;
+        item.quality = Quality.Broken;
       } else {
-          throw new Error('Illegal argument given for quality')
+        throw new Error('Illegal argument given for quality')
       }
       await item.save();
       console.log('${owner.name} has changed the quality of item ${item.id} to ${item.quality}')
@@ -125,7 +125,7 @@ export class ItemController extends ConvectorController {
     }
 
     const owner = await Participant.getOne(item.itemOwner);
-    if(!owner || !owner.id || !owner.identities) {
+    if (!owner || !owner.id || !owner.identities) {
       throw new Error('Given participant as owner does not currently exist on the ledger')
     }
 
