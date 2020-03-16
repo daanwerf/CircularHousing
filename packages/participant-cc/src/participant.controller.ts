@@ -29,9 +29,26 @@ export class ParticipantController extends ConvectorController {
     if (!isAdmin) {
       throw new Error('Unauthorized. Requester identity is not an admin');
     }
+    // Check if there is not already a participant existing for this certificate
+    const userExisting = await Participant.query(Participant, {
+      'selector': {
+        'identities': {
+          '$elemMatch': {
+            'fingerprint': this.sender,
+            'status': true
+          }
+        }
+      }
+    });
+
+    if (userExisting[0] !== undefined) {
+      throw new Error('This user already has a participant on the blockchain.' +
+        'You can only create one participant for each node');
+    }
 
     // Retrieve to see if exists
     const existing = await Participant.getOne(id);
+
 
     if (!existing || !existing.id) {
       let participant = new Participant();
@@ -53,6 +70,29 @@ export class ParticipantController extends ConvectorController {
     }
   }
 
+  // Function to change the name of a participant
+  @Invokable()
+  public async changeName(
+    @Param(yup.string())
+      id: string,
+    @Param(yup.string())
+      newName: string
+  ) {
+    // Retrieve to see if exists
+    const existing = await Participant.getOne(id);
+    if (!existing || !existing.id) {
+      throw new Error('No identity exists with that ID');
+    }
+
+    const fingerprint = existing.identities.filter(identity => identity.status === true)[0].fingerprint;
+    if (fingerprint !== this.sender) {
+      throw new Error('The sender does not have the right identity to change this participant\'s name');
+    }
+
+    existing.name = newName;
+    await existing.save();
+  }
+
   @Invokable()
   public async changeIdentity(
     @Param(yup.string())
@@ -62,16 +102,11 @@ export class ParticipantController extends ConvectorController {
   ) {
     // Check permissions
     let isAdmin = this.fullIdentity.getAttributeValue('admin');
-    let requesterMSP = this.fullIdentity.getMSPID();
 
     // Retrieve to see if exists
     const existing = await Participant.getOne(id);
     if (!existing || !existing.id) {
       throw new Error('No identity exists with that ID');
-    }
-
-    if (existing.msp != requesterMSP) {
-      throw new Error('Unauthorized. MSPs do not match');
     }
 
     if (!isAdmin) {

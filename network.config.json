@@ -1,6 +1,10 @@
 {
   "channels": ["ch1"],
   "topology": {
+    "Government": {
+      "channels": ["ch1"],
+      "users": []
+    },
     "SocialHousing": {
       "channels": ["ch1"],
       "users": ["Sultan"]
