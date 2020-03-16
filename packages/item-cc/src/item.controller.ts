@@ -24,7 +24,7 @@ export class ItemController extends ConvectorController {
 
     item.name = name;
     item.itemOwner = ownerID;
-    
+
     var d : Number = new Date().getDate()
     item.creationDate = d;
 
@@ -148,4 +148,8 @@ export class ItemController extends ConvectorController {
     return await Item.getOne(id);
   }
 
+  @Invokable()
+  public async getAll() {
+    return await Item.getAll('io.worldsibu.item');
+  }
 }
