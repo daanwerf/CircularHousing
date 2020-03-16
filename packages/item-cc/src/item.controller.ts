@@ -45,26 +45,20 @@ export class ItemController extends ConvectorController {
       name: string,
   ) {
     let item = await Item.getOne(id)
-    console.log('Product:')
-    console.log(item)
-
     if (!item || !item.id) {
       throw new Error('Given item does not currently exist on the ledger')
     }
 
     const owner = await Participant.getOne(item.itemOwner);
-    console.log('Owner:')
-    console.log(owner)
-
     if(!owner || !owner.id || !owner.identities) {
-      throw new Error('Given participant as owner does not currently exist on the ledger')
+      throw new Error('Given participant does not currently exist on the ledger')
     }
 
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     if (currentOwnerIdentity.fingerprint === this.sender) {
-      console.log('This participant is able to update this item');
       item.name = name;
       await item.save();
+      console.log('${owner.name} has changed the name of item ${item.id} to ${item.name}')
     } else {
       throw new Error('${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to')
     }
@@ -78,30 +72,51 @@ export class ItemController extends ConvectorController {
       quality: string,
   ) {
     let item = await Item.getOne(id)
-    console.log('Product:')
-    console.log(item)
-
     if (!item || !item.id) {
       throw new Error('Given item does not currently exist on the ledger')
     }
 
     const owner = await Participant.getOne(item.itemOwner);
-    console.log('Owner:')
-    console.log(owner)
-
     if(!owner || !owner.id || !owner.identities) {
       throw new Error('Given participant as owner does not currently exist on the ledger')
     }
 
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     if (currentOwnerIdentity.fingerprint === this.sender) {
-      console.log('This participant is able to update this item');
       var q : Quality = Quality[quality];
       item.quality = q;
       await item.save();
+      console.log('${owner.name} has changed the quality of item ${item.id} to ${item.quality}')
     } else {
       throw new Error('${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to')
     }
   }
 
+  @Invokable()
+  public async transfer(
+    @Param(yup.string())
+      id: string,
+    @Param(yup.string())
+      newOwner: string,
+  ) {
+    let item = await Item.getOne(id)
+    if (!item || !item.id) {
+      throw new Error('Given item does not currently exist on the ledger')
+    }
+
+    const owner = await Participant.getOne(item.itemOwner);
+    if(!owner || !owner.id || !owner.identities) {
+      throw new Error('Given participant as owner does not currently exist on the ledger')
+    }
+
+    const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
+    if (currentOwnerIdentity.fingerprint === this.sender) {
+      const oldOwner = item.itemOwner;
+      item.itemOwner = newOwner;
+      await item.save();
+      console.log('$Participant ${oldOwner} has transferred ownership of item ${item.name} to participant ${item.itemOwner}')
+    } else {
+      throw new Error('${this.sender} is not allowed to transfer this item, only ${owner.name} is allowed to')
+    }
+  }
 }
