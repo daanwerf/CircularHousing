@@ -12,16 +12,7 @@ cd CircularHousing
 # Install all node dependencies
 npm i
 # Create a new development blockchain network as specified in network.config.json
-hurl new -n ./network.config.json
-# Create an identities manager (currently only works for the first organisation 
-# specified in network.config.json)
-node ./packages/admin/registerIdManager.js Government
-
-# Package smart contract's code
-npm run cc:package -- participant
-# Install the chaincode to the blockchain (for debug mode, add --debug to the end of the command)
-# to the organizations defined in network.config.json file
-hurl install participant node -P ./chaincode-participant -o Government -o SocialHousing -o TableMaker -o WoodGatherer
+sh launchBlockchain.sh
 
 # Register a participant for SocialHousing organization with id SultanPart 
 # and name "Participant Sultan", invoking as user Sultan
