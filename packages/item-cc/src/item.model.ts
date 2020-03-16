@@ -10,8 +10,8 @@ export class Item extends ConvectorModel<Item> {
   @Validate(yup.string())
   public name: string;
 
-  //The name of the owner (Participant) encoded as a string
+  //Refers to the ID as a string of the participant that is the owner of the item
   @Required()
   @Validate(yup.string())
-  public owner: string;
+  public itemOwner: string;
 }

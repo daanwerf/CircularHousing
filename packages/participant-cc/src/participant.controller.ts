@@ -1,6 +1,3 @@
-npx lerna add item-cc --scope participant-cc --include-filtered-dependencies
-npx lerna bootstrap
-
 import * as yup from 'yup';
 
 import {
