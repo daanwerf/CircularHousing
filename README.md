@@ -28,6 +28,9 @@ hurl install participant node -P ./chaincode-participant -o Government -o Social
 hurl invoke participant participant_register SultanPart "Participant Sultan" -o SocialHousing -u Sultan
 # Get the information of the participant you just added
 hurl invoke participant participant_get SultanPart -o SocialHousing -u Sultan
+# Try to register another participant for user Sultan, this is not possible since a participant 
+# with this certificate is already registered
+hurl invoke participant participant_register SultanPart2 "Participant Sultan 2" -o SocialHousing -u Sultan
 
 # Try to update the fingerprint (i.e. X509 certificate) of participant Sultan. This should give 
 # an error since it is invoked with user Sultan, who is not authorized to change certficates
