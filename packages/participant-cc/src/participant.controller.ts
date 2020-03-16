@@ -25,10 +25,6 @@ export class ParticipantController extends ConvectorController {
     @Param(yup.string())
       name: string,
   ) {
-    let isAdmin = this.fullIdentity.getAttributeValue('admin');
-    if (!isAdmin) {
-      throw new Error('Unauthorized. Requester identity is not an admin');
-    }
     // Check if there is not already a participant existing for this certificate
     const userExisting = await Participant.query(Participant, {
       'selector': {
