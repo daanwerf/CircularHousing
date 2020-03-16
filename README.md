@@ -37,7 +37,7 @@ hurl invoke participant participant_register SultanPart2 "Participant Sultan 2" 
 hurl invoke participant participant_changeIdentity SultanPart RandomID -o SocialHousing -u Sultan
 # Update the fingerprint with chaincodeAdmin (created earlier) who is authorized to do this, 
 # so this should work.
-hurl invoke participant participant_changeIdentity SultanPart RandomID -o SocialHousing -u chaincodeAdmin
+hurl invoke participant participant_changeIdentity SultanPart RandomID -o Government -u chaincodeAdmin
 # Inspect the participant again and notice the changed fingerprint
 hurl invoke participant participant_get SultanPart -o SocialHousing -u Sultan
 

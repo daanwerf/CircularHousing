@@ -45,7 +45,6 @@ export class ParticipantController extends ConvectorController {
     // Retrieve to see if exists
     const existing = await Participant.getOne(id);
 
-
     if (!existing || !existing.id) {
       let participant = new Participant();
       participant.id = id;
@@ -140,8 +139,7 @@ export class ParticipantController extends ConvectorController {
   public async getAll() {
     // Simply gets all participants with type 'io.worldsibu.examples.participant'
     // regardless of organisation. Useful for debugging. 
-    let personIds = await Participant.getAll('io.worldsibu.examples.participant');
-    console.log(personIds);
+    let personIds = await Participant.getAll('circular.economy.participant');
     return personIds;
   }
 }
