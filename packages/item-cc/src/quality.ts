@@ -1,1 +1,1 @@
-enum Quality {Good, Usable, Bad, Broken}
+export enum Quality {Good, Usable, Bad, Broken}
