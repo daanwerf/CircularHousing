@@ -21,7 +21,7 @@ node ./packages/admin/registerIdManager.js Government
 npm run cc:package -- participant
 # Install the chaincode to the blockchain (for debug mode, add --debug to the end of the command)
 # to the organizations defined in network.config.json file
-hurl install participant node -P ./chaincode-participant -o SocialHousing -o TableMaker -o WoodGatherer
+hurl install participant node -P ./chaincode-participant -o Government -o SocialHousing -o TableMaker -o WoodGatherer
 
 # Register a participant for SocialHousing organization with id SultanPart 
 # and name "Participant Sultan", invoking as user Sultan
