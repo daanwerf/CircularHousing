@@ -17,8 +17,8 @@ export class Item extends ConvectorModel<Item> {
 
   // The date the Item was created on
   @Required()
-  @Validate(yup.date())
-  public creationDate: Date;
+  @Validate(yup.number())
+  public creationDate: Number;
 
   // An enum to indicate the current quality of the item
   @Required()
