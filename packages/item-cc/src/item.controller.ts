@@ -94,8 +94,17 @@ export class ItemController extends ConvectorController {
 
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     if (currentOwnerIdentity.fingerprint === this.sender) {
-      var q : Quality = Quality[quality];
-      item.quality = q;
+      if (quality == 'Good') {
+        item.quality = Quality.Good;
+      } else if (quality == 'Usable') {
+          item.quality = Quality.Usable;
+      } else if (quality == 'Bad') {
+          item.quality == Quality.Bad;
+      } else if (quality == 'Broken') {
+          item.quality = Quality.Broken;
+      } else {
+          throw new Error('Illegal argument given for quality')
+      }
       await item.save();
       console.log('${owner.name} has changed the quality of item ${item.id} to ${item.quality}')
     } else {
