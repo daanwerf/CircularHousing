@@ -23,7 +23,7 @@ export class Item extends ConvectorModel<Item> {
 
   // An enum to indicate the current quality of the item
   @Required()
-  @Validate(yup.enum())
+  @Validate(yup.string())
   public quality: Quality;
 
   // A list of strings describing the materials of which the item constists

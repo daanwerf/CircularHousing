@@ -2,6 +2,7 @@ import * as yup from 'yup';
 import {Controller, ConvectorController, Invokable, Param} from '@worldsibu/convector-core';
 
 import {Item} from './item.model';
+import {Quality} from './quality'
 import {Participant} from 'participant-cc';
 
 @Controller('item')
@@ -27,10 +28,20 @@ export class ItemController extends ConvectorController {
     var d : Number = new Date().getDate()
     item.creationDate = d;
 
-    var q : Quality = Quality[quality];
-    item.quality = q;
+    if (quality == 'Good') {
+      item.quality = Quality.Good;
+    } else if (quality == 'Usable') {
+        item.quality = Quality.Usable;
+    } else if (quality == 'Bad') {
+        item.quality == Quality.Bad;
+    } else if (quality == 'Broken') {
+        item.quality = Quality.Broken;
+    } else {
+        throw new Error('Illegal argument given for quality')
+    }
 
     var a : Array<String> = materials.split(',');
+    console.log(a)
     item.materials = a;
 
     await item.save();
@@ -120,10 +131,10 @@ export class ItemController extends ConvectorController {
     }
   }
 
-  @Invokable
+  @Invokable()
   public async get(
     @Param(yup.string())
-      id:string,
+      id: string
   ) {
     return await Item.getOne(id);
   }
