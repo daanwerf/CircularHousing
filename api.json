@@ -1,0 +1,17 @@
+[
+  {
+    "function": "register",
+    "verb": "post",
+    "controller": "ParticipantController"
+  },
+  {
+    "function": "get",
+    "verb": "get",
+    "controller": "ParticipantController"
+  },
+  {
+    "function": "getAll",
+    "verb": "get",
+    "controller": "ParticipantController"
+  }
+]

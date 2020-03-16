@@ -1,10 +1,10 @@
 import * as yup from 'yup';
 
 import {
-  BaseStorage, 
-  Controller, 
-  ConvectorController, 
-  Invokable, 
+  BaseStorage,
+  Controller,
+  ConvectorController,
+  Invokable,
   Param
 } from '@worldsibu/convector-core';
 
@@ -44,6 +44,7 @@ export class ParticipantController extends ConvectorController {
 
     // Retrieve to see if exists
     const existing = await Participant.getOne(id);
+
 
     if (!existing || !existing.id) {
       let participant = new Participant();
@@ -105,7 +106,7 @@ export class ParticipantController extends ConvectorController {
     }
 
     if (!isAdmin) {
-      throw new Error('Unathorized. Requester identity is not an admin');
+      throw new Error('Unauthorized. Requester identity is not an admin');
     }
 
     // Disable previous identities!
@@ -138,7 +139,7 @@ export class ParticipantController extends ConvectorController {
   @Invokable()
   public async getAll() {
     // Simply gets all participants with type 'io.worldsibu.examples.participant'
-    // regardless of organisation. Useful for debugging. 
+    // regardless of organisation. Useful for debugging.
     let personIds = await Participant.getAll('circular.economy.participant');
     return personIds;
   }
