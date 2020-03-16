@@ -9,7 +9,7 @@ import {
 
 export class x509Identities extends ConvectorModel<x509Identities> {
   @ReadOnly()
-  public readonly type = 'io.worldsibu.examples.x509identity';
+  public readonly type = 'circular.economy.x509identity';
 
   @Validate(yup.boolean())
   @Required()
@@ -22,7 +22,7 @@ export class x509Identities extends ConvectorModel<x509Identities> {
 
 export class Participant extends ConvectorModel<Participant> {
   @ReadOnly()
-  public readonly type = 'io.worldsibu.examples.participant';
+  public readonly type = 'circular.economy.participant';
 
   @ReadOnly()
   @Required()
