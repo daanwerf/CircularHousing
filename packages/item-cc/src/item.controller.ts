@@ -70,4 +70,38 @@ export class ItemController extends ConvectorController {
     }
   }
 
+  @Invokable()
+  public async updateQuality(
+    @Param(yup.string())
+      id: string,
+    @Param(yup.string())
+      quality: string,
+  ) {
+    let item = await Item.getOne(id)
+    console.log('Product:')
+    console.log(item)
+
+    if (!item || !item.id) {
+      throw new Error('Given item does not currently exist on the ledger')
+    }
+
+    const owner = await Participant.getOne(item.itemOwner);
+    console.log('Owner:')
+    console.log(owner)
+
+    if(!owner || !owner.id || !owner.identities) {
+      throw new Error('Given participant as owner does not currently exist on the ledger')
+    }
+
+    const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
+    if (currentOwnerIdentity.fingerprint === this.sender) {
+      console.log('This participant is able to update this item');
+      var q : Quality = Quality[quality];
+      item.quality = q;
+      await item.save();
+    } else {
+      throw new Error('${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to')
+    }
+  }
+
 }
