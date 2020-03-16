@@ -1,12 +1,12 @@
-import { join, resolve } from "path";
-import { keyStore, networkProfile } from './env';
-import * as fs from 'fs';
-import { FabricControllerAdapter } from '@worldsibu/convector-adapter-fabric';
-import { ClientFactory } from '@worldsibu/convector-core';
-import { ParticipantController } from 'participant-cc';
+import {resolve} from "path";
+import {keyStore, networkProfile} from './env';
+import {FabricControllerAdapter} from '@worldsibu/convector-adapter-fabric';
+import {ClientFactory} from '@worldsibu/convector-core';
+import {ParticipantController} from 'participant-cc';
 import {ItemController} from "item-cc";
+import {ConvectorControllerClient} from "@worldsibu/convector-core-adapter/dist/src/controller-client";
 
-export async function backend(identityName, identityOrg, controller, chaincode, channel) {
+export async function backend(identityName, identityOrg, controller, chaincode, channel) : Promise<ConvectorControllerClient<any>> {
   const keystorePath = keyStore(identityOrg);
   const networkProfilePath = networkProfile(identityOrg);
 
@@ -25,10 +25,10 @@ export async function backend(identityName, identityOrg, controller, chaincode, 
   return ClientFactory(controller, adapter);
 }
 
-export async function ParticipantControllerBackend(identityName, identityOrg) {
+export const ParticipantControllerBackend = function(identityName, identityOrg) {
   return backend(identityName, identityOrg, ParticipantController, 'participant', 'ch1');
-}
+};
 
-export async function ItemControllerBackend(identityName, identityOrg) {
+export const itemControllerBackend = function(identityName, identityOrg) {
   return backend(identityName, identityOrg, ItemController, 'item', 'ch1');
 }
