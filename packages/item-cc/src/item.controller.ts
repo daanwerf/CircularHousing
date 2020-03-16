@@ -119,4 +119,13 @@ export class ItemController extends ConvectorController {
       throw new Error('${this.sender} is not allowed to transfer this item, only ${owner.name} is allowed to')
     }
   }
+
+  @Invokable
+  public async get(
+    @Param(yup.string())
+      id:string,
+  ) {
+    return await Item.getOne(id);
+  }
+
 }
