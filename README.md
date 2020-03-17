@@ -14,17 +14,26 @@ npm i
 # Create a new development blockchain network as specified in network.config.json
 sh launchBlockchain.sh
 
-# Register a participant for SocialHousing organization with id SultanPart 
-# and name "Participant Sultan", invoking as user Sultan
-hurl invoke circularhousing participant_register casper "Casper" -o WoodGatherer -u Casper
+# Store the certificate of user Casper in a variable
+CERTIFICATE=$(node ./packages/admin/get_certificate.js WoodGatherer Casper)
+# Register a participant for WoodGatherer with id casper and name "Casper" as user Casper 
+# This should fail since only the admin can create new participants
+hurl invoke circularhousing participant_register casper "Casper" WoodGatherer $CERTIFICATE -o WoodGatherer -u Casper
+# Now create the participant with admin, which should work
+hurl invoke circularhousing participant_register casper "Casper" WoodGatherer $CERTIFICATE -o Government -u chaincodeAdmin
+
 # Get the information of the participant you just added
 hurl invoke circularhousing participant_get casper -o WoodGatherer -u Casper
-# Try to register another participant for user Sultan, this is not possible since a participant 
+# Try to register another participant for user Casper, this is not possible since a participant 
 # with this certificate is already registered
-hurl invoke circularhousing participant_register casper "Casper 2" -o WoodGatherer -u Casper
+hurl invoke circularhousing participant_register casper2 "Casper 2" WoodGatherer $CERTIFICATE -o Government -u chaincodeAdmin
 
+# Get certificate for user Tim
+CERTIFICATE=$(node ./packages/admin/get_certificate.js WoodGatherer Tim)
 # Register participant Tim
-hurl invoke circularhousing participant_register tim "Tim" -o WoodGatherer -u Tim
+hurl invoke circularhousing participant_register tim "Tim" WoodGatherer $CERTIFICATE -o Government -u chaincodeAdmin
+# Verify that Tim was added as participant
+hurl invoke circularhousing participant_get tim -o WoodGatherer -u Tim
 
 # Create an item
 hurl invoke circularhousing item_create item1 "Item 1" casper Good "material1,material2" -o WoodGatherer -u Casper
@@ -59,9 +68,8 @@ hurl invoke circularhousing participant_changeIdentity casper RandomID -o Govern
 # Inspect the participant again and notice the changed fingerprint
 hurl invoke circularhousing participant_get casper -o WoodGatherer -u Casper
 
-# TODO: SHOW USECASE WITH ITEMS 
-# (BECAUSE NOW SultanPart has wrong fingerprint so not allowed to do anything with items) 
-# and then change back to correct identity to see how it then works again
+# TODO: MAKE EXAMPLE WITH TRYING TO SEE ITEM THAT IS NOT YOURS, THEN CHANGING FINGERPRINT 
+# AND NOTICE DIFFERENT ITEMS THAT CAN NOW BE VIEWED.
 ```
 
 ## Install or upgrade chaincode
