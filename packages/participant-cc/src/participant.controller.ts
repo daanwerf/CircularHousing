@@ -18,19 +18,33 @@ export class ParticipantController extends ConvectorController<ParticipantContro
     return new ClientIdentity(stub.getStub());
   };
 
+  /*
+    This function registers a participant on the blockchain. Only an admin can register a
+    participant, which can be seen as a user account on the blockchain. Only when you 
+    have this user account, you can participate on the blockchain by creating/updating/
+    transfering items.
+
+    The admin registers the participant with the X509 certificate of the corresponding
+    node on the network. Only one participant is allowed per certificate. 
+  */
   @Invokable()
   public async register(
     @Param(yup.string())
       id: string,
     @Param(yup.string())
       name: string,
+    @Param(yup.string())
+      msp: string,
+    @Param(yup.string())
+      certificate: string
   ) {
-    // Check if there is not already a participant existing for this certificate
+    // Check if there is not already a participant existing for this certificate,
+    // because only one participant per certificate is allowed
     const userExisting = await Participant.query(Participant, {
       'selector': {
         'identities': {
           '$elemMatch': {
-            'fingerprint': this.sender,
+            'fingerprint': certificate,
             'status': true
           }
         }
@@ -42,19 +56,25 @@ export class ParticipantController extends ConvectorController<ParticipantContro
         'You can only create one participant for each node');
     }
 
+    // Check if the invoker is an admin, only an admin can create new participants
+    let isAdmin = this.fullIdentity.getAttributeValue('admin');
+    if (!isAdmin) {
+      throw new Error('Unauthorized. Only admin can create a new participant.');
+    }
+
     // Retrieve to see if exists
     const existing = await Participant.getOne(id);
 
     if (!existing || !existing.id) {
       let participant = new Participant();
       participant.id = id;
-      participant.name = name || id;
+      participant.name = name;
       // This is basically the organisation for which a new participant is created
-      participant.msp = this.fullIdentity.getMSPID();
+      participant.msp = msp;
       // Create a new identity
       participant.identities = [{
         // this.sender is unique to the user that invoked the transaction
-        fingerprint: this.sender,
+        fingerprint: certificate,
         // Indicates whether this identity is still active
         status: true
       }];
@@ -64,7 +84,11 @@ export class ParticipantController extends ConvectorController<ParticipantContro
       throw new Error('Identity exists already, please call changeIdentity fn for updates');
     }
   }
-  
+
+  /*
+    Changes the X509 certficate of a participant. 
+    Only the admin (=Government) can do this. 
+  */
   @Invokable()
   public async changeIdentity(
     @Param(yup.string())
@@ -74,16 +98,15 @@ export class ParticipantController extends ConvectorController<ParticipantContro
   ) {
     // Check permissions
     let isAdmin = this.fullIdentity.getAttributeValue('admin');
+    if (!isAdmin) {
+      throw new Error('Unauthorized. Requester identity is not an admin');
+    }
 
     // Retrieve to see if exists
     const existing = await Participant.getOne(id);
     if (!existing || !existing.id) {
       throw new Error('No identity exists with that ID');
-    }
-
-    if (!isAdmin) {
-      throw new Error('Unauthorized. Requester identity is not an admin');
-    }
+    }    
 
     // Disable previous identities!
     existing.identities = existing.identities.map(identity => {
@@ -100,6 +123,9 @@ export class ParticipantController extends ConvectorController<ParticipantContro
     await existing.save();
   }
 
+  /*
+    Gets a participant by its id. Throws an error if the participant does not exist.
+  */
   @Invokable()
   public async get(
     @Param(yup.string())
@@ -107,16 +133,16 @@ export class ParticipantController extends ConvectorController<ParticipantContro
   ) {
     const existing = await Participant.getOne(id);
     if (!existing || !existing.id) {
-      throw new Error(`No identity exists with that ID ${id}`);
+      throw new Error('No identity exists with id ' + id);
     }
     return existing;
   }
 
-  // TODO: POSSIBLY REMOVE THIS CODE, IS NOW HERE FOR DEBUGGING
+  /* 
+    Returns all participants 
+  */
   @Invokable()
   public async getAll() {
-    // Simply gets all participants with type 'io.worldsibu.examples.participant'
-    // regardless of organisation. Useful for debugging.
     let personIds = await Participant.getAll('circular.economy.participant');
     return personIds;
   }
