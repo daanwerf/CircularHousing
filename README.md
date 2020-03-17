@@ -16,21 +16,48 @@ sh launchBlockchain.sh
 
 # Register a participant for SocialHousing organization with id SultanPart 
 # and name "Participant Sultan", invoking as user Sultan
-hurl invoke participant participant_register SultanPart "Participant Sultan" -o SocialHousing -u Sultan
+hurl invoke circularhousing participant_register casper "Casper" -o WoodGatherer -u Casper
 # Get the information of the participant you just added
-hurl invoke participant participant_get SultanPart -o SocialHousing -u Sultan
+hurl invoke circularhousing participant_get casper -o WoodGatherer -u Casper
 # Try to register another participant for user Sultan, this is not possible since a participant 
 # with this certificate is already registered
-hurl invoke participant participant_register SultanPart2 "Participant Sultan 2" -o SocialHousing -u Sultan
+hurl invoke circularhousing participant_register casper "Casper 2" -o WoodGatherer -u Casper
+
+# Register participant Tim
+hurl invoke circularhousing participant_register tim "Tim" -o WoodGatherer -u Tim
+
+# Create an item
+hurl invoke circularhousing item_create item1 "Item 1" casper Good "material1,material2" -o WoodGatherer -u Casper
+
+# Get item
+hurl invoke circularhousing item_get item1 -o WoodGatherer -u Casper
+
+# Transfer item to Tim
+hurl invoke circularhousing item_transfer item1 tim -o WoodGatherer -u Casper
+
+# Get item, see that owner is now Tim
+hurl invoke circularhousing item_get item1 -o WoodGatherer -u Tim
+
+# Try to update item as user casper, see that this is not possible
+hurl invoke circularhousing item_updateName item1 "Item 2" -o WoodGatherer -u Casper
+
+# Now update as Tim, this is possible since Tim is owner
+hurl invoke circularhousing item_updateName item1 "Item 2" -o WoodGatherer -u Tim
+
+# Update quality
+hurl invoke circularhousing item_updateQuality item1 Bad -o WoodGatherer -u Tim
+
+# Get item again, see that quality and name are updated
+hurl invoke circularhousing item_get item1 -o WoodGatherer -u Tim
 
 # Try to update the fingerprint (i.e. X509 certificate) of participant Sultan. This should give 
 # an error since it is invoked with user Sultan, who is not authorized to change certficates
-hurl invoke participant participant_changeIdentity SultanPart RandomID -o SocialHousing -u Sultan
+hurl invoke circularhousing participant_changeIdentity casper RandomID -o WoodGatherer -u Casper
 # Update the fingerprint with chaincodeAdmin (created earlier) who is authorized to do this, 
 # so this should work.
-hurl invoke participant participant_changeIdentity SultanPart RandomID -o Government -u chaincodeAdmin
+hurl invoke circularhousing participant_changeIdentity casper RandomID -o Government -u chaincodeAdmin
 # Inspect the participant again and notice the changed fingerprint
-hurl invoke participant participant_get SultanPart -o SocialHousing -u Sultan
+hurl invoke circularhousing participant_get casper -o WoodGatherer -u Casper
 
 # TODO: SHOW USECASE WITH ITEMS 
 # (BECAUSE NOW SultanPart has wrong fingerprint so not allowed to do anything with items) 
@@ -41,7 +68,7 @@ hurl invoke participant participant_get SultanPart -o SocialHousing -u Sultan
 To install and/or upgrade chaincode, the following commands from the root of the project can be run (see <a href="https://www.npmjs.com/package/@worldsibu/hurley" target="_blank">Hurley docs</a> for full specification):
 ```
 # Regardless of installation or upgrading, first chaincode needs to be packaged
-npm run cc:package -- <mychaincode>
+npm run cc:package
 
 # Install <mychaincode> to blockchain (replace <mychaincode> with the name of the chaincode 
 # you want to install and <org1> with the organisation to which you want to install the chaincode. 

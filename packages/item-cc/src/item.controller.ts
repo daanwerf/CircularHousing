@@ -20,11 +20,15 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       materials: string,
   ) {
+    // TODO: POSSIBLY BETTER THAT WE CREATE SOME UUID AND RETURN IT RIGHT?
+    // ALSO: SHOULD BE CHECK THAT ITEM WITH THIS ID DOES NOT ALREADY EXIST
     let item = new Item(id);
 
+    // TODO: CHECK IF OWNER EXISTS
     item.name = name;
     item.itemOwner = ownerID;
 
+    // TODO: CHECK WHAT HAPPENS WHEN YOU INPUT AN INVALID DATE
     var d: Number = new Date().getDate()
     item.creationDate = d;
 
@@ -40,10 +44,12 @@ export class ItemController extends ConvectorController {
       throw new Error('Illegal argument given for quality')
     }
 
+    // TODO: DO SOME TRIMMING OF WHITESPACE HERE
     var a: Array<String> = materials.split(',');
-    console.log(a)
+    console.log(a);
     item.materials = a;
 
+    // TODO: IF WE CREATE THE ITEM ID, RETURN IT HERE AFTER SAVING
     await item.save();
   }
 
@@ -71,6 +77,7 @@ export class ItemController extends ConvectorController {
       await item.save();
       console.log('${owner.name} has changed the name of item ${item.id} to ${item.name}')
     } else {
+      // TODO: THIS IS PRINTED LITERALLY, NO VARIABLES ARE PRINTED
       throw new Error('${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to')
     }
   }
@@ -119,14 +126,17 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       newOwner: string,
   ) {
-    let item = await Item.getOne(id)
+    let item = await Item.getOne(id);
     if (!item || !item.id) {
-      throw new Error('Given item does not currently exist on the ledger')
+      throw new Error('Given item does not currently exist on the ledger');
     }
 
+    console.log(item.itemOwner);
     const owner = await Participant.getOne(item.itemOwner);
+    const allPart = await Participant.getAll('circular.economy.participant');
+    console.log(allPart);
     if (!owner || !owner.id || !owner.identities) {
-      throw new Error('Given participant as owner does not currently exist on the ledger')
+      throw new Error('Given participant as owner does not currently exist on the ledger');
     }
 
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
@@ -134,9 +144,9 @@ export class ItemController extends ConvectorController {
       const oldOwner = item.itemOwner;
       item.itemOwner = newOwner;
       await item.save();
-      console.log('$Participant ${oldOwner} has transferred ownership of item ${item.name} to participant ${item.itemOwner}')
+      console.log('$Participant ${oldOwner} has transferred ownership of item ${item.name} to participant ${item.itemOwner}');
     } else {
-      throw new Error('${this.sender} is not allowed to transfer this item, only ${owner.name} is allowed to')
+      throw new Error('${this.sender} is not allowed to transfer this item, only ${owner.name} is allowed to');
     }
   }
 
