@@ -12,7 +12,7 @@ import { Participant } from './participant.model';
 import { ClientIdentity } from 'fabric-shim';
 
 @Controller('participant')
-export class ParticipantController extends ConvectorController {
+export class ParticipantController extends ConvectorController<ParticipantController> {
   get fullIdentity(): ClientIdentity {
     const stub = (BaseStorage.current as any).stubHelper;
     return new ClientIdentity(stub.getStub());

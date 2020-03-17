@@ -29,7 +29,7 @@ export class ItemController extends ConvectorController {
     item.itemOwner = ownerID;
 
     // TODO: CHECK WHAT HAPPENS WHEN YOU INPUT AN INVALID DATE
-    var d: Number = new Date().getDate()
+    var d: Number = new Date().getUTCMilliseconds()
     item.creationDate = d;
 
     if (quality == 'Good') {

@@ -25,7 +25,7 @@ export async function ItemController_transfer_post(req: Request, res: Response):
   try {
     let params = req.body;
     console.log(JSON.stringify(params));
-    let adp = await getAdapter(params.user, params.org, 'item', 'ch1');
+    let adp = await getAdapter(params.user, params.org, 'circularhousing', 'ch1');
     res.status(200).send(await ClientFactory(ItemController, adp).transfer(params.id, params.newOwner));
 
   } catch (ex) {
@@ -39,7 +39,7 @@ export async function ItemController_create_post(req: Request, res: Response): P
   try {
     let params = req.body;
     console.log(JSON.stringify(params));
-    let adp = await getAdapter(params.user, params.org, 'item', 'ch1');
+    let adp = await getAdapter(params.user, params.org, 'circularhousing', 'ch1');
     res.status(200).send(await ClientFactory(ItemController, adp).create(params.id, params.name, params.owner, params.quality, params.materials));
 
   } catch (ex) {
@@ -55,7 +55,7 @@ export async function ItemController_getAll_get(req: Request, res: Response): Pr
 
     console.log(JSON.stringify(params));
     console.log(resolve(__dirname, networkProfile(params.org)));
-    let adp = await getAdapter(params.user, params.org, 'item', 'ch1');
+    let adp = await getAdapter(params.user, params.org, 'circularhousing', 'ch1');
     res.status(200).send(await ClientFactory(ItemController, adp).getAll());
   } catch (ex) {
     console.log('Error post ItemController_getAll_get', ex.stack);
@@ -68,7 +68,7 @@ export async function ParticipantController_register_post(req: Request, res: Res
     let params = req.body;
     console.log(JSON.stringify(params));
     console.log(resolve(__dirname, networkProfile(params.org)));
-    let adp = await getAdapter(params.user, params.org, 'participant', 'ch1');
+    let adp = await getAdapter(params.user, params.org, 'circularhousing', 'ch1');
     res.status(200).send(await ClientFactory(ParticipantController, adp).register(params.id, params.name));
 
   } catch (ex) {
@@ -84,7 +84,7 @@ export async function ParticipantController_get_get(req: Request, res: Response)
     console.log(JSON.stringify(params));
     console.log(resolve(__dirname, networkProfile(params.org)));
 
-    let adp = await getAdapter(params.user, params.org, 'participant', 'ch1');
+    let adp = await getAdapter(params.user, params.org, 'circularhousing', 'ch1');
     res.status(200).send(await ClientFactory(ParticipantController, adp).get(params.id));
 
   } catch (ex) {
@@ -99,7 +99,7 @@ export async function ParticipantController_getAll_get(req: Request, res: Respon
     console.log(JSON.stringify(params));
     console.log(resolve(__dirname, networkProfile(params.org)));
 
-    let adp = await getAdapter(params.user, params.org, 'participant', 'ch1');
+    let adp = await getAdapter(params.user, params.org, 'circularhousing', 'ch1');
     res.status(200).send(await ClientFactory(ParticipantController, adp).getAll());
   } catch (ex) {
     console.log('Error get ParticipantController_getAll', ex.stack);

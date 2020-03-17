@@ -37,8 +37,8 @@ $('#load-items').api({
               <div class="meta">${item._id}</div>
               <div class="description">
                 <p>
-                Owner: ${item._itemOwner}
-                Created: ${item._creationDate}<br>
+                Owner: ${item._itemOwner}<br>
+                Created: ${new Date(item._creationDate)}<br>
                 Quality: ${item._quality}<br>
                 </p>
                 Materials:
