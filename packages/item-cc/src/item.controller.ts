@@ -99,7 +99,7 @@ export class ItemController extends ConvectorController {
       } else if (quality == 'Usable') {
         item.quality = Quality.Usable;
       } else if (quality == 'Bad') {
-        item.quality == Quality.Bad;
+        item.quality = Quality.Bad;
       } else if (quality == 'Broken') {
         item.quality = Quality.Broken;
       } else {
