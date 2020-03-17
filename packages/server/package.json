@@ -20,6 +20,7 @@
     "@worldsibu/convector-adapter-fabric": "~1.3.0",
     "@worldsibu/convector-storage-couchdb": "~1.3.0",
     "body-parser": "^1.18.3",
+    "cogo-toast": "^4.2.3",
     "config": "^1.30.0",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",

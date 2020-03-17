@@ -17,7 +17,7 @@
     "===================INTERNALS===================": "===================NO NEED TO CALL THEM DIRECTLY===================",
     "lerna:install": "lerna bootstrap",
     "lerna:build": "lerna run build",
-    "cc:package": "f() { npm run lerna:build; chaincode-manager --update --config ./$1.config.json --output ./chaincode-$1 package; }; f",
+    "cc:package": "f() { npm run lerna:build; chaincode-manager --update --config ./controllers.config.json --output ./chaincode-circularhousing package; }; f",
     "cc:install": "f() { hurl install ${2:-$1} node -P ./chaincode-$1; }; f",
     "cc:install:debug": "f() { hurl install ${2:-$1} node -P ./chaincode-$1 --debug; }; f",
     "lerna:test": "lerna run test --stream",
@@ -31,5 +31,8 @@
     "fabric-client": "~1.4.0",
     "lerna": "~3.13.0",
     "npm-run-all": "~4.1.5"
+  },
+  "dependencies": {
+    "@types/node": "^8.10.59"
   }
 }

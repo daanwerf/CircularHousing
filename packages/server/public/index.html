@@ -1,16 +1,18 @@
 <head>
   <link rel="stylesheet" type="text/css"
-        href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+        href="ext/semantic.min.css">
   <script
-    src="https://code.jquery.com/jquery-3.1.1.min.js"
-    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-serialize-object/2.5.0/jquery.serialize-object.min.js"></script>
+    src="ext/jquery-3.1.1.min.js"></script>
+  <script src="ext/semantic.min.js"></script>
+  <script
+    src="ext/jquery.serialize-object.min.js"></script>
 </head>
 <body>
 <div class="ui container">
   <div class="ui celled vertically divided grid">
+    <div class="row">
+      <div class="messages"></div>
+    </div>
     <div class="two column row">
       <div class="column">
         <h1 class="ui header">Participants</h1>
@@ -20,12 +22,14 @@
       </div>
       <div class="column">
         <h1 class="ui header">Add a participant</h1>
-        <form class="ui form">
+        <form id="participant-form" class="ui form">
           <div class="field">
             <label>Requester identity</label>
             <select name="user">
-              <option value="Sultan">Sultan</option>
-              <option value="chaincodeAdmin">chaincodeAdmin</option>
+              <option value="Casper">Casper</option>
+              <option value="Daan">Daan</option>
+              <option value="Naqib">Naqib</option>
+              <option value="Tim">Tim</option>
             </select>
           </div>
           <div class="field">
@@ -37,32 +41,78 @@
             <input type="text" name="name">
           </div>
           <button type="submit" class="ui submit button">Add participant</button>
-          <div class="messages"></div>
         </form>
       </div>
     </div>
-    <div class="row">
+    <div class="two column row">
       <div class="column">
         <h1 class="ui header">
           Items
         </h1>
         <button id="load-items" class="ui button">View items</button>
         <div class="ui cards">
-          <div class="card">
-            <div class="content">
-              <div class="header">Name</div>
-              <div class="meta">(hashcode/id)</div>
-              <div class="description">
-                <p>
-                Created: {created}<br>
-                Description: <br>
-                Quality: {quality}<br>
-                Owner: {owner}<br>
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
+      </div>
+      <div class="column">
+        <h1 class="ui header">Add an item</h1>
+        <form id="item-form" class="ui form">
+          <div class="field">
+            <label>Requester identity</label>
+            <select name="user">
+              <option value="Casper">Casper</option>
+              <option value="Daan">Daan</option>
+              <option value="Naqib">Naqib</option>
+              <option value="Tim">Tim</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Item ID</label>
+            <input type="text" name="id">
+          </div>
+          <div class="field">
+            <label>Name</label>
+            <input type="text" name="name">
+          </div>
+          <div class="field">
+            <label>Owner ID</label>
+            <input type="text" name="owner">
+          </div>
+          <div class="field">
+            <label>Quality</label>
+            <select name="quality">
+              <option value="Good">Good</option>
+              <option value="Usable">Usable</option>
+              <option value="Bad">Bad</option>
+              <option value="Broken">Broken</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Materials</label>
+            <input type="text" name="materials">
+          </div>
+          <button type="submit" class="ui submit button">Add item</button>
+        </form>
+        <h1 class="header">Transfer item ownership</h1>
+        <form id="transfer-form" class="ui form">
+          <div class="field">
+            <label>Requester identity</label>
+            <select name="user">
+              <option value="Casper">Casper</option>
+              <option value="Daan">Daan</option>
+              <option value="Naqib">Naqib</option>
+              <option value="Tim">Tim</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Item ID</label>
+            <input type="text" name="id">
+          </div>
+          <div class="field">
+            <label>New owner ID</label>
+            <input type="text" name="newOwner">
+          </div>
+          <button type="submit" class="ui submit button">Transfer item</button>
+        </form>
       </div>
     </div>
   </div>
