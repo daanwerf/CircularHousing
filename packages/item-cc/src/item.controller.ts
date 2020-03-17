@@ -15,7 +15,7 @@ export class ItemController extends ConvectorController {
       name: string,
     @Param(yup.string())
       ownerID: string,
-    @Param(yup.number())
+    @Param(yup.string())
       quality: string,
     @Param(yup.string())
       materials: string,
