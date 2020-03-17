@@ -21,6 +21,20 @@ import * as yup from "yup";
 // materials: string,
 // ) {
 
+export async function ItemController_transfer_post(req: Request, res: Response): Promise<void> {
+  try {
+    let params = req.body;
+    console.log(JSON.stringify(params));
+    let adp = await getAdapter(params.user, params.org, 'item', 'ch1');
+    res.status(200).send(await ClientFactory(ItemController, adp).transfer(params.id, params.newOwner));
+
+  } catch (ex) {
+    console.log(JSON.stringify(ex));
+    console.log('Error post ParticipantController_register', ex.stack);
+    res.status(500).send(ex);
+  }
+}
+
 export async function ItemController_create_post(req: Request, res: Response): Promise<void> {
   try {
     let params = req.body;

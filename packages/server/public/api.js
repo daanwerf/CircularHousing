@@ -3,18 +3,19 @@ $.fn.api.settings.api = {
   'register participant': '/participant/register',
   'get items': '/item/getAll/{org}/{user}',
   'add item': '/item/add',
+  'transfer ownership': '/item/transfer'
 };
 
 $('#load-participants').api({
   action: 'get participants',
   urlData: {//TODO remove code
-    org: "Government",
-    user: "chaincodeAdmin"
+    org: "WoodGatherer",
+    user: "Tim"
   },
   onSuccess(res) {
     $('.list').empty();
     $.each(res, function (index, item) {
-      $('.list').append(`<div class='item'><div class='content'>${item._name}</div></div>`);
+      $('.list').append(`<div class='item'><div class='content'><div class="header">${item._name}</div><div class="description">${item._id}</div></div></div>`);
     });
   }
 });
@@ -22,8 +23,8 @@ $('#load-participants').api({
 $('#load-items').api({
   action: 'get items',
   urlData: {
-    org: "Government",
-    user: "chaincodeAdmin"//TODO hardcoded username
+    org: "WoodGatherer",
+    user: "Tim"//TODO hardcoded username
   },
   onSuccess(res) {
     console.log(JSON.stringify(res));
@@ -36,6 +37,7 @@ $('#load-items').api({
               <div class="meta">${item._id}</div>
               <div class="description">
                 <p>
+                Owner: ${item._itemOwner}
                 Created: ${item._creationDate}<br>
                 Quality: ${item._quality}<br>
                 </p>
@@ -58,7 +60,38 @@ $('form#participant-form .submit.button').api({
   action: 'register participant',
   method: 'POST',
   data: {
-    org: "Government"//TODO hardcoded org
+    org: "WoodGatherer"//TODO hardcoded org
+  },
+  serializeForm: true,
+  onComplete: function (response) {
+    console.log(JSON.stringify(response))
+  },
+  onSuccess: function (response) {
+    console.log("Success: " + JSON.stringify(response))
+  },
+  onFailure: function (response) {
+    if (response) {
+      console.log(JSON.stringify(response));
+      // cogoToast.error(response.message);
+      $('.messages').append(`<div class="ui warning message">
+            <i class="close icon"></i>
+            <div class="header">
+              Request failed
+            </div>
+            <p>${response.message}</p>
+          </div>`);
+      $('.message').show();
+      refreshMessageHandler();
+    }
+  }
+});
+
+
+$('form#transfer-form .submit.button').api({
+  action: 'transfer ownership',
+  method: 'POST',
+  data: {
+    org: "WoodGatherer"//TODO hardcoded org
   },
   serializeForm: true,
   onComplete: function (response) {
@@ -88,7 +121,7 @@ $('form#item-form .submit.button').api({
   action: 'add item',
   method: 'POST',
   data: {
-    org: "Government"//TODO hardcoded org
+    org: "WoodGatherer"//TODO hardcoded org
   },
   serializeForm: true,
   onComplete: function (response) {

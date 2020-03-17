@@ -11,6 +11,9 @@
 <body>
 <div class="ui container">
   <div class="ui celled vertically divided grid">
+    <div class="row">
+      <div class="messages"></div>
+    </div>
     <div class="two column row">
       <div class="column">
         <h1 class="ui header">Participants</h1>
@@ -24,7 +27,10 @@
           <div class="field">
             <label>Requester identity</label>
             <select name="user">
-              <option value="chaincodeAdmin">chaincodeAdmin</option>
+              <option value="Casper">Casper</option>
+              <option value="Daan">Daan</option>
+              <option value="Naqib">Naqib</option>
+              <option value="Tim">Tim</option>
             </select>
           </div>
           <div class="field">
@@ -36,7 +42,6 @@
             <input type="text" name="name">
           </div>
           <button type="submit" class="ui submit button">Add participant</button>
-          <div class="messages"></div>
         </form>
       </div>
     </div>
@@ -69,7 +74,10 @@
           <div class="field">
             <label>Requester identity</label>
             <select name="user">
-              <option value="chaincodeAdmin">chaincodeAdmin</option>
+              <option value="Casper">Casper</option>
+              <option value="Daan">Daan</option>
+              <option value="Naqib">Naqib</option>
+              <option value="Tim">Tim</option>
             </select>
           </div>
           <div class="field">
@@ -98,7 +106,27 @@
             <input type="text" name="materials">
           </div>
           <button type="submit" class="ui submit button">Add item</button>
-          <div class="messages"></div>
+        </form>
+        <h1 class="header">Transfer item ownership</h1>
+        <form id="transfer-form" class="ui form">
+          <div class="field">
+            <label>Requester identity</label>
+            <select name="user">
+              <option value="Casper">Casper</option>
+              <option value="Daan">Daan</option>
+              <option value="Naqib">Naqib</option>
+              <option value="Tim">Tim</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Item ID</label>
+            <input type="text" name="id">
+          </div>
+          <div class="field">
+            <label>New owner ID</label>
+            <input type="text" name="newOwner">
+          </div>
+          <button type="submit" class="ui submit button">Add item</button>
         </form>
       </div>
     </div>
