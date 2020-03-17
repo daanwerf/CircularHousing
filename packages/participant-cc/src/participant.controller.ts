@@ -45,7 +45,6 @@ export class ParticipantController extends ConvectorController<ParticipantContro
     // Retrieve to see if exists
     const existing = await Participant.getOne(id);
 
-
     if (!existing || !existing.id) {
       let participant = new Participant();
       participant.id = id;
@@ -65,31 +64,7 @@ export class ParticipantController extends ConvectorController<ParticipantContro
       throw new Error('Identity exists already, please call changeIdentity fn for updates');
     }
   }
-
-  // Function to change the name of a participant
-  // TODO: REMOVE THIS CODE, IS NOW HERE FOR REFERENCE
-  // @Invokable()
-  // public async changeName(
-  //   @Param(yup.string())
-  //     id: string,
-  //   @Param(yup.string())
-  //     newName: string
-  // ) {
-  //   // Retrieve to see if exists
-  //   const existing = await Participant.getOne(id);
-  //   if (!existing || !existing.id) {
-  //     throw new Error('No identity exists with that ID');
-  //   }
-
-  //   const fingerprint = existing.identities.filter(identity => identity.status === true)[0].fingerprint;
-  //   if (fingerprint !== this.sender) {
-  //     throw new Error('The sender does not have the right identity to change this participant\'s name');
-  //   }
-
-  //   existing.name = newName;
-  //   await existing.save();
-  // }
-
+  
   @Invokable()
   public async changeIdentity(
     @Param(yup.string())
