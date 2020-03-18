@@ -17,27 +17,26 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@worldsibu/convector-adapter-fabric": "~1.3.0",
-    "@worldsibu/convector-storage-couchdb": "~1.3.6",
     "body-parser": "^1.18.3",
-    "cogo-toast": "^4.2.3",
     "config": "^1.30.0",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
-    "item-cc": "^0.1.0",
     "node-couchdb": "^1.3.0",
+    "x509": "^0.3.3",
+    "item-cc": "^0.1.0",
     "participant-cc": "^0.1.0",
-    "semantic-ui": "^2.4.2",
-    "swagger-ui-express": "^4.0.6",
-    "x509": "^0.3.3"
+    
+    "@worldsibu/convector-adapter-fabric": "~1.3.0",
+    "@worldsibu/convector-storage-couchdb": "~1.3.0",
+    "swagger-ui-express": "^4.0.6"
   },
-  "devDependencies": {
+  "devDependencies":{
     "@types/bytebuffer": "^5.0.40",
-    "@types/node": "^8.10.59",
-    "mocha": "5.0.3",
+    "@types/node": "^12.0.8",
+    "mocha": "^5.2.0",
     "pm2": "^3.4.1",
-    "rimraf": "2.6.2",
-    "ts-node": "8.0.2",
+    "rimraf": "^2.6.2",
+    "ts-node": "^7.0.0",
     "typescript": "2.9.2"
-  }
+    }
 }

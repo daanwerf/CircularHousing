@@ -3,14 +3,17 @@
 ## Setup
 To run this project, you first need to setup Convector and Hurley. See <a href="https://docs.covalentx.com/article/71-getting-started" target="_blank">their docs</a> for instructions on how to do this (note there are separate instructions for Ubuntu 18.04 users). Make sure to install Hurley globally. 
 
-## Run the project
-Once Convector/Hurley/Fabric are all setup, run the following commands to get the project running:
 ```
 # Clone the repo and go into the root folder
 git clone https://github.com/daanwerf/CircularHousing.git
 cd CircularHousing
 # Install all node dependencies
 npm i
+```
+
+## Run the project
+Once Convector/Hurley/Fabric are all setup, run the following commands to get the project running:
+```
 # Create a new development blockchain network as specified in network.config.json
 sh launchBlockchain.sh
 
@@ -70,6 +73,32 @@ hurl invoke circularhousing participant_get casper -o WoodGatherer -u Casper
 
 # TODO: MAKE EXAMPLE WITH TRYING TO SEE ITEM THAT IS NOT YOURS, THEN CHANGING FINGERPRINT 
 # AND NOTICE DIFFERENT ITEMS THAT CAN NOW BE VIEWED.
+```
+
+## Run the API
+```
+npx lerna run start --scope server --stream
+
+# Now try some API calls
+# Store the certificate of user Casper in a variable
+CERTIFICATE=$(node ./packages/admin/get_certificate.js WoodGatherer Tim)
+curl 'http://localhost:8000/participant/register?org=Government&user=chaincodeAdmin' -H "Content-Type: application/json" --request POST --data '{ "id": "user_tim", "name": "Tim Wissel", "msp": "WoodGatherer", "certificate": '\""$CERTIFICATE"\"'}'
+
+CERTIFICATE=$(node ./packages/admin/get_certificate.js WoodGatherer Casper)
+curl 'http://localhost:8000/participant/register?org=Government&user=chaincodeAdmin' -H "Content-Type: application/json" --request POST --data '{ "id": "user_casper", "name": "Casper Athmer", "msp": "WoodGatherer", "certificate": '\""$CERTIFICATE"\"'}'
+
+curl 'http://localhost:8000/participant/get/user_tim?org=WoodGatherer&user=Tim'
+
+curl 'http://localhost:8000/item/add?org=WoodGatherer&user=Casper' -H "Content-Type: application/json" --request POST --data '{ "id": "item1", "name": "Item 1", "owner": "user_casper", "quality": "Good", "materials": "material1,material2"}'
+
+curl 'http://localhost:8000/item/getAll?org=Government&user=chaincodeAdmin'
+```
+
+## Run the website
+```
+cd packages/web
+npm i
+npm start
 ```
 
 ## Install or upgrade chaincode

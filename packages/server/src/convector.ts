@@ -1,21 +1,24 @@
-import {resolve} from "path";
-import {keyStore, networkProfile} from './env';
-import {FabricControllerAdapter} from '@worldsibu/convector-adapter-fabric';
-export async function getAdapter(identityName, identityOrg, chaincode, channel) {
-  const keystorePath = keyStore(identityOrg);
-  const networkProfilePath = networkProfile(identityOrg);
+import { join, resolve } from "path";
+import { keyStore, channel, chaincode, networkProfile } from './env';
+import { FabricControllerAdapter } from '@worldsibu/convector-adapter-fabric';
 
-  let adapter = new FabricControllerAdapter({
-    txTimeout: 300000,
-    user: identityName,
-    channel: channel,
-    chaincode: chaincode,
-    keyStore: resolve(__dirname, keystorePath),
-    networkProfile: resolve(__dirname, networkProfilePath),
-    userMspPath: resolve(__dirname, keystorePath)
-  });
+export async function getAdapter(identityName, identityOrg) {
+    const keystorePath = keyStore(identityOrg);
+    const networkProfilePath = networkProfile(identityOrg);
 
-  await adapter.init();
+    let adapter = new FabricControllerAdapter({
+        txTimeout: 300000,
+        user: identityName,
+        channel: channel,
+        chaincode: chaincode,
+        keyStore: resolve(__dirname, keystorePath),
+        networkProfile: resolve(__dirname, networkProfilePath),
+        userMspPath: resolve(__dirname, keystorePath)
+    });
 
-  return adapter;
+    await adapter.init();
+
+    return adapter;
 }
+
+    
