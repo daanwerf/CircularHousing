@@ -162,4 +162,7 @@ export class ItemController extends ConvectorController {
   public async getAll() {
     return await Item.getAll('io.worldsibu.item');
   }
+
+
+  //TEST 
 }
