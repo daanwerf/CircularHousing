@@ -30,4 +30,8 @@ export class Item extends ConvectorModel<Item> {
   @Required()
   @Validate(yup.array())
   public materials: Array<String>;
+
+  // List of previous owners of the item
+  @Validate(yup.array(string))
+  public itemHistory: Array<string>;
 }

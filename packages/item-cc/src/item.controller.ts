@@ -49,6 +49,10 @@ export class ItemController extends ConvectorController {
     console.log(a);
     item.materials = a;
 
+    var h : Array<string> = new Array<string>();
+    h.push(id)
+    item.itemHistory = h;
+
     // TODO: IF WE CREATE THE ITEM ID, RETURN IT HERE AFTER SAVING
     await item.save();
   }
@@ -143,6 +147,9 @@ export class ItemController extends ConvectorController {
     if (currentOwnerIdentity.fingerprint === this.sender) {
       const oldOwner = item.itemOwner;
       item.itemOwner = newOwner;
+
+      // Add the new owner of the item to the owner history
+      item.itemHistory.push(item.id)
       await item.save();
       console.log('$Participant ${oldOwner} has transferred ownership of item ${item.name} to participant ${item.itemOwner}');
     } else {
@@ -161,5 +168,13 @@ export class ItemController extends ConvectorController {
   @Invokable()
   public async getAll() {
     return await Item.getAll('io.worldsibu.item');
+  }
+
+  @Invokable()
+  public async getItemHistory(
+    @Param(yup.string())
+      id: string
+  ) {
+    return (await Item.getOne(id)).itemHistory;
   }
 }
