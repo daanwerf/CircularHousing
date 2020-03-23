@@ -123,7 +123,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const networkConfig = require('../network.config.json');
+const networkConfig = require('../config/network.config.json');
 const users = [{user: 'chaincodeAdmin', org: Object.keys(networkConfig.topology)[0]}];
 
 for (let org in networkConfig.topology) {
