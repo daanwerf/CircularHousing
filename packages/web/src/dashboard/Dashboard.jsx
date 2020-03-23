@@ -10,7 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
 import Container from '@material-ui/core/Container';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -21,7 +20,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import SidebarItems from './SidebarItems';
 import Items from './Items';
-import Users from './Users';
+import Participants from './Participants';
 import Register from './Register';
 import NetworkNodes from './NetworkNodes';
 
@@ -183,7 +182,7 @@ export default function Dashboard() {
               onChange={handleChangeUser}
             >
               {users.map(user => (
-                <MenuItem value={user.user}>{user.user}</MenuItem>
+                <MenuItem key={user.user} value={user.user}>{user.user}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -214,18 +213,15 @@ export default function Dashboard() {
 
             {show === 'items' 
               ? <Items />
-              : null 
-            }
+              : null}
 
             {show === 'users' 
-              ? <Users />
-              : null 
-            }
+              ? <Participants />
+              : null}
 
             {show === 'register' 
               ? <Register user={user} org={org} setShow={setShow} />
-              : null
-            }
+              : null}
           </Grid>
           <Box pt={4}>
             <Copyright />

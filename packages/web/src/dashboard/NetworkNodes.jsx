@@ -10,11 +10,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
 import SingleNode from './SingleNode';
 
-// Generate Order Data
-function createData(id : string, org : string, fingerprint : string, username : string) {
-  return { id, org, fingerprint, username };
-}
-
 const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(2),
@@ -23,7 +18,6 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
   },
 }));
-
 
 export default function NetworkNodes(props : any) {
   const allUsers = props.allUsers;
@@ -52,7 +46,7 @@ export default function NetworkNodes(props : any) {
             </TableHead>
             <TableBody>
               {allUsers.map((user : any) => (
-                <SingleNode userObj={user} selectedUser={selectedUser} />
+                <SingleNode key={user.user} userObj={user} selectedUser={selectedUser} />
               ))}
             </TableBody>
           </Table>

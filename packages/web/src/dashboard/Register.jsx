@@ -49,11 +49,11 @@ export default function Register(props : any) {
       if (response.status === 200) {
         setShow('users');
       } else {
-        setAlert("Something went wrong!");
+        setAlert(response.statusText);
       }
     })
     .catch((error) => {
-      setAlert(error);
+      setAlert('Undefined error happened');
     });
   }
 

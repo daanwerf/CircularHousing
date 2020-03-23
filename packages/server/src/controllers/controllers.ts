@@ -17,8 +17,15 @@ export async function ParticipantController_register_post(req: Request, res: Res
             .register(params.id, params.name, params.msp, params.certificate);
         res.status(200).send(fact);
     } catch(ex) {
-        console.log('Error post ParticipantController_register', ex.stack);
-        res.status(500).send(ex);
+        let errMess = ex.message;
+        let startErr = '"message":"';
+        let err = errMess.substring(
+            errMess.lastIndexOf(startErr) + startErr.length,
+            errMess.lastIndexOf('"}')
+        );
+        
+        res.statusMessage = err;
+        res.status(500).end();
     }
 }
 

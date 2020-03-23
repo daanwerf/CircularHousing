@@ -7,6 +7,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Title from './Title';
 
 // Generate Order Data (never actually used, see comment below)
@@ -31,7 +32,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Users() {
+export default function Participants() {
   const classes = useStyles();
   const [allPart, setAllpart] = React.useState(rows);
   const [isLoading, setLoading] = React.useState(true);
@@ -54,29 +55,31 @@ export default function Users() {
       <Grid item xs={12}>
         <Paper className={classes.paper}>
           <Title>Registered Participants</Title>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Username</TableCell>
-                <TableCell>Full Name</TableCell>
-                <TableCell>Organisation</TableCell>
-                <TableCell>Fingerprint</TableCell>
-                <TableCell align="right">View items</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {isLoading ? "Loading..." : allPart.map(part => (
-                <TableRow key={part._id}>
-                  <TableCell>{part._id}</TableCell>
-                  <TableCell>{part._name}</TableCell>
-                  <TableCell>{part._msp}</TableCell>
-                  <TableCell>{part._identities
-                    .filter((identity : any) => identity.status === true)[0].fingerprint}</TableCell>
-                  <TableCell align="right">VIEWALLITEMSTODO</TableCell>
+          {isLoading ? <LinearProgress /> :
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Username</TableCell>
+                  <TableCell>Full Name</TableCell>
+                  <TableCell>Organisation</TableCell>
+                  <TableCell>Fingerprint</TableCell>
+                  <TableCell align="right">View items</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                    {allPart.map(part => (
+                  <TableRow key={part._id}>
+                    <TableCell>{part._id}</TableCell>
+                    <TableCell>{part._name}</TableCell>
+                    <TableCell>{part._msp}</TableCell>
+                    <TableCell>{part._identities
+                      .filter((identity : any) => identity.status === true)[0].fingerprint}</TableCell>
+                    <TableCell align="right">VIEWALLITEMSTODO</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          }
         </Paper>
       </Grid>
     </React.Fragment>
