@@ -164,5 +164,67 @@ export class ItemController extends ConvectorController {
   }
 
 
-  //TEST 
+
+   // ------ NIET CORRECT NOG ----------
+
+    @Invokable()
+  public async proposeTransfer(
+    @Param(yup.string())
+      id: string,
+    @Param(yup.string())
+      signatureSender: string,
+    @Param(yup.string())
+      transferTarget: string,
+    ) {
+
+    //first check if item exists
+    let item= await Item.getOne(id);
+    if(!item || await item.id) {
+      throw new Error('Given item does not currently exist on the ledger')
+    }
+
+    //then check if the item is truly yours to be transferred
+
+    //then check if the target is legit
+
+    // handle the propasal
+      //first hash the document (proposal) using SHA256
+      //encrypt with senders privat key
+      // send it to target (how?)
+
+
+
+  }
+
+
+  @Invokable()
+  public async answerProposal(
+    @Param(yup.string())
+       id: string,
+    @Param(yup.string())
+       signature: string,
+    @Param(yup.string())
+        transferTarget:string,
+    @Param(yup.string())
+        sender: string,
+    ) {
+
+     //Check if sender is legimate 
+       // step 1: get public key from sender's signature
+       // step 2: decrypt the proposal using senders public key
+       // step 3: hash the proposal with same hash function (256)
+       // step 4: check if the decrypted proposal (step 2) is the same as the hashed proposal in step 3
+       // if yes
+          // check the proposal and decide if you want to sign it as well
+          // if yes
+             // THEN WHAT?? In papers online it says that both parties need to 'sign'. But if the receiver also 
+             // signs the constract -> hash the proposal and then encrypt it with the receivers private key
+                 // THEN WHAT?
+          //if no
+             // send reject message to sender
+       // if no
+         // signature on proposal is fake -> abort 
+  }
+
+
 }
