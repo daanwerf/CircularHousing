@@ -6,7 +6,8 @@ import {
     ParticipantController_getAll_get,
     ItemController_create_post,
   	ItemController_getAll_get,
-  	ItemController_transfer_post
+  	ItemController_transfer_post,
+    User_getCertificate
 } from './controllers'
 export default express.Router()
 	.post('/participant/register', ParticipantController_register_post)
@@ -15,4 +16,5 @@ export default express.Router()
 	.get('/participant/getAll', ParticipantController_getAll_get)
 	.get('/item/getAll', ItemController_getAll_get)
 	.post('/item/add', ItemController_create_post)
-  	.post('/item/transfer', ItemController_transfer_post)
+  .post('/item/transfer', ItemController_transfer_post)
+  .get('/user/getCert/:org/:user', User_getCertificate)
