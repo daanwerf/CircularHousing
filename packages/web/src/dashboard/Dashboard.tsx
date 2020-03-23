@@ -23,6 +23,7 @@ import SidebarItems from './SidebarItems';
 import Items from './Items';
 import Users from './Users';
 import Register from './Register';
+import NetworkNodes from './NetworkNodes';
 
 function Copyright() {
   return (
@@ -122,16 +123,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-// Hardcoded users and their organisations
-const users = [
-  {user: 'chaincodeAdmin', org: 'Government'},
-  {user: 'Sultan', org: 'SocialHousing'},
-  {user: 'Zeki', org: 'TableMaker'},
-  {user: 'Casper', org: 'WoodGatherer'},
-  {user: 'Daan', org: 'WoodGatherer'},
-  {user: 'Naqib', org: 'WoodGatherer'},
-  {user: 'Tim', org: 'WoodGatherer'}
-];
+const networkConfig = require('../network.config.json');
+const users = [{user: 'chaincodeAdmin', org: Object.keys(networkConfig.topology)[0]}];
+
+for (let org in networkConfig.topology) {
+  let userArr = networkConfig.topology[org].users;
+  for (var i = 0; i < userArr.length; i++) {
+    let user = userArr[i];
+    users.push({user: user, org: org});
+  }
+}
 
 export default function Dashboard() {
   const classes = useStyles();
@@ -209,28 +210,21 @@ export default function Dashboard() {
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
-            {show === 'items' ? 
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                  <Items />
-                </Paper>
-              </Grid> : null
+            <NetworkNodes allUsers={users} user={user} org={org}/>
+
+            {show === 'items' 
+              ? <Items />
+              : null 
             }
 
-            {show === 'users' ? 
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                  <Users />
-                </Paper>
-              </Grid> : null
+            {show === 'users' 
+              ? <Users />
+              : null 
             }
 
-            {show === 'register' ?
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                  <Register user={user} org={org} setShow={setShow} />
-                </Paper>
-              </Grid> : null
+            {show === 'register' 
+              ? <Register user={user} org={org} setShow={setShow} />
+              : null
             }
           </Grid>
           <Box pt={4}>

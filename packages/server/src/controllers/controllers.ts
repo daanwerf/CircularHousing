@@ -100,3 +100,26 @@ export async function ItemController_getAll_get(req: Request, res: Response): Pr
     res.status(500).send(ex);
   }
 }
+
+// The below code is used to get the fingerprint (of a X509 certificate) belonging to
+// a particular user from a particular organisation
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const x509 = require('x509');
+
+export async function User_getCertificate(req: Request, res: Response): Promise<void> {
+    try {
+        let params = req.params;
+        let org = params.org;
+        let user = params.user;
+        let cert = JSON.parse(fs.readFileSync(path.resolve(os.homedir(), 
+            'hyperledger-fabric-network/.hfc-' + org + '/' + user), 'utf8'))
+            .enrollment.identity.certificate;
+        var parsed = x509.parseCert(cert);
+        res.status(200).send({'fingerprint': parsed.fingerPrint});
+    } catch (ex) {
+        console.log('Error get user certificate', ex.stack);
+        res.status(500).send(ex);
+    }
+}
