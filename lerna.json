@@ -1,6 +1,8 @@
 {
   "packages": [
-    "packages/*"
+    "packages/participant-cc",
+    "packages/item-cc",
+    "packages/server"
   ],
   "version": "0.1.0",
   "command": {

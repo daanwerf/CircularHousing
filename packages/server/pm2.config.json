@@ -6,11 +6,7 @@
       "node_args": "--inspect=0.0.0.0:8888",
       "error_file": "../log/error.log",
       "out_file": "../log/access.log",
-      "env": {
-        "ORG": "SocialHousing",
-        "IDENTITYID": "chaincodeAdmin",
-        "IDENTITY": "chaincodeAdmin"
-      },
+      "env": {},
       "watch": [
         "src",
         "dist",
