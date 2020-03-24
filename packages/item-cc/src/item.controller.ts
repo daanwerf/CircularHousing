@@ -1,9 +1,11 @@
 import * as yup from 'yup';
-import {Controller, ConvectorController, Invokable, Param} from '@worldsibu/convector-core';
+import {Controller, Default, ConvectorController, Invokable, Param} from '@worldsibu/convector-core';
 
 import {Item} from './item.model';
 import {Quality} from './quality'
 import {Participant} from 'participant-cc';
+import { EventType } from './EventType';
+import { Event, CreateEvent, RenameEvent, UpdateEvent, TransferEvent } from './Event';
 
 @Controller('item')
 export class ItemController extends ConvectorController {
@@ -28,9 +30,7 @@ export class ItemController extends ConvectorController {
     item.name = name;
     item.itemOwner = ownerID;
 
-    // TODO: CHECK WHAT HAPPENS WHEN YOU INPUT AN INVALID DATE
-    var d: Number = new Date().getUTCMilliseconds()
-    item.creationDate = d;
+    item.creationDate = new Date().toString();
 
     if (quality == 'Good') {
       item.quality = Quality.Good;
@@ -49,12 +49,12 @@ export class ItemController extends ConvectorController {
     console.log(a);
     item.materials = a;
 
-    var h : Array<string> = new Array<string>();
-    h.push(id)
+    var h : Array<Event> = new Array<Event>();
+    h.push(new CreateEvent(item.itemOwner, item.name, item.creationDate))    
     item.itemHistory = h;
 
-    // TODO: IF WE CREATE THE ITEM ID, RETURN IT HERE AFTER SAVING
     await item.save();
+    return item;
   }
 
 
@@ -77,7 +77,12 @@ export class ItemController extends ConvectorController {
 
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     if (currentOwnerIdentity.fingerprint === this.sender) {
+      var oldName = item.name;
       item.name = name;
+
+      var e : Event = new RenameEvent(item.itemOwner, item.name, new Date().toString(), oldName);
+      item.itemHistory.push(e);
+
       await item.save();
       console.log('${owner.name} has changed the name of item ${item.id} to ${item.name}')
     } else {
@@ -105,6 +110,7 @@ export class ItemController extends ConvectorController {
 
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     if (currentOwnerIdentity.fingerprint === this.sender) {
+      var oldQuality = item.quality;
       if (quality == 'Good') {
         item.quality = Quality.Good;
       } else if (quality == 'Usable') {
@@ -116,6 +122,10 @@ export class ItemController extends ConvectorController {
       } else {
         throw new Error('Illegal argument given for quality')
       }
+
+      var e : Event = new UpdateEvent(item.itemOwner, item.name, new Date().toString(), oldQuality, item.quality);
+      item.itemHistory.push(e);
+
       await item.save();
       console.log('${owner.name} has changed the quality of item ${item.id} to ${item.quality}')
     } else {
@@ -148,8 +158,9 @@ export class ItemController extends ConvectorController {
       const oldOwner = item.itemOwner;
       item.itemOwner = newOwner;
 
-      // Add the new owner of the item to the owner history
-      item.itemHistory.push(item.id)
+      var e : Event = new TransferEvent(item.itemOwner, item.name, new Date().toString(), oldOwner);
+      item.itemHistory.push(e);
+
       await item.save();
       console.log('$Participant ${oldOwner} has transferred ownership of item ${item.name} to participant ${item.itemOwner}');
     } else {
@@ -162,7 +173,10 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       id: string
   ) {
-    return await Item.getOne(id);
+    var itemGet : Item = await Item.getOne(id);
+    var itemHistoryStrings = itemGet.itemHistory.map(event => event.description);
+
+    return "Item ID: " + itemGet.id + ", Name: " + itemGet.name + ", Owner: " + itemGet.itemOwner + ", Quality: " + itemGet.quality + ", Materials: " + itemGet.materials + ", History: " + itemHistoryStrings;
   }
 
   @Invokable()
