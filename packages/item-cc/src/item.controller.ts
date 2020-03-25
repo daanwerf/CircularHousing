@@ -1,11 +1,31 @@
 import * as yup from 'yup';
-import {Controller, Default, ConvectorController, Invokable, Param} from '@worldsibu/convector-core';
+import {
+  Controller, 
+  Default, 
+  ConvectorController, 
+  Invokable, 
+  Param
+} from '@worldsibu/convector-core';
 
-import {Item} from './item.model';
-import {Quality} from './quality'
-import {Participant} from 'participant-cc';
-import { EventType } from './EventType';
-import { Event, CreateEvent, RenameEvent, UpdateEvent, TransferEvent } from './Event';
+import { Item } from './item.model';
+import { Participant } from 'participant-cc';
+import { 
+  Event, 
+  CreateEvent, 
+  RenameEvent, 
+  UpdateEvent, 
+  TransferEvent 
+} from './Event';
+
+function checkQuality(quality) {
+  const allowedQualities = ['Good', 'Usable', 'Bad', 'Broken'];
+
+  if (allowedQualities.indexOf(quality) === -1) {
+    throw new Error('Illegal argument given for quality.');
+  }
+
+  return quality;
+}
 
 @Controller('item')
 export class ItemController extends ConvectorController {
@@ -20,7 +40,7 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       quality: string,
     @Param(yup.string())
-      materials: string,
+      materials: string
   ) {
     // TODO: POSSIBLY BETTER THAT WE CREATE SOME UUID AND RETURN IT RIGHT?
     // ALSO: SHOULD BE CHECK THAT ITEM WITH THIS ID DOES NOT ALREADY EXIST
@@ -30,27 +50,16 @@ export class ItemController extends ConvectorController {
     item.name = name;
     item.itemOwner = ownerID;
 
-    item.creationDate = new Date().toString();
-
-    if (quality == 'Good') {
-      item.quality = Quality.Good;
-    } else if (quality == 'Usable') {
-      item.quality = Quality.Usable;
-    } else if (quality == 'Bad') {
-      item.quality = Quality.Bad;
-    } else if (quality == 'Broken') {
-      item.quality = Quality.Broken;
-    } else {
-      throw new Error('Illegal argument given for quality')
-    }
+    item.creationDate = new Date().getTime();
+    item.quality = checkQuality(quality);
 
     // TODO: DO SOME TRIMMING OF WHITESPACE HERE
-    var a: Array<String> = materials.split(',');
+    var a: Array<string> = materials.split(',');
     console.log(a);
     item.materials = a;
 
     var h : Array<Event> = new Array<Event>();
-    h.push(new CreateEvent(item.itemOwner, item.name, item.creationDate))    
+    h.push(new CreateEvent(item.itemOwner, item.name, item.quality));   
     item.itemHistory = h;
 
     await item.save();
@@ -80,7 +89,7 @@ export class ItemController extends ConvectorController {
       var oldName = item.name;
       item.name = name;
 
-      var e : Event = new RenameEvent(item.itemOwner, item.name, new Date().toString(), oldName);
+      var e : Event = new RenameEvent(item.itemOwner, item.name, oldName);
       item.itemHistory.push(e);
 
       await item.save();
@@ -111,19 +120,9 @@ export class ItemController extends ConvectorController {
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     if (currentOwnerIdentity.fingerprint === this.sender) {
       var oldQuality = item.quality;
-      if (quality == 'Good') {
-        item.quality = Quality.Good;
-      } else if (quality == 'Usable') {
-        item.quality = Quality.Usable;
-      } else if (quality == 'Bad') {
-        item.quality = Quality.Bad;
-      } else if (quality == 'Broken') {
-        item.quality = Quality.Broken;
-      } else {
-        throw new Error('Illegal argument given for quality')
-      }
+      item.quality = checkQuality(quality);
 
-      var e : Event = new UpdateEvent(item.itemOwner, item.name, new Date().toString(), oldQuality, item.quality);
+      var e : Event = new UpdateEvent(item.itemOwner, item.name, oldQuality, item.quality);
       item.itemHistory.push(e);
 
       await item.save();
@@ -158,7 +157,7 @@ export class ItemController extends ConvectorController {
       const oldOwner = item.itemOwner;
       item.itemOwner = newOwner;
 
-      var e : Event = new TransferEvent(item.itemOwner, item.name, new Date().toString(), oldOwner);
+      var e : Event = new TransferEvent(item.itemOwner, item.name, oldOwner);
       item.itemHistory.push(e);
 
       await item.save();
@@ -173,22 +172,11 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       id: string
   ) {
-    var itemGet : Item = await Item.getOne(id);
-    var itemHistoryStrings = itemGet.itemHistory.map(event => event.description);
-
-    return "Item ID: " + itemGet.id + ", Name: " + itemGet.name + ", Owner: " + itemGet.itemOwner + ", Quality: " + itemGet.quality + ", Materials: " + itemGet.materials + ", History: " + itemHistoryStrings;
+    return await Item.getOne(id);
   }
 
   @Invokable()
   public async getAll() {
     return await Item.getAll('io.worldsibu.item');
-  }
-
-  @Invokable()
-  public async getItemHistory(
-    @Param(yup.string())
-      id: string
-  ) {
-    return (await Item.getOne(id)).itemHistory;
   }
 }

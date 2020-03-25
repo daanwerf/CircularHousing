@@ -1,7 +1,11 @@
 import * as yup from 'yup';
-import {Quality} from './quality';
-import {ConvectorModel, Default, ReadOnly, Required, Validate} from '@worldsibu/convector-core-model';
-import { EventType } from './EventType';
+import {
+  ConvectorModel, 
+  Default, 
+  ReadOnly, 
+  Required, 
+  Validate
+} from '@worldsibu/convector-core-model';
 import { Event } from './Event';
 
 export class Item extends ConvectorModel<Item> {
@@ -21,17 +25,17 @@ export class Item extends ConvectorModel<Item> {
   // The date the Item was created on
   @Required()
   @Validate(yup.string())
-  public creationDate: string;
+  public creationDate: number;
 
   // An enum to indicate the current quality of the item
   @Required()
-  @Validate(yup.number())
-  public quality: number;
+  @Validate(yup.string())
+  public quality: string;
 
   // A list of strings describing the materials of which the item constists
   @Required()
   @Validate(yup.array())
-  public materials: Array<String>;
+  public materials: Array<string>;
 
   // List of events related to the item
   @Required()

@@ -1,54 +1,56 @@
-import { EventType } from "./EventType";
-import { Quality } from './quality';
-
 export class Event {
-    ownerId: String;
-    itemName: String;
-    date: String;
-    description: String;
+    ownerId: string;
+    itemName: string;
+    date: number;
+    type : string;
+    description: any;
 
-    constructor(inputOwnerId: String, inputItemName: String, inputDate: String) {
+    constructor(inputOwnerId: string, inputItemName: string, inputType : string) {
         this.ownerId = inputOwnerId;
         this.itemName = inputItemName;
-        this.date = inputDate;
+        this.date = new Date().getTime();
+        this.type = inputType;
     }
 }
 
 export class CreateEvent extends Event {
-    constructor(inputOwnerId: String, inputItemName: String, inputDate: String) {
-        super(inputOwnerId, inputItemName, inputDate)
-        this.description = "{Create, Owner: " + this.ownerId + ", Item name: " + this.itemName + ", date: " + this.date + "}";
+    constructor(inputOwnerId: string, inputItemName: string, quality : string) {
+        super(inputOwnerId, inputItemName, 'CREATE');
+
+        this.description = {
+            'quality' : quality
+        };
     }
 }
 
 export class RenameEvent extends Event {
-    oldName: String;
+    constructor(inputOwnerId: string, inputItemName: string, inputOldName: string) {
+        super(inputOwnerId, inputItemName, 'RENAME');
 
-    constructor(inputOwnerId: String, inputItemName: String, inputDate: String, inputOldName: String) {
-        super(inputOwnerId, inputItemName, inputDate)
-        this.oldName = inputOldName;
-        this.description = "{Rename, Owner: " + this.ownerId + " Old Item Name: " + this.oldName + ", New Item Name: " + this.itemName + ", date: " + this.date + "}";
+        this.description = {
+            'oldName': inputOldName
+        };
     }
 }
 
 export class UpdateEvent extends Event {
-    oldQuality: Quality;
-    newQuality: Quality;
+    constructor(inputOwnerId: string, inputItemName: string, inputOldQuality: string, 
+                inputNewQuality: string) {
+        super(inputOwnerId, inputItemName, 'UPDATE');
 
-    constructor(inputOwnerId: String, inputItemName: String, inputDate: String, inputOldQuality: Quality, inputNewQuality: Quality) {
-        super(inputOwnerId, inputItemName, inputDate)
-        this.oldQuality = inputOldQuality;
-        this.newQuality = inputNewQuality;
-        this.description = "{Update Quality, Owner: " + this.ownerId + ", Item name: " + this.itemName + ", Old Quality: " + this.oldQuality + ", New Quality: " + this.newQuality + ", date: " + this.date + "}";
+        this.description = {
+            'oldQuality': inputOldQuality,
+            'newQuality': inputNewQuality
+        };
     }
 }
 
 export class TransferEvent extends Event {
-    oldOwner: String;
+    constructor(inputOwnerId: string, inputItemName: string, inputOldOwner: string) {
+        super(inputOwnerId, inputItemName, 'TRANSFER');
 
-    constructor(inputOwnerId: String, inputItemName: String, inputDate: String, inputOldOwner: String) {
-        super(inputOwnerId, inputItemName, inputDate)
-        this.oldOwner = inputOldOwner;
-        this.description = "{Transfer, New Owner: " + this.ownerId + ", Item Name: " + this.itemName + ", Old Owner: " + this.oldOwner + ", date: " + this.date + "}";
+        this.description = {
+            'oldOwner': inputOldOwner
+        };
     }
 }
