@@ -3,7 +3,7 @@ hurl clean
 # specified in network.config.json)
 hurl new -n ./network.config.json
 # Copy the config file to the web folder so it can import the correct network nodes
-cp network.config.json packages/web/src
+cp network.config.json packages/web/src/config
 
 node ./packages/admin/registerIdManager.js Government
 # Package smart contract's code
