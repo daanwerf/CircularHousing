@@ -27,10 +27,6 @@ export class Item extends ConvectorModel<Item> {
   @Validate(yup.string())
   public quality: string;
 
-  // Refers to the ID as a string of the participant that is the proposed new owner of the item
-  @Validate(yup.array())
-  public transfers: Array<Transfer>;
-
   @Validate(yup.string())
   public proposedOwner: string;
 

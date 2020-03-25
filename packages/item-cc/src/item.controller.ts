@@ -3,7 +3,7 @@ import {Controller, ConvectorController, Invokable, Param} from '@worldsibu/conv
 
 import {Item} from './item.model';
 import {Participant} from 'participant-cc';
-import {CreateEvent, Event, RenameEvent} from './Event';
+import {CreateEvent, Event, RenameEvent, TransferEvent} from './Event';
 import {Transfer} from "./Transfer";
 
 function checkQuality(quality) {
@@ -130,7 +130,6 @@ export class ItemController extends ConvectorController {
 
     //handle the proposal
     item.proposedOwner = transferTarget;
-    item.transfers.push(new Transfer(item.itemOwner, transferTarget));
     await item.save();
     console.log(`$Participant ${item.itemOwner} proposed a transfer of ownership of item ${item.name} to participant ${item.itemOwner}`);
   }
@@ -147,17 +146,12 @@ export class ItemController extends ConvectorController {
     await ItemController.checkValidItem(item);
     await ItemController.checkValidOwner(this.sender, item.proposedOwner);
 
-    const transfer = item.transfers.pop();
-    transfer.finishedTimestamp = new Date();
-    transfer.finished = true;
-    transfer.accepted = accept;
-
     //If the proposal is accepted, change the item owner
     if (accept) {
+      item.itemHistory.push(new TransferEvent(item.proposedOwner, item.name, item.itemOwner));
       item.itemOwner = item.proposedOwner;
     }
     item.proposedOwner = null;
-    item.transfers.push(transfer);
 
     await item.save();
   }
