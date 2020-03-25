@@ -32,17 +32,7 @@ export class ItemController extends ConvectorController {
     var d: Number = new Date().getUTCMilliseconds()
     item.creationDate = d;
 
-    if (quality == 'Good') {
-      item.quality = Quality.Good;
-    } else if (quality == 'Usable') {
-      item.quality = Quality.Usable;
-    } else if (quality == 'Bad') {
-      item.quality = Quality.Bad;
-    } else if (quality == 'Broken') {
-      item.quality = Quality.Broken;
-    } else {
-      throw new Error('Illegal argument given for quality')
-    }
+    ItemController.determineQuality(item, quality);
 
     // TODO: DO SOME TRIMMING OF WHITESPACE HERE
     var a: Array<String> = materials.split(',');
@@ -89,65 +79,13 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       quality: string,
   ) {
-    let item = await Item.getOne(id)
-    if (!item || !item.id) {
-      throw new Error('Given item does not currently exist on the ledger')
-    }
-
-    const owner = await Participant.getOne(item.itemOwner);
-    if (!owner || !owner.id || !owner.identities) {
-      throw new Error('Given participant as owner does not currently exist on the ledger')
-    }
-
-    const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
-    if (currentOwnerIdentity.fingerprint === this.sender) {
-      if (quality == 'Good') {
-        item.quality = Quality.Good;
-      } else if (quality == 'Usable') {
-        item.quality = Quality.Usable;
-      } else if (quality == 'Bad') {
-        item.quality = Quality.Bad;
-      } else if (quality == 'Broken') {
-        item.quality = Quality.Broken;
-      } else {
-        throw new Error('Illegal argument given for quality')
-      }
-      await item.save();
-      console.log('${owner.name} has changed the quality of item ${item.id} to ${item.quality}')
-    } else {
-      throw new Error('${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to')
-    }
-  }
-
-  @Invokable()
-  public async transfer(
-    @Param(yup.string())
-      id: string,
-    @Param(yup.string())
-      newOwner: string,
-  ) {
     let item = await Item.getOne(id);
-    if (!item || !item.id) {
-      throw new Error('Given item does not currently exist on the ledger');
-    }
+    await ItemController.checkValidItem(item);
+    await ItemController.checkValidOwner(this.sender, item.itemOwner);
 
-    console.log(item.itemOwner);
-    const owner = await Participant.getOne(item.itemOwner);
-    const allPart = await Participant.getAll('circular.economy.participant');
-    console.log(allPart);
-    if (!owner || !owner.id || !owner.identities) {
-      throw new Error('Given participant as owner does not currently exist on the ledger');
-    }
-
-    const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
-    if (currentOwnerIdentity.fingerprint === this.sender) {
-      const oldOwner = item.itemOwner;
-      item.itemOwner = newOwner;
-      await item.save();
-      console.log('$Participant ${oldOwner} has transferred ownership of item ${item.name} to participant ${item.itemOwner}');
-    } else {
-      throw new Error('${this.sender} is not allowed to transfer this item, only ${owner.name} is allowed to');
-    }
+    ItemController.determineQuality(item, quality);
+    await item.save();
+    console.log('${owner.name} has changed the quality of item ${item.id} to ${item.quality}')
   }
 
   @Invokable()
@@ -163,68 +101,92 @@ export class ItemController extends ConvectorController {
     return await Item.getAll('io.worldsibu.item');
   }
 
-
-
-   // ------ NIET CORRECT NOG ----------
-
-    @Invokable()
+  //TODO needs spec test
+  @Invokable()
   public async proposeTransfer(
     @Param(yup.string())
-      id: string,
-    @Param(yup.string())
-      signatureSender: string,
+      itemId: string,
     @Param(yup.string())
       transferTarget: string,
-    ) {
+  ) {
 
     //first check if item exists
-    let item= await Item.getOne(id);
-    if(!item || await item.id) {
-      throw new Error('Given item does not currently exist on the ledger')
-    }
-
-    //then check if the item is truly yours to be transferred
+    let item = await Item.getOne(itemId);
+    await ItemController.checkValidItem(item);
+    await ItemController.checkValidOwner(this.sender, item.itemOwner);
 
     //then check if the target is legit
+    const newOwner = await Participant.getOne(transferTarget);
+    if (!newOwner || !newOwner.identities) {
+      throw new Error('Given participant as transfer target does not currently exist on the ledger');
+    }
 
-    // handle the propasal
-      //first hash the document (proposal) using SHA256
-      //encrypt with senders privat key
-      // send it to target (how?)
-
-
-
+    //handle the proposal
+    item.proposedOwner = transferTarget;
+    item.transfers.push(new Transfer(item.itemOwner, transferTarget));
+    await item.save();
+    console.log(`$Participant ${item.itemOwner} proposed a transfer of ownership of item ${item.name} to participant ${item.itemOwner}`);
   }
-
 
   @Invokable()
   public async answerProposal(
     @Param(yup.string())
-       id: string,
-    @Param(yup.string())
-       signature: string,
-    @Param(yup.string())
-        transferTarget:string,
-    @Param(yup.string())
-        sender: string,
-    ) {
+      itemId: string,
+    @Param(yup.boolean())
+      accept: boolean
+  ) {
+    //first check if item exists
+    let item = await Item.getOne(itemId);
+    await ItemController.checkValidItem(item);
+    await ItemController.checkValidOwner(this.sender, item.proposedOwner);
 
-     //Check if sender is legimate 
-       // step 1: get public key from sender's signature
-       // step 2: decrypt the proposal using senders public key
-       // step 3: hash the proposal with same hash function (256)
-       // step 4: check if the decrypted proposal (step 2) is the same as the hashed proposal in step 3
-       // if yes
-          // check the proposal and decide if you want to sign it as well
-          // if yes
-             // THEN WHAT?? In papers online it says that both parties need to 'sign'. But if the receiver also 
-             // signs the constract -> hash the proposal and then encrypt it with the receivers private key
-                 // THEN WHAT?
-          //if no
-             // send reject message to sender
-       // if no
-         // signature on proposal is fake -> abort 
+    const transfer = item.transfers.pop();
+    transfer.finishedTimestamp = new Date();
+    transfer.finished = true;
+    transfer.accepted = accept;
+
+    //If the proposal is accepted, change the item owner
+    if (accept) {
+      item.itemOwner = item.proposedOwner;
+    }
+    item.proposedOwner = null;
+    item.transfers.push(transfer);
+
+    await item.save();
   }
 
+  private static async checkValidOwner(sender: string, itemOwner: string) {
+    const owner = await Participant.getOne(itemOwner);
+    if (!owner || !owner.identities) {
+      throw new Error('Given participant as owner does not currently exist on the ledger');
+    }
 
+    const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
+    //then check if the item is truly yours to be transferred
+    if (currentOwnerIdentity.fingerprint !== sender) {
+      throw new Error(`${sender} is not allowed to do this action, only ${owner.name} is allowed to`);
+    }
+    return true;
+  }
+
+  private static async checkValidItem(item: Item) {
+    if (!item || item.id) {
+      throw new Error('Given item does not currently exist on the ledger')
+    }
+    return true;
+  }
+
+  private static determineQuality(item: Item, quality: string) {
+    if (quality == 'Good') {
+      item.quality = Quality.Good;
+    } else if (quality == 'Usable') {
+      item.quality = Quality.Usable;
+    } else if (quality == 'Bad') {
+      item.quality = Quality.Bad;
+    } else if (quality == 'Broken') {
+      item.quality = Quality.Broken;
+    } else {
+      throw new Error('Illegal argument given for quality')
+    }
+  }
 }
