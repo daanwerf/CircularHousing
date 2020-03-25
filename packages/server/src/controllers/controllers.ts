@@ -17,8 +17,15 @@ export async function ParticipantController_register_post(req: Request, res: Res
             .register(params.id, params.name, params.msp, params.certificate);
         res.status(200).send(fact);
     } catch(ex) {
-        console.log('Error post ParticipantController_register', ex.stack);
-        res.status(500).send(ex);
+        let errMess = ex.message;
+        let startErr = '"message":"';
+        let err = errMess.substring(
+            errMess.lastIndexOf(startErr) + startErr.length,
+            errMess.lastIndexOf('"}')
+        );
+        
+        res.statusMessage = err;
+        res.status(500).end();
     }
 }
 
@@ -45,6 +52,20 @@ export async function ParticipantController_get_get(req: Request, res: Response)
         res.status(200).send(await ClientFactory(ParticipantController, adp).get(params.id));
     } catch (ex) {
         console.log('Error get ParticipantController_get', ex.stack);
+        res.status(500).send(ex);
+    }
+}
+
+export async function ParticipantController_getByFingerprint_get(req : Request, res : Response): 
+        Promise<void> {
+    try {
+        let params = req.params;
+        let query = req.query;
+        let adp = await getAdapter(query.user, query.org);
+        res.status(200).send(await ClientFactory(ParticipantController, adp)
+            .getByFingerprint(params.fingerprint));
+    } catch (ex) {
+        console.log('Error get ParticipantController_getByFingerprint', ex.stack);
         res.status(500).send(ex);
     }
 }

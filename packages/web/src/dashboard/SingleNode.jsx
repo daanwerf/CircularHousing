@@ -5,7 +5,8 @@ import TableRow from '@material-ui/core/TableRow';
 export default function SingleNode(props : any) {
 	let user = props.userObj;
 	let selectedUser = props.selectedUser;
-	let [fingerprint, setFingerprint] = React.useState('fingerprint');
+	let [fingerprint, setFingerprint] = React.useState('');
+	let [usernames, setUsernames] = React.useState([]);
 
 	React.useEffect(() => {
 	    fetch('http://localhost:8000/user/getCert/' + user.org + '/' + user.user)
@@ -19,14 +20,29 @@ export default function SingleNode(props : any) {
 			});
 	}, []);
 
+	React.useEffect(() => {
+		if (fingerprint !== '') {
+			fetch('http://localhost:8000/participant/getByFingerprint/' + fingerprint + '?org=' 
+		    		+ user.org + '&user=' + user.user)
+		    	.then(results => results.json())
+				.then(data => {
+					setUsernames(data.map(user => user._id));
+				})
+				.catch((error) => {
+					//TODO: MAKE ERROR MESSAGE HERE
+					console.error(error);
+				});
+		} 
+	}, [fingerprint]);
+
 	return (
 		<React.Fragment>
-			<TableRow key={user.user} 
-              	style={{backgroundColor: selectedUser == user.user ? '#F6F6F6' : 'white'}}>
+			<TableRow
+              	style={{backgroundColor: selectedUser === user.user ? '#F6F6F6' : 'white'}}>
               	<TableCell>{user.user}</TableCell>
               	<TableCell>{user.org}</TableCell>
               	<TableCell>{fingerprint}</TableCell>
-              	<TableCell align="right">{user.username}</TableCell>
+              	<TableCell align="right">{usernames.join(', ')}</TableCell>
             </TableRow>
 		</React.Fragment>
 	);

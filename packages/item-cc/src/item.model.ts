@@ -1,4 +1,12 @@
 import * as yup from 'yup';
+import {
+  ConvectorModel,
+  Default,
+  ReadOnly,
+  Required,
+  Validate
+} from '@worldsibu/convector-core-model';
+import { Event } from './Event';
 import {Quality} from './quality';
 import {Transfer} from "./Transfer";
 import {ConvectorModel, Default, ReadOnly, Required, Validate} from '@worldsibu/convector-core-model';
@@ -24,8 +32,8 @@ export class Item extends ConvectorModel<Item> {
 
   // An enum to indicate the current quality of the item
   @Required()
-  @Validate(yup.number())
-  public quality: number;
+  @Validate(yup.string())
+  public quality: string;
 
   // A list of strings describing the materials of which the item constists
   @Required()
@@ -38,4 +46,14 @@ export class Item extends ConvectorModel<Item> {
 
   @Validate(yup.string())
   public proposedOwner: string;
+
+  // A list of strings describing the materials of which the item constists
+  @Required()
+  @Validate(yup.array())
+  public materials: Array<string>;
+
+  // List of events related to the item
+  @Required()
+  @Validate(yup.array())
+  public itemHistory: Array<Event>;
 }
