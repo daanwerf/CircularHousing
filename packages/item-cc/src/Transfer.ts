@@ -1,4 +1,4 @@
-class Transfer {
+export class Transfer {
   from: string;
   to: string;
   finished: boolean;

@@ -1,5 +1,6 @@
 import * as yup from 'yup';
 import {Quality} from './quality';
+import {Transfer} from "./Transfer";
 import {ConvectorModel, Default, ReadOnly, Required, Validate} from '@worldsibu/convector-core-model';
 
 export class Item extends ConvectorModel<Item> {

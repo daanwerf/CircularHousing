@@ -4,6 +4,7 @@ import {Controller, ConvectorController, Invokable, Param} from '@worldsibu/conv
 import {Item} from './item.model';
 import {Quality} from './quality'
 import {Participant} from 'participant-cc';
+import {Transfer} from "./Transfer";
 
 @Controller('item')
 export class ItemController extends ConvectorController {
