@@ -1,21 +1,10 @@
 import * as yup from 'yup';
-import {
-  Controller,
-  Default,
-  ConvectorController,
-  Invokable,
-  Param
-} from '@worldsibu/convector-core';
+import {Controller, ConvectorController, Invokable, Param} from '@worldsibu/convector-core';
 
-import { Item } from './item.model';
-import { Participant } from 'participant-cc';
-import {
-  Event,
-  CreateEvent,
-  RenameEvent,
-  UpdateEvent,
-  TransferEvent
-} from './Event';
+import {Item} from './item.model';
+import {Participant} from 'participant-cc';
+import {CreateEvent, Event, RenameEvent} from './Event';
+import {Transfer} from "./Transfer";
 
 function checkQuality(quality) {
   const allowedQualities = ['Good', 'Usable', 'Bad', 'Broken'];
@@ -58,7 +47,7 @@ export class ItemController extends ConvectorController {
     console.log(a);
     item.materials = a;
 
-    var h : Array<Event> = new Array<Event>();
+    var h: Array<Event> = new Array<Event>();
     h.push(new CreateEvent(item.itemOwner, item.name, item.quality));
     item.itemHistory = h;
 
@@ -74,30 +63,19 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       name: string,
   ) {
-    let item = await Item.getOne(id)
-    if (!item || !item.id) {
-      throw new Error('Given item does not currently exist on the ledger')
-    }
+    let item = await Item.getOne(id);
+    await ItemController.checkValidItem(item);
+    await ItemController.checkValidOwner(this.sender, item.itemOwner);
 
-    const owner = await Participant.getOne(item.itemOwner);
-    if (!owner || !owner.id || !owner.identities) {
-      throw new Error('Given participant does not currently exist on the ledger')
-    }
+    var oldName = item.name;
+    item.name = name;
 
-    const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
-    if (currentOwnerIdentity.fingerprint === this.sender) {
-      var oldName = item.name;
-      item.name = name;
+    var e: Event = new RenameEvent(item.itemOwner, item.name, oldName);
+    item.itemHistory.push(e);
 
-      var e : Event = new RenameEvent(item.itemOwner, item.name, oldName);
-      item.itemHistory.push(e);
+    await item.save();
+    console.log(`${item.itemOwner} changed the name of item ${item.id} to ${item.name}`)
 
-      await item.save();
-      console.log('${owner.name} has changed the name of item ${item.id} to ${item.name}')
-    } else {
-      // TODO: THIS IS PRINTED LITERALLY, NO VARIABLES ARE PRINTED
-      throw new Error('${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to')
-    }
   }
 
   @Invokable()
@@ -110,10 +88,11 @@ export class ItemController extends ConvectorController {
     let item = await Item.getOne(id);
     await ItemController.checkValidItem(item);
     await ItemController.checkValidOwner(this.sender, item.itemOwner);
+    checkQuality(quality);
+    item.quality = quality;
 
-    ItemController.determineQuality(item, quality);
     await item.save();
-    console.log('${owner.name} has changed the quality of item ${item.id} to ${item.quality}')
+    console.log(`${item.itemOwner} changed the quality of item ${item.id} to ${item.quality}`)
   }
 
   @Invokable()
@@ -202,20 +181,5 @@ export class ItemController extends ConvectorController {
       throw new Error('Given item does not currently exist on the ledger')
     }
     return true;
-  }
-
-    const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
-    if (currentOwnerIdentity.fingerprint === this.sender) {
-      var oldQuality = item.quality;
-      item.quality = checkQuality(quality);
-
-      var e : Event = new UpdateEvent(item.itemOwner, item.name, oldQuality, item.quality);
-      item.itemHistory.push(e);
-
-      await item.save();
-      console.log('${owner.name} has changed the quality of item ${item.id} to ${item.quality}')
-    } else {
-      throw new Error('${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to')
-    }
   }
 }
