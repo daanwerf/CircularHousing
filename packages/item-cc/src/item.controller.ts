@@ -75,10 +75,10 @@ export class ItemController extends ConvectorController {
     if (currentOwnerIdentity.fingerprint === this.sender) {
       item.name = name;
       await item.save();
-      console.log('${owner.name} has changed the name of item ${item.id} to ${item.name}')
+      console.log(`${owner.name} has changed the name of item ${item.id} to ${item.name}`)
     } else {
       // TODO: THIS IS PRINTED LITERALLY, NO VARIABLES ARE PRINTED
-      throw new Error('${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to')
+      throw new Error(`${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to`)
     }
   }
 
@@ -113,9 +113,9 @@ export class ItemController extends ConvectorController {
         throw new Error('Illegal argument given for quality')
       }
       await item.save();
-      console.log('${owner.name} has changed the quality of item ${item.id} to ${item.quality}')
+      console.log(`${owner.name} has changed the quality of item ${item.id} to ${item.quality}`)
     } else {
-      throw new Error('${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to')
+      throw new Error(`${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to`)
     }
   }
 
@@ -144,9 +144,9 @@ export class ItemController extends ConvectorController {
       const oldOwner = item.itemOwner;
       item.itemOwner = newOwner;
       await item.save();
-      console.log('$Participant ${oldOwner} has transferred ownership of item ${item.name} to participant ${item.itemOwner}');
+      console.log(`$Participant ${oldOwner} has transferred ownership of item ${item.name} to participant ${item.itemOwner}`);
     } else {
-      throw new Error('${this.sender} is not allowed to transfer this item, only ${owner.name} is allowed to');
+      throw new Error(`${this.sender} is not allowed to transfer this item, only ${owner.name} is allowed to`);
     }
   }
 
@@ -160,6 +160,6 @@ export class ItemController extends ConvectorController {
 
   @Invokable()
   public async getAll() {
-    return await Item.getAll('io.worldsibu.item');
+    return await Item.getAll('circular.economy.item');
   }
 }

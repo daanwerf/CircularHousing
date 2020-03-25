@@ -5,7 +5,7 @@ import {ConvectorModel, Default, ReadOnly, Required, Validate} from '@worldsibu/
 export class Item extends ConvectorModel<Item> {
   @ReadOnly()
   @Required()
-  public readonly type = 'io.worldsibu.item';
+  public readonly type = 'circular.economy.item';
 
   @Required()
   @Validate(yup.string())
