@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Register(props : any) {
+export default function Register(props) {
   const classes = useStyles();
 
   const user = props.user;
@@ -36,7 +36,7 @@ export default function Register(props : any) {
   const [alertMessage, setAlert] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
-  function handleSubmit(event : any) {
+  function handleSubmit(event) {
     event.preventDefault();
     setLoading(true);
     setAlert('');

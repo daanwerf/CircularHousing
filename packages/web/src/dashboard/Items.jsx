@@ -10,7 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
 
 // Generate Order Data
-function createData(id : any, date : any, name : any, shipTo : any, paymentMethod : any, amount : any) {
+function createData(id, date, name, shipTo, paymentMethod, amount) {
   return { id, date, name, shipTo, paymentMethod, amount };
 }
 

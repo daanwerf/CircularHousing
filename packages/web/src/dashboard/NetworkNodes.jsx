@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function NetworkNodes(props : any) {
+export default function NetworkNodes(props) {
   const allUsers = props.allUsers;
   const selectedUser = props.user;
   const selectedOrg = props.org;
@@ -40,7 +40,7 @@ export default function NetworkNodes(props : any) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {allUsers.map((user : any) => (
+              {allUsers.map((user) => (
                 <SingleNode key={user.user} userObj={user} selectedUser={selectedUser} />
               ))}
             </TableBody>
