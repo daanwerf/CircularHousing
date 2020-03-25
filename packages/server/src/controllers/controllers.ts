@@ -56,6 +56,20 @@ export async function ParticipantController_get_get(req: Request, res: Response)
     }
 }
 
+export async function ParticipantController_getByFingerprint_get(req : Request, res : Response): 
+        Promise<void> {
+    try {
+        let params = req.params;
+        let query = req.query;
+        let adp = await getAdapter(query.user, query.org);
+        res.status(200).send(await ClientFactory(ParticipantController, adp)
+            .getByFingerprint(params.fingerprint));
+    } catch (ex) {
+        console.log('Error get ParticipantController_getByFingerprint', ex.stack);
+        res.status(500).send(ex);
+    }
+}
+
 export async function ParticipantController_getAll_get(req: Request, res: Response): Promise<void>{
     try {
         let params = req.params;

@@ -10,16 +10,6 @@ import TableRow from '@material-ui/core/TableRow';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Title from './Title';
 
-// Generate Order Data (never actually used, see comment below)
-function createData(_id : string, _name : string, _msp : string, _identities : any) {
-  return { _id, _name, _msp, _identities};
-}
-
-// This is needed to make the types of rows work, this data is never actually used
-const rows = [
-  createData("casper", "Casper Athmer", "WoodGatherer", [{"status": true, "fingerprint": "test"}])
-];
-
 const useStyles = makeStyles(theme => ({
   seeMore: {
     marginTop: theme.spacing(3),
@@ -34,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Participants() {
   const classes = useStyles();
-  const [allPart, setAllpart] = React.useState(rows);
+  const [allPart, setAllpart] = React.useState([]);
   const [isLoading, setLoading] = React.useState(true);
 
   React.useEffect(() => {

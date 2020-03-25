@@ -24,11 +24,6 @@ export default function NetworkNodes(props : any) {
   const selectedUser = props.user;
   const selectedOrg = props.org;
 
-  for (var i = 0; i < allUsers.length; i++) {
-    let user = allUsers[i];
-    user.username = '';
-  }
-
   const classes = useStyles();
   return (
     <React.Fragment>
