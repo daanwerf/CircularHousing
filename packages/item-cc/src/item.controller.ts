@@ -1,9 +1,31 @@
 import * as yup from 'yup';
-import {Controller, ConvectorController, Invokable, Param} from '@worldsibu/convector-core';
+import {
+  Controller, 
+  Default, 
+  ConvectorController, 
+  Invokable, 
+  Param
+} from '@worldsibu/convector-core';
 
-import {Item} from './item.model';
-import {Quality} from './quality'
-import {Participant} from 'participant-cc';
+import { Item } from './item.model';
+import { Participant } from 'participant-cc';
+import { 
+  Event, 
+  CreateEvent, 
+  RenameEvent, 
+  UpdateEvent, 
+  TransferEvent 
+} from './Event';
+
+function checkQuality(quality) {
+  const allowedQualities = ['Good', 'Usable', 'Bad', 'Broken'];
+
+  if (allowedQualities.indexOf(quality) === -1) {
+    throw new Error('Illegal argument given for quality.');
+  }
+
+  return quality;
+}
 
 @Controller('item')
 export class ItemController extends ConvectorController {
@@ -18,7 +40,7 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       quality: string,
     @Param(yup.string())
-      materials: string,
+      materials: string
   ) {
     // TODO: POSSIBLY BETTER THAT WE CREATE SOME UUID AND RETURN IT RIGHT?
     // ALSO: SHOULD BE CHECK THAT ITEM WITH THIS ID DOES NOT ALREADY EXIST
@@ -28,29 +50,20 @@ export class ItemController extends ConvectorController {
     item.name = name;
     item.itemOwner = ownerID;
 
-    // TODO: CHECK WHAT HAPPENS WHEN YOU INPUT AN INVALID DATE
-    var d: Number = new Date().getUTCMilliseconds()
-    item.creationDate = d;
-
-    if (quality == 'Good') {
-      item.quality = Quality.Good;
-    } else if (quality == 'Usable') {
-      item.quality = Quality.Usable;
-    } else if (quality == 'Bad') {
-      item.quality = Quality.Bad;
-    } else if (quality == 'Broken') {
-      item.quality = Quality.Broken;
-    } else {
-      throw new Error('Illegal argument given for quality')
-    }
+    item.creationDate = new Date().getTime();
+    item.quality = checkQuality(quality);
 
     // TODO: DO SOME TRIMMING OF WHITESPACE HERE
-    var a: Array<String> = materials.split(',');
+    var a: Array<string> = materials.split(',');
     console.log(a);
     item.materials = a;
 
-    // TODO: IF WE CREATE THE ITEM ID, RETURN IT HERE AFTER SAVING
+    var h : Array<Event> = new Array<Event>();
+    h.push(new CreateEvent(item.itemOwner, item.name, item.quality));   
+    item.itemHistory = h;
+
     await item.save();
+    return item;
   }
 
 
@@ -73,7 +86,12 @@ export class ItemController extends ConvectorController {
 
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     if (currentOwnerIdentity.fingerprint === this.sender) {
+      var oldName = item.name;
       item.name = name;
+
+      var e : Event = new RenameEvent(item.itemOwner, item.name, oldName);
+      item.itemHistory.push(e);
+
       await item.save();
       console.log('${owner.name} has changed the name of item ${item.id} to ${item.name}')
     } else {
@@ -101,17 +119,12 @@ export class ItemController extends ConvectorController {
 
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     if (currentOwnerIdentity.fingerprint === this.sender) {
-      if (quality == 'Good') {
-        item.quality = Quality.Good;
-      } else if (quality == 'Usable') {
-        item.quality = Quality.Usable;
-      } else if (quality == 'Bad') {
-        item.quality = Quality.Bad;
-      } else if (quality == 'Broken') {
-        item.quality = Quality.Broken;
-      } else {
-        throw new Error('Illegal argument given for quality')
-      }
+      var oldQuality = item.quality;
+      item.quality = checkQuality(quality);
+
+      var e : Event = new UpdateEvent(item.itemOwner, item.name, oldQuality, item.quality);
+      item.itemHistory.push(e);
+
       await item.save();
       console.log('${owner.name} has changed the quality of item ${item.id} to ${item.quality}')
     } else {
@@ -143,6 +156,10 @@ export class ItemController extends ConvectorController {
     if (currentOwnerIdentity.fingerprint === this.sender) {
       const oldOwner = item.itemOwner;
       item.itemOwner = newOwner;
+
+      var e : Event = new TransferEvent(item.itemOwner, item.name, oldOwner);
+      item.itemHistory.push(e);
+
       await item.save();
       console.log('$Participant ${oldOwner} has transferred ownership of item ${item.name} to participant ${item.itemOwner}');
     } else {

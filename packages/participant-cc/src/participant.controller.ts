@@ -138,12 +138,33 @@ export class ParticipantController extends ConvectorController<ParticipantContro
     return existing;
   }
 
+  /*
+    Gets all participants belonging to a certain fingerprint. 
+  */
+  @Invokable()
+  public async getByFingerprint(
+    @Param(yup.string())
+      fingerprint: string
+  ) {
+    const userExisting = await Participant.query(Participant, {
+      'selector': {
+        'identities': {
+          '$elemMatch': {
+            'fingerprint': fingerprint,
+            'status': true
+          }
+        }
+      }
+    });
+
+    return userExisting;
+  }
+
   /* 
     Returns all participants 
   */
   @Invokable()
   public async getAll() {
-    let personIds = await Participant.getAll('circular.economy.participant');
-    return personIds;
+    return await Participant.getAll('circular.economy.participant');
   }
 }
