@@ -53,8 +53,11 @@ export class ItemController extends ConvectorController {
       throw new Error('Given participant does not currently exist on the ledger')
     }
 
-    // Check this.sender
-
+    // Check if this participant is not creating the item for another participant
+    const ownerIdentity = owner.identities.filter(identity => identity.status === true)[0];
+    if (!(ownerIdentity.fingerprint === this.sender)) {
+      throw new Error('Cannot create an item for a different participant')
+    }
 
     item.name = name;
     item.itemOwner = ownerID;
