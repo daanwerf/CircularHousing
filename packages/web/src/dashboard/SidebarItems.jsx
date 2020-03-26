@@ -9,7 +9,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 
-export default function SidebarItems(props : any) {
+export default function SidebarItems(props) {
   const setShow = props.setShow;
 
   return (

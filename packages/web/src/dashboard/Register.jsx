@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Title from './Title';
 import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -13,10 +14,14 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     overflow: 'auto',
     flexDirection: 'column',
+  },
+  registerButton: {
+    marginLeft: theme.spacing(1),
+    padding: theme.spacing(1)
   }
 }));
 
-export default function Register(props : any) {
+export default function Register(props) {
   const classes = useStyles();
 
   const user = props.user;
@@ -29,9 +34,12 @@ export default function Register(props : any) {
   const [fingerprint, setFingerprint] = React.useState('');
 
   const [alertMessage, setAlert] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
-  function handleSubmit(event : any) {
+  function handleSubmit(event) {
     event.preventDefault();
+    setLoading(true);
+    setAlert('');
     fetch('http://localhost:8000/participant/register?org=' + org + '&user=' + user, {
       method: 'POST',
       headers: {
@@ -46,14 +54,16 @@ export default function Register(props : any) {
       })
     })
     .then((response) => {
+      setLoading(false);
       if (response.status === 200) {
         setShow('users');
       } else {
-        setAlert("Something went wrong!");
+        setAlert(response.statusText);
       }
     })
     .catch((error) => {
-      setAlert(error);
+      setLoading(false);
+      setAlert('Undefined error happened');
     });
   }
 
@@ -89,6 +99,7 @@ export default function Register(props : any) {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                required
                 id="organisation"
                 name="organisation"
                 label="Organisation"
@@ -100,6 +111,7 @@ export default function Register(props : any) {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                required
                 id="fingerprint"
                 name="fingerprint"
                 label="Fingerprint"
@@ -109,12 +121,21 @@ export default function Register(props : any) {
                 autoComplete="fingerprint"
               />
             </Grid>
-            <Grid>
-              <Button onClick={handleSubmit} variant="contained">Register</Button>
+            <Grid className={classes.registerButton}>
+              {loading 
+                ? <CircularProgress /> 
+                : <Button 
+                    onClick={handleSubmit} 
+                    variant="contained"
+                  >Register
+                  </Button>
+              }
             </Grid>
-            {alertMessage === '' ? null :
-              <Alert severity="error">{alertMessage}</Alert>
-            }
+            <Grid className={classes.registerButton}>
+              {alertMessage === '' ? null :
+                <Alert severity="error">{alertMessage}</Alert>
+              }
+            </Grid>
           </Grid>
         </Paper>
       </Grid>
