@@ -2,7 +2,7 @@ import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
-export default function SingleNode(props : any) {
+export default function SingleNode(props) {
 	let user = props.userObj;
 	let selectedUser = props.selectedUser;
 	let [fingerprint, setFingerprint] = React.useState('');

@@ -9,7 +9,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 
-export default function SidebarItems(props : any) {
+export default function SidebarItems(props) {
   const setShow = props.setShow;
 
   return (
@@ -26,6 +26,12 @@ export default function SidebarItems(props : any) {
             <ShoppingCartIcon />
           </ListItemIcon>
           <ListItemText primary="Items" />
+        </ListItem>
+        <ListItem button onClick={() => setShow('create')}>
+          <ListItemIcon>
+            <ShoppingCartIcon />
+          </ListItemIcon>
+          <ListItemText primary="Create Item" />
         </ListItem>
         <ListItem button onClick={() => setShow('users')}>
           <ListItemIcon>

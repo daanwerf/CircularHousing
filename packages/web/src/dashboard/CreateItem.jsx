@@ -15,23 +15,24 @@ const useStyles = makeStyles(theme => ({
     overflow: 'auto',
     flexDirection: 'column',
   },
-  registerButton: {
+  createButton: {
     marginLeft: theme.spacing(1),
     padding: theme.spacing(1)
   }
 }));
 
-export default function Register(props) {
+export default function CreateItem(props) {
   const classes = useStyles();
 
   const user = props.user;
   const org = props.org;
   const setShow = props.setShow;
 
-  const [name, setName] = React.useState('');
+  const [itemId, setId] = React.useState('');
+  const [itemName, setItemname] = React.useState('');
   const [username, setUsername] = React.useState('');
-  const [msp, setMsp] = React.useState('');
-  const [fingerprint, setFingerprint] = React.useState('');
+  const [quality, setQuality] = React.useState('');
+  const [materials, setMaterials] = React.useState('');
 
   const [alertMessage, setAlert] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -40,23 +41,24 @@ export default function Register(props) {
     event.preventDefault();
     setLoading(true);
     setAlert('');
-    fetch('http://localhost:8000/participant/register?org=' + org + '&user=' + user, {
+    fetch('http://localhost:8000/item/add?org=' + org + '&user=' + user, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: username,
-        name: name,
-        msp: msp,
-        certificate: fingerprint
+        id: itemId,
+        name: itemName,
+        owner: username,
+        quality: quality,
+        materials: materials
       })
     })
     .then((response) => {
       setLoading(false);
       if (response.status === 200) {
-        setShow('users');
+        setShow('items');
       } else {
         setAlert(response.statusText);
       }
@@ -71,18 +73,28 @@ export default function Register(props) {
     <React.Fragment>
       <Grid item xs={12}>
         <Paper className={classes.paper}>
-          <Title>Register Participant</Title>
+          <Title>Create Item</Title>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
                 required
-                id="fullName"
-                name="fullName"
-                label="Full Name"
-                value={name}
-                onInput={(e : any) => setName(e.target.value)}
+                id="itemId"
+                name="itemId"
+                label="Item ID"
+                value={itemId}
+                onInput={(e : any) => setId(e.target.value)}
                 fullWidth
-                autoComplete="fname"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                id="itemName"
+                name="itemName"
+                label="Item Name"
+                value={itemName}
+                onInput={(e : any) => setItemname(e.target.value)}
+                fullWidth
               />
             </Grid>
             <Grid item xs={12}>
@@ -100,38 +112,36 @@ export default function Register(props) {
             <Grid item xs={12}>
               <TextField
                 required
-                id="organisation"
-                name="organisation"
-                label="Organisation"
-                value={msp}
-                onInput={(e : any) => setMsp(e.target.value)}
+                id="quality"
+                name="quality"
+                label="Quality"
+                value={quality}
+                onInput={(e : any) => setQuality(e.target.value)}
                 fullWidth
-                autoComplete="organisation"
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 required
-                id="fingerprint"
-                name="fingerprint"
-                label="Fingerprint"
-                value={fingerprint}
-                onInput={(e : any) => setFingerprint(e.target.value)}
+                id="materials"
+                name="materials"
+                label="materials"
+                value={materials}
+                onInput={(e : any) => setMaterials(e.target.value)}
                 fullWidth
-                autoComplete="fingerprint"
               />
             </Grid>
-            <Grid className={classes.registerButton}>
+            <Grid className={classes.createButton}>
               {loading 
                 ? <CircularProgress /> 
                 : <Button 
                     onClick={handleSubmit} 
                     variant="contained"
-                  >Register
+                  >Create Item
                   </Button>
               }
             </Grid>
-            <Grid className={classes.registerButton}>
+            <Grid className={classes.createButton}>
               {alertMessage === '' ? null :
                 <Alert severity="error">{alertMessage}</Alert>
               }

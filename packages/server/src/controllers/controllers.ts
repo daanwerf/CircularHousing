@@ -7,6 +7,13 @@ import { networkProfile } from "../env";
 import { ItemController } from "item-cc";
 import { ParticipantController } from "participant-cc";
 
+function parseError(errMess) {
+    let startErr = '"message":"';
+    return errMess.substring(
+        errMess.lastIndexOf(startErr) + startErr.length,
+        errMess.lastIndexOf('"}')
+    );
+}
 
 export async function ParticipantController_register_post(req: Request, res: Response): Promise<void>{
     try {
@@ -17,14 +24,8 @@ export async function ParticipantController_register_post(req: Request, res: Res
             .register(params.id, params.name, params.msp, params.certificate);
         res.status(200).send(fact);
     } catch(ex) {
-        let errMess = ex.message;
-        let startErr = '"message":"';
-        let err = errMess.substring(
-            errMess.lastIndexOf(startErr) + startErr.length,
-            errMess.lastIndexOf('"}')
-        );
-
-        res.statusMessage = err;
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
         res.status(500).end();
     }
 }
@@ -39,8 +40,9 @@ export async function ParticipantController_changeIdentity_post(req: Request, re
         res.status(200).send(fact);
 
     } catch(ex) {
-        console.log('Error post ParticipantController_changeIdentity', ex.stack);
-        res.status(500).send(ex);
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
     }
 }
 
@@ -51,8 +53,9 @@ export async function ParticipantController_get_get(req: Request, res: Response)
         let adp = await getAdapter(query.user, query.org);
         res.status(200).send(await ClientFactory(ParticipantController, adp).get(params.id));
     } catch (ex) {
-        console.log('Error get ParticipantController_get', ex.stack);
-        res.status(500).send(ex);
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
     }
 }
 
@@ -62,11 +65,12 @@ export async function ParticipantController_getByFingerprint_get(req : Request, 
         let params = req.params;
         let query = req.query;
         let adp = await getAdapter(query.user, query.org);
-        // res.status(200).send(await ClientFactory(ParticipantController, adp)
-        //     .getByFingerprint(params.fingerprint));
+        res.status(200).send(await ClientFactory(ParticipantController, adp)
+            .getByFingerprint(params.fingerprint));
     } catch (ex) {
-        console.log('Error get ParticipantController_getByFingerprint', ex.stack);
-        res.status(500).send(ex);
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
     }
 }
 
@@ -77,9 +81,24 @@ export async function ParticipantController_getAll_get(req: Request, res: Respon
         let adp = await getAdapter(query.user, query.org);
         res.status(200).send(await ClientFactory(ParticipantController, adp).getAll());
     } catch(ex) {
-        console.log('Error get ParticipantController_getAll', ex.stack);
-        res.status(500).send(ex);
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
     }
+}
+
+export async function ItemController_transfer_post(req: Request, res: Response): Promise<void> {
+  try {
+    let params = req.body;
+    let query = req.query;
+    let adp = await getAdapter(query.user, query.org);
+    res.status(200).send(await ClientFactory(ItemController, adp)
+        .transfer(params.id, params.newOwner));
+  } catch (ex) {
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
+  }
 }
 
 export async function ItemController_create_post(req: Request, res: Response): Promise<void> {
@@ -90,47 +109,49 @@ export async function ItemController_create_post(req: Request, res: Response): P
     res.status(200).send(await ClientFactory(ItemController, adp)
         .create(params.id, params.name, params.owner, params.quality, params.materials));
   } catch (ex) {
-    console.log(JSON.stringify(ex));
-    console.log('Error post ParticipantController_register', ex.stack);
-    res.status(500).send(ex);
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
   }
+}
+
+export async function ItemController_updateQuality_post(req : Request, res : Response): Promise<void> {
+    try {
+        let params = req.body;
+        let query = req.query;
+        let adp = await getAdapter(query.user, query.org);
+        res.status(200).send(await ClientFactory(ItemController, adp)
+            .updateQuality(params.id, params.quality));
+    } catch (ex) {
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
+    }
+}
+
+export async function ItemController_updateName_post(req : Request, res : Response): Promise<void> {
+    try {
+        let params = req.body;
+        let query = req.query;
+        let adp = await getAdapter(query.user, query.org);
+        res.status(200).send(await ClientFactory(ItemController, adp)
+            .updateName(params.id, params.name));
+    } catch (ex) {
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
+    }
 }
 
 export async function ItemController_getAll_get(req: Request, res: Response): Promise<void> {
   try {
-    let params = req.body;
     let query = req.query;
     let adp = await getAdapter(query.user, query.org);
     res.status(200).send(await ClientFactory(ItemController, adp).getAll());
   } catch (ex) {
-    console.log('Error post ItemController_getAll_get', ex.stack);
-    res.status(500).send(ex);
-  }
-}
-
-export async function ItemController_proposeTransfer_post(req: Request, res: Response): Promise<void> {
-  try {
-    let params = req.body;
-    let query = req.query;
-    let adp = await getAdapter(query.user, query.org);
-    res.status(200).send(await ClientFactory(ItemController, adp).proposeTransfer(params.id, params.transferTarget));
-  } catch (ex) {
-    console.log(JSON.stringify(ex));
-    console.log('Error post ItemController_proposeTransfer_post', ex.stack);
-    res.status(500).send(ex);
-  }
-}
-
-export async function ItemController_answerProposal_post(req: Request, res: Response): Promise<void> {
-  try {
-    let params = req.body;
-    let query = req.query;
-    let adp = await getAdapter(query.user, query.org);
-    res.status(200).send(await ClientFactory(ItemController, adp).answerProposal(params.id, params.accept));
-  } catch (ex) {
-    console.log(JSON.stringify(ex));
-    console.log('Error post ItemController_proposeTransfer_post', ex.stack);
-    res.status(500).send(ex);
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
   }
 }
 
