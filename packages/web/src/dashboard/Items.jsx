@@ -70,6 +70,7 @@ export default function Items(props) {
                     item={item}
                     setUpdate={setUpdate}
                     setUpdateId={setUpdateId}
+                    setLoading={setLoading}
                   />
                 ))}
               </TableBody>

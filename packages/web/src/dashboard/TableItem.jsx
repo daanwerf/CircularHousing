@@ -12,6 +12,7 @@ export default function TableItem(props) {
   let item = props.item;
   let setUpdate = props.setUpdate;
   let setUpdateId = props.setUpdateId;
+  let setLoading = props.setLoading;
   const user = props.user;
   const org = props.org;
 
@@ -42,7 +43,7 @@ export default function TableItem(props) {
   function refuseProposal(event) {
     event.preventDefault();
     setUpdateId(item._id);
-    answerProposal(false)
+    answerProposal(false);
   }
 
   function finishProposal(event) {
@@ -65,8 +66,9 @@ export default function TableItem(props) {
     }).then((response) => {
       if (response.status === 200) {
         setUpdate('');
+        setLoading(true);
       } else {
-        console.log(response.statusText);
+        console.log(JSON.stringify(response));
       }
     });
   }
@@ -78,7 +80,7 @@ export default function TableItem(props) {
         <TableCell>{item._name}</TableCell>
         <TableCell>{item._itemOwner}</TableCell>
         <TableCell>{item._quality}</TableCell>
-        <TableCell>{item._proposedOwner ? <div>
+        <TableCell>{item._proposedOwner} {(item._proposedOwner && item._proposedOwner.length > 0) ? <div>
           <Button onClick={finishProposal} variant="contained">Accept</Button><Button
           onClick={refuseProposal} variant="contained">Deny</Button>
         </div> : ""}</TableCell>
