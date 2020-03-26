@@ -41,7 +41,11 @@ export default function NetworkNodes(props) {
             </TableHead>
             <TableBody>
               {allUsers.map((user) => (
-                <SingleNode key={user.user} userObj={user} selectedUser={selectedUser} />
+                <SingleNode 
+                  key={user.user} 
+                  userObj={user} 
+                  selectedUser={selectedUser} 
+                  fingerprint={props.fingerprint} />
               ))}
             </TableBody>
           </Table>

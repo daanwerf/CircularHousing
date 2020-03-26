@@ -57,6 +57,7 @@ export default function Register(props) {
       setLoading(false);
       if (response.status === 200) {
         setShow('users');
+        props.setFingerprint(fingerprint);
       } else {
         setAlert(response.statusText);
       }
