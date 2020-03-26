@@ -151,7 +151,7 @@ export class ItemController extends ConvectorController {
       item.itemHistory.push(new TransferEvent(item.proposedOwner, item.name, item.itemOwner));
       item.itemOwner = item.proposedOwner;
     }
-    item.proposedOwner = null;
+    item.proposedOwner = "";
 
     await item.save();
   }
@@ -165,13 +165,13 @@ export class ItemController extends ConvectorController {
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     //then check if the item is truly yours to be transferred
     if (currentOwnerIdentity.fingerprint !== sender) {
-      throw new Error(`${sender} is not allowed to do this action, only ${owner.name} is allowed to`);
+      throw new Error(`You are not allowed to do this action, only ${owner.name} is allowed to`);
     }
     return true;
   }
 
   private static async checkValidItem(item: Item) {
-    if (!item || item.id) {
+    if (!item || !item.id) {
       throw new Error('Given item does not currently exist on the ledger')
     }
     return true;

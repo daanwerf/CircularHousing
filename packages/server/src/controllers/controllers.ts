@@ -87,13 +87,27 @@ export async function ParticipantController_getAll_get(req: Request, res: Respon
     }
 }
 
-export async function ItemController_transfer_post(req: Request, res: Response): Promise<void> {
+export async function ItemController_proposeTransfer_post(req: Request, res: Response): Promise<void> {
   try {
     let params = req.body;
     let query = req.query;
     let adp = await getAdapter(query.user, query.org);
     res.status(200).send(await ClientFactory(ItemController, adp)
-        .transfer(params.id, params.newOwner));
+      .proposeTransfer(params.id, params.newOwner));
+  } catch (ex) {
+    console.log(ex.message);
+    res.statusMessage = parseError(ex.message);
+    res.status(500).end();
+  }
+}
+
+export async function ItemController_answerProposal_post(req: Request, res: Response): Promise<void> {
+  try {
+    let params = req.body;
+    let query = req.query;
+    let adp = await getAdapter(query.user, query.org);
+    res.status(200).send(await ClientFactory(ItemController, adp)
+        .answerProposal(params.id, params.accept));
   } catch (ex) {
         console.log(ex.message);
         res.statusMessage = parseError(ex.message);
