@@ -11,7 +11,7 @@
     },
     "TableMaker": {
       "channels": ["ch1"],
-      "users": ["Zeki", "Ozgun"]
+      "users": ["Zeki"]
     },
     "WoodGatherer": {
       "channels": ["ch1"],
