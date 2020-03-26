@@ -44,11 +44,16 @@ export class ItemController extends ConvectorController {
   ) {
     let item = new Item();
 
-    // TODO: POSSIBLY BETTER THAT WE CREATE SOME UUID AND RETURN IT RIGHT?
+    
     // ALSO: SHOULD BE CHECK THAT ITEM WITH THIS ID DOES NOT ALREADY EXIST
     item.id = uuidv4();
 
-    // TODO: CHECK IF OWNER EXISTS
+    // Check if the owner exists
+    const owner = await Participant.getOne(ownerID);
+    if (!owner || !owner.id || !owner.identities) {
+      throw new Error('Given participant does not currently exist on the ledger')
+    }
+
     item.name = name;
     item.itemOwner = ownerID;
 
