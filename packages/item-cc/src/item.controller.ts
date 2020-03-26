@@ -1,4 +1,6 @@
 import * as yup from 'yup';
+import { v4 as uuidv4 } from 'uuid';
+
 import {
   Controller, 
   Default, 
@@ -32,8 +34,6 @@ export class ItemController extends ConvectorController {
   @Invokable()
   public async create(
     @Param(yup.string())
-      id: string,
-    @Param(yup.string())
       name: string,
     @Param(yup.string())
       ownerID: string,
@@ -42,9 +42,12 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       materials: string
   ) {
+    let item = new Item();
+
     // TODO: POSSIBLY BETTER THAT WE CREATE SOME UUID AND RETURN IT RIGHT?
     // ALSO: SHOULD BE CHECK THAT ITEM WITH THIS ID DOES NOT ALREADY EXIST
-    let item = new Item(id);
+    var id : string = "kaas";
+    item.id = uuidv4();
 
     // TODO: CHECK IF OWNER EXISTS
     item.name = name;
@@ -65,7 +68,6 @@ export class ItemController extends ConvectorController {
     await item.save();
     return item;
   }
-
 
   @Invokable()
   public async updateName(
