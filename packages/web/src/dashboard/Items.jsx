@@ -75,8 +75,8 @@ export default function Items(props) {
       {update !== ''
         ? <UpdateItem 
             user={props.user} 
-            org={props.org} 
-            itemId={updateId}
+            org={props.org}
+            item={items.filter(item => item._id === updateId)[0]}
             update={update} 
             setUpdate={setUpdate} 
           /> 
