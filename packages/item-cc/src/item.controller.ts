@@ -44,8 +44,7 @@ export class ItemController extends ConvectorController {
   ) {
     let item = new Item();
 
-    
-    // ALSO: SHOULD BE CHECK THAT ITEM WITH THIS ID DOES NOT ALREADY EXIST
+    // Create a unique UUID for the item
     item.id = uuidv4();
 
     // Check if the owner exists
@@ -53,6 +52,9 @@ export class ItemController extends ConvectorController {
     if (!owner || !owner.id || !owner.identities) {
       throw new Error('Given participant does not currently exist on the ledger')
     }
+
+    // Check this.sender
+
 
     item.name = name;
     item.itemOwner = ownerID;
@@ -101,8 +103,7 @@ export class ItemController extends ConvectorController {
       await item.save();
       console.log('${owner.name} has changed the name of item ${item.id} to ${item.name}')
     } else {
-      // TODO: THIS IS PRINTED LITERALLY, NO VARIABLES ARE PRINTED
-      throw new Error('${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to')
+      throw new Error(this.sender + ' is not allowed to edit this item, only ' + owner.name + ' is allowed to')
     }
   }
 
@@ -132,9 +133,9 @@ export class ItemController extends ConvectorController {
       item.itemHistory.push(e);
 
       await item.save();
-      console.log('${owner.name} has changed the quality of item ${item.id} to ${item.quality}')
+      console.log(owner.name + ' has changed the quality of item ' + item.name + ' to ' + item.quality)
     } else {
-      throw new Error('${this.sender} is not allowed to edit this item, only ${owner.name} is allowed to')
+      throw new Error(this.sender + ' is not allowed to edit this item, only ' + owner.name + ' is allowed to')
     }
   }
 
@@ -167,9 +168,9 @@ export class ItemController extends ConvectorController {
       item.itemHistory.push(e);
 
       await item.save();
-      console.log('$Participant ${oldOwner} has transferred ownership of item ${item.name} to participant ${item.itemOwner}');
+      console.log('Participant ' + oldOwner + ' has transferred ownership of item ' + item.name + ' to participant ' + item.itemOwner);
     } else {
-      throw new Error('${this.sender} is not allowed to transfer this item, only ${owner.name} is allowed to');
+      throw new Error(this.sender + ' is not allowed to transfer this item, only ' + owner.name + ' is allowed to');
     }
   }
 
