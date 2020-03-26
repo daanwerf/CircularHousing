@@ -30,17 +30,19 @@ export default function Items(props) {
   const classes = useStyles();
 
   React.useEffect(() => {
-    fetch('http://localhost:8000/item/getAll?org=Government&user=chaincodeAdmin')
-      .then(results => results.json())
-      .then(data => {
-        setItems(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        //TODO: MAKE ERROR MESSAGE HERE
-        console.error(error);
-      });
-  }, []);
+    if (loading) {
+      fetch('http://localhost:8000/item/getAll?org=Government&user=chaincodeAdmin')
+        .then(results => results.json())
+        .then(data => {
+          setItems(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          //TODO: MAKE ERROR MESSAGE HERE
+          console.error(error);
+        });
+    } 
+  }, [loading]);
 
   return (
     <React.Fragment>
@@ -79,6 +81,7 @@ export default function Items(props) {
             item={items.filter(item => item._id === updateId)[0]}
             update={update} 
             setUpdate={setUpdate} 
+            setLoading={setLoading}
           /> 
         : null
       }

@@ -28,6 +28,7 @@ export default function ChangeName(props) {
   const org = props.org;
   const itemId = props.itemId;
   const setUpdate = props.setUpdate;
+  const setItemsLoading = props.setLoading;
 
   const [newName, setNewname] = React.useState('');
 
@@ -53,6 +54,7 @@ export default function ChangeName(props) {
       setLoading(false);
       if (response.status === 200) {
         setUpdate('');
+        setItemsLoading(true);
       } else {
         setAlert(response.statusText);
       }

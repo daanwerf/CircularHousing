@@ -21,7 +21,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function FullItem(props) {
   const item = props.item;
-  console.log(item);
 
   function parseHistory(hist) {
     if (hist.type === "TRANSFER") {
