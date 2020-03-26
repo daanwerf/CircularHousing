@@ -6,13 +6,14 @@ import FullItem from './FullItem';
 
 export default function UpdateItem(props) {
   const update = props.update;
+  const item = props.item;
   const itemId = props.item._id;
 
   return (
     <React.Fragment>
       {update === 'view'
         ? <FullItem
-            item={props.item}
+            item={item}
           />
         : null
       }
@@ -23,6 +24,7 @@ export default function UpdateItem(props) {
             org={props.org}
             itemId={itemId}
             setUpdate={props.setUpdate}
+            setLoading={props.setLoading}
           />
         : null
       }
@@ -33,6 +35,7 @@ export default function UpdateItem(props) {
             org={props.org}
             itemId={itemId}
             setUpdate={props.setUpdate}
+            setLoading={props.setLoading}
           />
         : null
       }
@@ -43,6 +46,7 @@ export default function UpdateItem(props) {
             org={props.org}
             itemId={itemId}
             setUpdate={props.setUpdate}
+            setLoading={props.setLoading}
           />
         : null
       }

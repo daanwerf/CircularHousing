@@ -5,6 +5,7 @@ import TableRow from '@material-ui/core/TableRow';
 export default function SingleNode(props) {
 	let user = props.userObj;
 	let selectedUser = props.selectedUser;
+	let registeredFingerprint = props.fingerprint;
 	let [fingerprint, setFingerprint] = React.useState('');
 	let [usernames, setUsernames] = React.useState([]);
 
@@ -21,7 +22,8 @@ export default function SingleNode(props) {
 	}, []);
 
 	React.useEffect(() => {
-		if (fingerprint !== '') {
+		if (fingerprint !== '' 
+			&& (registeredFingerprint === '' || registeredFingerprint === fingerprint)) {
 			fetch('http://localhost:8000/participant/getByFingerprint/' + fingerprint + '?org=' 
 		    		+ user.org + '&user=' + user.user)
 		    	.then(results => results.json())
@@ -33,12 +35,12 @@ export default function SingleNode(props) {
 					console.error(error);
 				});
 		} 
-	}, [fingerprint]);
+	}, [fingerprint, registeredFingerprint]);
 
 	return (
 		<React.Fragment>
 			<TableRow
-              	style={{backgroundColor: selectedUser === user.user ? '#F6F6F6' : 'white'}}>
+              	style={{backgroundColor: selectedUser === user.user ? '#A9A9A9' : 'white'}}>
               	<TableCell>{user.user}</TableCell>
               	<TableCell>{user.org}</TableCell>
               	<TableCell>{fingerprint}</TableCell>

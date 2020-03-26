@@ -21,7 +21,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function FullItem(props) {
   const item = props.item;
-  console.log(item);
 
   function parseHistory(hist) {
     if (hist.type === "TRANSFER") {
@@ -52,14 +51,6 @@ export default function FullItem(props) {
         <Paper className={classes.paper}>
           <Title>Item {item._id}</Title>
           <Table size="small">
-            {/*<TableHead>
-              <TableRow>
-                <TableCell>User</TableCell>
-                <TableCell>Organisation</TableCell>
-                <TableCell>Fingerprint</TableCell>
-                <TableCell align="right">Username</TableCell>
-              </TableRow>
-            </TableHead>*/}
             <TableBody>
               <TableRow>
                 <TableCell>Name</TableCell>
