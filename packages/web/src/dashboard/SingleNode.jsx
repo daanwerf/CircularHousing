@@ -38,7 +38,7 @@ export default function SingleNode(props) {
 	return (
 		<React.Fragment>
 			<TableRow
-              	style={{backgroundColor: selectedUser === user.user ? '#F6F6F6' : 'white'}}>
+              	style={{backgroundColor: selectedUser === user.user ? '#A9A9A9' : 'white'}}>
               	<TableCell>{user.user}</TableCell>
               	<TableCell>{user.org}</TableCell>
               	<TableCell>{fingerprint}</TableCell>
