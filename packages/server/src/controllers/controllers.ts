@@ -105,6 +105,7 @@ export async function ItemController_answerProposal_post(req: Request, res: Resp
   try {
     let params = req.body;
     let query = req.query;
+    console.log(JSON.stringify(params));
     let adp = await getAdapter(query.user, query.org);
     res.status(200).send(await ClientFactory(ItemController, adp)
         .answerProposal(params.id, params.accept));

@@ -7,14 +7,19 @@ import TransferWithinAStationIcon from '@material-ui/icons/TransferWithinAStatio
 import TextFieldsIcon from '@material-ui/icons/TextFields';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from "@material-ui/core/Button";
+import Alert from "@material-ui/lab/Alert";
+import Grid from "@material-ui/core/Grid";
 
 export default function TableItem(props) {
+  const [alertMessage, setAlert] = React.useState('');
+
   let item = props.item;
   let setUpdate = props.setUpdate;
   let setUpdateId = props.setUpdateId;
   let setLoading = props.setLoading;
   const user = props.user;
   const org = props.org;
+
 
   function handleChangeQuality(event) {
     event.preventDefault();
@@ -53,6 +58,7 @@ export default function TableItem(props) {
   }
 
   function answerProposal(accept) {
+    setAlert('');
     fetch('http://localhost:8000/item/answerProposal?org=' + org + '&user=' + user, {
       method: 'POST',
       headers: {
@@ -61,16 +67,20 @@ export default function TableItem(props) {
       },
       body: JSON.stringify({
         id: item._id,
-        accept: accept
+        accept: accept.toString()
       })
     }).then((response) => {
       if (response.status === 200) {
         setUpdate('');
         setLoading(true);
       } else {
-        console.log(JSON.stringify(response));
+        setAlert(response.statusText);
+        console.log(response);
+        console.log(response.statusText);
       }
-    });
+    }).catch(response => {
+      console.log(response);
+    })
   }
 
   return (
@@ -80,9 +90,12 @@ export default function TableItem(props) {
         <TableCell>{item._name}</TableCell>
         <TableCell>{item._itemOwner}</TableCell>
         <TableCell>{item._quality}</TableCell>
-        <TableCell>{item._proposedOwner} {(item._proposedOwner && item._proposedOwner.length > 0) ? <div>
-          <Button onClick={finishProposal} variant="contained">Accept</Button><Button
-          onClick={refuseProposal} variant="contained">Deny</Button>
+        <TableCell>{(item._proposedOwner && item._proposedOwner.length > 0) ?
+          <div>
+          <Button onClick={finishProposal} variant="contained">Accept</Button><Button onClick={refuseProposal} variant="contained">Deny</Button>
+            {alertMessage === '' ? null :
+              <Alert severity="error">{alertMessage}</Alert>
+            }
         </div> : ""}</TableCell>
         <TableCell align="right">
           <IconButton onClick={handleViewItem}>
