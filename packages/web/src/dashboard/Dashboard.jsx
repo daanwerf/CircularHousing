@@ -20,6 +20,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import SidebarItems from './SidebarItems';
 import Items from './Items';
+import CreateItem from './CreateItem';
 import Participants from './Participants';
 import Register from './Register';
 import NetworkNodes from './NetworkNodes';
@@ -212,7 +213,11 @@ export default function Dashboard() {
             <NetworkNodes allUsers={users} user={user} org={org}/>
 
             {show === 'items' 
-              ? <Items />
+              ? <Items user={user} org={org} />
+              : null}
+
+            {show === 'create'
+              ? <CreateItem user={user} org={org} setShow={setShow} />
               : null}
 
             {show === 'users' 

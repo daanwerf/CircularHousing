@@ -6,6 +6,7 @@ import {
     ParticipantController_getByFingerprint_get,
     ParticipantController_getAll_get,
     ItemController_create_post,
+    ItemController_updateQuality_post,
   	ItemController_getAll_get,
   	ItemController_transfer_post,
     User_getCertificate
@@ -18,5 +19,6 @@ export default express.Router()
 	.get('/participant/getAll', ParticipantController_getAll_get)
 	.get('/item/getAll', ItemController_getAll_get)
 	.post('/item/add', ItemController_create_post)
+  .post('/item/updateQuality', ItemController_updateQuality_post)
   .post('/item/transfer', ItemController_transfer_post)
   .get('/user/getCert/:org/:user', User_getCertificate)

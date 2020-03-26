@@ -7,20 +7,10 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import TableItem from './TableItem';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Title from './Title';
-
-// Generate Order Data
-function createData(id, date, name, shipTo, paymentMethod, amount) {
-  return { id, date, name, shipTo, paymentMethod, amount };
-}
-
-const rows = [
-  createData(0, '16 Mar, 2019', 'Elvis Presley', 'Tupelo, MS', 'VISA ⠀•••• 3719', 312.44),
-  createData(1, '16 Mar, 2019', 'Paul McCartney', 'London, UK', 'VISA ⠀•••• 2574', 866.99),
-  createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', 100.81),
-  createData(3, '16 Mar, 2019', 'Michael Jackson', 'Gary, IN', 'AMEX ⠀•••• 2000', 654.39),
-  createData(4, '15 Mar, 2019', 'Bruce Springsteen', 'Long Branch, NJ', 'VISA ⠀•••• 5919', 212.79),
-];
+import UpdateItem from './UpdateItem';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -31,37 +21,66 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Items() {
+export default function Items(props) {
+  const [items, setItems] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [update, setUpdate] = React.useState(false);
+  const [updateId, setUpdateId] = React.useState('');
+
   const classes = useStyles();
+
+  React.useEffect(() => {
+    fetch('http://localhost:8000/item/getAll?org=Government&user=chaincodeAdmin')
+      .then(results => results.json())
+      .then(data => {
+        setItems(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        //TODO: MAKE ERROR MESSAGE HERE
+        console.error(error);
+      });
+  }, []);
+
   return (
     <React.Fragment>
       <Grid item xs={12}>
         <Paper className={classes.paper}>
           <Title>Items</Title>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Ship To</TableCell>
-                <TableCell>Payment Method</TableCell>
-                <TableCell align="right">Sale Amount</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map(row => (
-                <TableRow key={row.id}>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.shipTo}</TableCell>
-                  <TableCell>{row.paymentMethod}</TableCell>
-                  <TableCell align="right">{row.amount}</TableCell>
+          {loading ? <LinearProgress /> :
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Owner</TableCell>
+                  <TableCell>Quality</TableCell>
+                  <TableCell align="right"></TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {items.map(item => (
+                  <TableItem 
+                    key={item._id} 
+                    item={item} 
+                    setUpdate={setUpdate} 
+                    setUpdateId={setUpdateId} 
+                  />
+                ))}
+              </TableBody>
+            </Table>}
         </Paper>
       </Grid>
+
+      {update 
+        ? <UpdateItem 
+            user={props.user} 
+            org={props.org} 
+            itemId={updateId} 
+            setUpdate={setUpdate} 
+          /> 
+        : null
+      }
     </React.Fragment>
   );
 }
