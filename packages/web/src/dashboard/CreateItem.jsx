@@ -28,7 +28,6 @@ export default function CreateItem(props) {
   const org = props.org;
   const setShow = props.setShow;
 
-  const [itemId, setId] = React.useState('');
   const [itemName, setItemname] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [quality, setQuality] = React.useState('');
@@ -48,7 +47,6 @@ export default function CreateItem(props) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: itemId,
         name: itemName,
         owner: username,
         quality: quality,
@@ -75,17 +73,6 @@ export default function CreateItem(props) {
         <Paper className={classes.paper}>
           <Title>Create Item</Title>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <TextField
-                required
-                id="itemId"
-                name="itemId"
-                label="Item ID"
-                value={itemId}
-                onInput={(e : any) => setId(e.target.value)}
-                fullWidth
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 required

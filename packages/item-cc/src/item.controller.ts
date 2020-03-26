@@ -46,7 +46,6 @@ export class ItemController extends ConvectorController {
 
     // TODO: POSSIBLY BETTER THAT WE CREATE SOME UUID AND RETURN IT RIGHT?
     // ALSO: SHOULD BE CHECK THAT ITEM WITH THIS ID DOES NOT ALREADY EXIST
-    var id : string = "kaas";
     item.id = uuidv4();
 
     // TODO: CHECK IF OWNER EXISTS

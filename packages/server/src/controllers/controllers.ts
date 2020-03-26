@@ -107,7 +107,7 @@ export async function ItemController_create_post(req: Request, res: Response): P
     let query = req.query;
     let adp = await getAdapter(query.user, query.org);
     res.status(200).send(await ClientFactory(ItemController, adp)
-        .create(params.id, params.name, params.owner, params.quality, params.materials));
+        .create(params.name, params.owner, params.quality, params.materials));
   } catch (ex) {
         console.log(ex.message); 
         res.statusMessage = parseError(ex.message);
