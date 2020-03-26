@@ -3,6 +3,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
+import TransferWithinAStationIcon from '@material-ui/icons/TransferWithinAStation';
 
 export default function TableItem(props) {
 	let item = props.item;
@@ -11,7 +12,13 @@ export default function TableItem(props) {
 
 	function handleEdit(event) {
 		event.preventDefault();
-		setUpdate(true);
+		setUpdate('edit');
+		setUpdateId(item._id);
+	}
+
+	function handleTransfer(event) {
+		event.preventDefault();
+		setUpdate('transfer');
 		setUpdateId(item._id);
 	}
 
@@ -25,6 +32,9 @@ export default function TableItem(props) {
 				<TableCell align="right">
 					<IconButton onClick={handleEdit}>
 						<EditIcon color="primary" />
+					</IconButton>
+					<IconButton onClick={handleTransfer}>
+						<TransferWithinAStationIcon color="primary" />
 					</IconButton>
 				</TableCell>
 			</TableRow>

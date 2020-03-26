@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 export default function Items(props) {
   const [items, setItems] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-  const [update, setUpdate] = React.useState(false);
+  const [update, setUpdate] = React.useState('');
   const [updateId, setUpdateId] = React.useState('');
 
   const classes = useStyles();
@@ -72,11 +72,12 @@ export default function Items(props) {
         </Paper>
       </Grid>
 
-      {update 
+      {update !== ''
         ? <UpdateItem 
             user={props.user} 
             org={props.org} 
-            itemId={updateId} 
+            itemId={updateId}
+            update={update} 
             setUpdate={setUpdate} 
           /> 
         : null
