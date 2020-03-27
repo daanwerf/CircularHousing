@@ -168,18 +168,18 @@ export class ParticipantController extends ConvectorController<ParticipantContro
     return await Participant.getAll('circular.economy.participant');
   }
 
-  @Invokable()
-  public async getAllItemsOfParticipant(
-    @Param(yup.string())
-      id: string
-  ) {
-    const participantItems = await Item.query(Item, {
-      'selector': {
-        'itemOwner': id,
-      }
-    });
+  // @Invokable()
+  // public async getAllItemsOfParticipant(
+  //   @Param(yup.string())
+  //     id: string
+  // ) {
+  //   const participantItems = await Item.query(Item, {
+  //     'selector': {
+  //       'itemOwner': id,
+  //     }
+  //   });
 
-    return participantItems;
-  }
+  //   return participantItems;
+  // }
 
 }

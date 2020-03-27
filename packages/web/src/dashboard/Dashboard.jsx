@@ -137,7 +137,8 @@ for (let org in networkConfig.topology) {
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  const [show, setShow] = React.useState('items');
+  const [show, setShow] = React.useState('overview');
+  const [fingerprint, setFingerprint] = React.useState('');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -210,7 +211,7 @@ export default function Dashboard() {
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
-            <NetworkNodes allUsers={users} user={user} org={org}/>
+            <NetworkNodes allUsers={users} user={user} org={org} fingerprint={fingerprint} />
 
             {show === 'items' 
               ? <Items user={user} org={org} />
@@ -225,7 +226,7 @@ export default function Dashboard() {
               : null}
 
             {show === 'register' 
-              ? <Register user={user} org={org} setShow={setShow} />
+              ? <Register user={user} org={org} setShow={setShow} setFingerprint={setFingerprint} />
               : null}
           </Grid>
           <Box pt={4}>

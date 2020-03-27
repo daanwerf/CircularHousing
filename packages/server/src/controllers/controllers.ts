@@ -16,7 +16,7 @@ function parseError(errMess) {
 }
 
 export async function ParticipantController_register_post(req: Request, res: Response): Promise<void>{
-    try { 
+    try {
         let params = req.body;
         let query = req.query;
         let adp = await getAdapter(query.user, query.org);
@@ -24,7 +24,7 @@ export async function ParticipantController_register_post(req: Request, res: Res
             .register(params.id, params.name, params.msp, params.certificate);
         res.status(200).send(fact);
     } catch(ex) {
-        console.log(ex.message); 
+        console.log(ex.message);
         res.statusMessage = parseError(ex.message);
         res.status(500).end();
     }
@@ -38,9 +38,9 @@ export async function ParticipantController_changeIdentity_post(req: Request, re
         let fact = await ClientFactory(ParticipantController, adp)
             .changeIdentity(params.id, params.newIdentity);
         res.status(200).send(fact);
-            
+
     } catch(ex) {
-        console.log(ex.message); 
+        console.log(ex.message);
         res.statusMessage = parseError(ex.message);
         res.status(500).end();
     }
@@ -53,13 +53,13 @@ export async function ParticipantController_get_get(req: Request, res: Response)
         let adp = await getAdapter(query.user, query.org);
         res.status(200).send(await ClientFactory(ParticipantController, adp).get(params.id));
     } catch (ex) {
-        console.log(ex.message); 
+        console.log(ex.message);
         res.statusMessage = parseError(ex.message);
         res.status(500).end();
     }
 }
 
-export async function ParticipantController_getByFingerprint_get(req : Request, res : Response): 
+export async function ParticipantController_getByFingerprint_get(req : Request, res : Response):
         Promise<void> {
     try {
         let params = req.params;
@@ -68,7 +68,7 @@ export async function ParticipantController_getByFingerprint_get(req : Request, 
         res.status(200).send(await ClientFactory(ParticipantController, adp)
             .getByFingerprint(params.fingerprint));
     } catch (ex) {
-        console.log(ex.message); 
+        console.log(ex.message);
         res.statusMessage = parseError(ex.message);
         res.status(500).end();
     }
@@ -81,21 +81,36 @@ export async function ParticipantController_getAll_get(req: Request, res: Respon
         let adp = await getAdapter(query.user, query.org);
         res.status(200).send(await ClientFactory(ParticipantController, adp).getAll());
     } catch(ex) {
-        console.log(ex.message); 
+        console.log(ex.message);
         res.statusMessage = parseError(ex.message);
         res.status(500).end();
     }
 }
 
-export async function ItemController_transfer_post(req: Request, res: Response): Promise<void> {
+export async function ItemController_proposeTransfer_post(req: Request, res: Response): Promise<void> {
   try {
     let params = req.body;
     let query = req.query;
     let adp = await getAdapter(query.user, query.org);
     res.status(200).send(await ClientFactory(ItemController, adp)
-        .transfer(params.id, params.newOwner));
+      .proposeTransfer(params.id, params.newOwner));
   } catch (ex) {
-        console.log(ex.message); 
+    console.log(ex.message);
+    res.statusMessage = parseError(ex.message);
+    res.status(500).end();
+  }
+}
+
+export async function ItemController_answerProposal_post(req: Request, res: Response): Promise<void> {
+  try {
+    let params = req.body;
+    let query = req.query;
+    console.log(JSON.stringify(params));
+    let adp = await getAdapter(query.user, query.org);
+    res.status(200).send(await ClientFactory(ItemController, adp)
+        .answerProposal(params.id, params.accept));
+  } catch (ex) {
+        console.log(ex.message);
         res.statusMessage = parseError(ex.message);
         res.status(500).end();
   }
@@ -109,7 +124,7 @@ export async function ItemController_create_post(req: Request, res: Response): P
     res.status(200).send(await ClientFactory(ItemController, adp)
         .create(params.name, params.owner, params.quality, params.materials));
   } catch (ex) {
-        console.log(ex.message); 
+        console.log(ex.message);
         res.statusMessage = parseError(ex.message);
         res.status(500).end();
   }
@@ -123,10 +138,10 @@ export async function ItemController_updateQuality_post(req : Request, res : Res
         res.status(200).send(await ClientFactory(ItemController, adp)
             .updateQuality(params.id, params.quality));
     } catch (ex) {
-        console.log(ex.message); 
+        console.log(ex.message);
         res.statusMessage = parseError(ex.message);
         res.status(500).end();
-    } 
+    }
 }
 
 export async function ItemController_updateName_post(req : Request, res : Response): Promise<void> {
@@ -137,10 +152,10 @@ export async function ItemController_updateName_post(req : Request, res : Respon
         res.status(200).send(await ClientFactory(ItemController, adp)
             .updateName(params.id, params.name));
     } catch (ex) {
-        console.log(ex.message); 
+        console.log(ex.message);
         res.statusMessage = parseError(ex.message);
         res.status(500).end();
-    } 
+    }
 }
 
 export async function ItemController_getAll_get(req: Request, res: Response): Promise<void> {
@@ -149,7 +164,7 @@ export async function ItemController_getAll_get(req: Request, res: Response): Pr
     let adp = await getAdapter(query.user, query.org);
     res.status(200).send(await ClientFactory(ItemController, adp).getAll());
   } catch (ex) {
-        console.log(ex.message); 
+        console.log(ex.message);
         res.statusMessage = parseError(ex.message);
         res.status(500).end();
   }
@@ -167,7 +182,7 @@ export async function User_getCertificate(req: Request, res: Response): Promise<
         let params = req.params;
         let org = params.org;
         let user = params.user;
-        let cert = JSON.parse(fs.readFileSync(path.resolve(os.homedir(), 
+        let cert = JSON.parse(fs.readFileSync(path.resolve(os.homedir(),
             'hyperledger-fabric-network/.hfc-' + org + '/' + user), 'utf8'))
             .enrollment.identity.certificate;
         var parsed = x509.parseCert(cert);

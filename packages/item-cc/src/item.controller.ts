@@ -2,21 +2,21 @@ import * as yup from 'yup';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
-  Controller, 
-  Default, 
-  ConvectorController, 
-  Invokable, 
+  Controller,
+  Default,
+  ConvectorController,
+  Invokable,
   Param
 } from '@worldsibu/convector-core';
 
 import { Item } from './item.model';
 import { Participant } from 'participant-cc';
-import { 
-  Event, 
+import {
   CreateEvent, 
+  Event, 
   RenameEvent, 
   UpdateEvent, 
-  TransferEvent 
+  TransferEvent
 } from './Event';
 
 function checkQuality(quality) {
@@ -43,21 +43,10 @@ export class ItemController extends ConvectorController {
       materials: string
   ) {
     let item = new Item();
+    await ItemController.checkValidOwner(this.sender, ownerID);
 
     // Create a unique UUID for the item
     item.id = uuidv4();
-
-    // Check if the owner exists
-    const owner = await Participant.getOne(ownerID);
-    if (!owner || !owner.id || !owner.identities) {
-      throw new Error('Given participant does not currently exist on the ledger')
-    }
-
-    // Check if this participant is not creating the item for another participant
-    const ownerIdentity = owner.identities.filter(identity => identity.status === true)[0];
-    if (!(ownerIdentity.fingerprint === this.sender)) {
-      throw new Error('Cannot create an item for a different participant')
-    }
 
     item.name = name;
     item.itemOwner = ownerID;
@@ -67,15 +56,13 @@ export class ItemController extends ConvectorController {
 
     // TODO: DO SOME TRIMMING OF WHITESPACE HERE
     var a: Array<string> = materials.split(',');
-    console.log(a);
     item.materials = a;
 
-    var h : Array<Event> = new Array<Event>();
-    h.push(new CreateEvent(item.itemOwner, item.name, item.quality));   
+    var h: Array<Event> = new Array<Event>();
+    h.push(new CreateEvent(item.itemOwner, item.name, item.quality));
     item.itemHistory = h;
 
     await item.save();
-    return item;
   }
 
   @Invokable()
@@ -85,29 +72,18 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       name: string,
   ) {
-    let item = await Item.getOne(id)
-    if (!item || !item.id) {
-      throw new Error('Given item does not currently exist on the ledger')
-    }
+    let item = await Item.getOne(id);
+    await ItemController.checkValidItem(item);
+    await ItemController.checkValidOwner(this.sender, item.itemOwner);
 
-    const owner = await Participant.getOne(item.itemOwner);
-    if (!owner || !owner.id || !owner.identities) {
-      throw new Error('Given participant does not currently exist on the ledger')
-    }
+    var oldName = item.name;
+    item.name = name;
 
-    const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
-    if (currentOwnerIdentity.fingerprint === this.sender) {
-      var oldName = item.name;
-      item.name = name;
+    var e : Event = new RenameEvent(item.itemOwner, item.name, oldName);
+    item.itemHistory.push(e);
 
-      var e : Event = new RenameEvent(item.itemOwner, item.name, oldName);
-      item.itemHistory.push(e);
-
-      await item.save();
-      console.log('${owner.name} has changed the name of item ${item.id} to ${item.name}')
-    } else {
-      throw new Error(this.sender + ' is not allowed to edit this item, only ' + owner.name + ' is allowed to')
-    }
+    await item.save();
+    console.log(`${item.itemOwner} changed the name of item ${item.id} to ${item.name}`)
   }
 
   @Invokable()
@@ -117,64 +93,18 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       quality: string,
   ) {
-    let item = await Item.getOne(id)
-    if (!item || !item.id) {
-      throw new Error('Given item does not currently exist on the ledger')
-    }
-
-    const owner = await Participant.getOne(item.itemOwner);
-    if (!owner || !owner.id || !owner.identities) {
-      throw new Error('Given participant as owner does not currently exist on the ledger')
-    }
-
-    const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
-    if (currentOwnerIdentity.fingerprint === this.sender) {
-      var oldQuality = item.quality;
-      item.quality = checkQuality(quality);
-
-      var e : Event = new UpdateEvent(item.itemOwner, item.name, oldQuality, item.quality);
-      item.itemHistory.push(e);
-
-      await item.save();
-      console.log(owner.name + ' has changed the quality of item ' + item.name + ' to ' + item.quality)
-    } else {
-      throw new Error(this.sender + ' is not allowed to edit this item, only ' + owner.name + ' is allowed to')
-    }
-  }
-
-  @Invokable()
-  public async transfer(
-    @Param(yup.string())
-      id: string,
-    @Param(yup.string())
-      newOwner: string,
-  ) {
     let item = await Item.getOne(id);
-    if (!item || !item.id) {
-      throw new Error('Given item does not currently exist on the ledger');
-    }
+    await ItemController.checkValidItem(item);
+    await ItemController.checkValidOwner(this.sender, item.itemOwner);
+    checkQuality(quality);
+    let oldQuality = item.quality;
+    item.quality = quality;
 
-    console.log(item.itemOwner);
-    const owner = await Participant.getOne(item.itemOwner);
-    const allPart = await Participant.getAll('circular.economy.participant');
-    console.log(allPart);
-    if (!owner || !owner.id || !owner.identities) {
-      throw new Error('Given participant as owner does not currently exist on the ledger');
-    }
+    var e : Event = new UpdateEvent(item.itemOwner, item.name, oldQuality, item.quality);
+    item.itemHistory.push(e);
 
-    const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
-    if (currentOwnerIdentity.fingerprint === this.sender) {
-      const oldOwner = item.itemOwner;
-      item.itemOwner = newOwner;
-
-      var e : Event = new TransferEvent(item.itemOwner, item.name, oldOwner);
-      item.itemHistory.push(e);
-
-      await item.save();
-      console.log('Participant ' + oldOwner + ' has transferred ownership of item ' + item.name + ' to participant ' + item.itemOwner);
-    } else {
-      throw new Error(this.sender + ' is not allowed to transfer this item, only ' + owner.name + ' is allowed to');
-    }
+    await item.save();
+    console.log(`${item.itemOwner} changed the quality of item ${item.id} to ${item.quality}`)
   }
 
   @Invokable()
@@ -188,5 +118,74 @@ export class ItemController extends ConvectorController {
   @Invokable()
   public async getAll() {
     return await Item.getAll('io.worldsibu.item');
+  }
+
+  //TODO needs spec test
+  @Invokable()
+  public async proposeTransfer(
+    @Param(yup.string())
+      itemId: string,
+    @Param(yup.string())
+      transferTarget: string,
+  ) {
+
+    //first check if item exists
+    let item = await Item.getOne(itemId);
+    await ItemController.checkValidItem(item);
+    await ItemController.checkValidOwner(this.sender, item.itemOwner);
+
+    //then check if the target is legit
+    const newOwner = await Participant.getOne(transferTarget);
+    if (!newOwner || !newOwner.identities) {
+      throw new Error('Given participant as transfer target does not currently exist on the ledger');
+    }
+
+    //handle the proposal
+    item.proposedOwner = transferTarget;
+    await item.save();
+    console.log(`$Participant ${item.itemOwner} proposed a transfer of ownership of item ${item.name} to participant ${item.itemOwner}`);
+  }
+
+  @Invokable()
+  public async answerProposal(
+    @Param(yup.string())
+      itemId: string,
+    @Param(yup.boolean())
+      accept: boolean
+  ) {
+    //first check if item exists
+    let item = await Item.getOne(itemId);
+    await ItemController.checkValidItem(item);
+    await ItemController.checkValidOwner(this.sender, item.proposedOwner);
+
+    //If the proposal is accepted, change the item owner
+    if (accept) {
+      item.itemHistory.push(new TransferEvent(item.proposedOwner, item.name, item.itemOwner));
+      item.itemOwner = item.proposedOwner;
+    }
+    item.proposedOwner = "";
+
+    await item.save();
+  }
+
+  private static async checkValidOwner(sender: string, itemOwner: string) {
+    const owner = await Participant.getOne(itemOwner);
+    if (!owner || !owner.identities) {
+      throw new Error('Given participant as owner does not currently exist on the ledger');
+    }
+
+    const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
+    //then check if the item is truly yours to be transferred
+    if (currentOwnerIdentity.fingerprint !== sender) {
+      throw new Error(`You are not allowed to do this action, only ${owner.name} is allowed to`);
+    }
+    return true;
+  }
+
+  private static async checkValidItem(item: Item) {
+    if (!item || !item.id) {
+      throw new Error('Given item does not currently exist on the ledger')
+    }
+    return true;
   }
 }

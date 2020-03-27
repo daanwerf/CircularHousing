@@ -39,7 +39,7 @@ export default function UpdateQuality(props) {
     event.preventDefault();
     setLoading(true);
     setAlert('');
-    fetch('http://localhost:8000/item/transfer?org=' + org + '&user=' + user, {
+    fetch('http://localhost:8000/item/proposeTransfer?org=' + org + '&user=' + user, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -69,7 +69,7 @@ export default function UpdateQuality(props) {
     <React.Fragment>
       <Grid item xs={12}>
         <Paper className={classes.paper}>
-          <Title>Transfer of item {itemId}</Title>
+          <Title>Propose transfer of item {itemId}</Title>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
@@ -83,12 +83,12 @@ export default function UpdateQuality(props) {
               />
             </Grid>
             <Grid className={classes.updateButton}>
-              {loading 
-                ? <CircularProgress /> 
-                : <Button 
-                    onClick={handleSubmit} 
+              {loading
+                ? <CircularProgress />
+                : <Button
+                    onClick={handleSubmit}
                     variant="contained"
-                  >Transfer Item
+                  >Create proposal
                   </Button>
               }
             </Grid>

@@ -41,7 +41,7 @@ export default function Items(props) {
           //TODO: MAKE ERROR MESSAGE HERE
           console.error(error);
         });
-    } 
+    }
   }, [loading]);
 
   return (
@@ -57,16 +57,20 @@ export default function Items(props) {
                   <TableCell>Name</TableCell>
                   <TableCell>Owner</TableCell>
                   <TableCell>Quality</TableCell>
+                  <TableCell>Transfer</TableCell>
                   <TableCell align="right"></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {items.map(item => (
-                  <TableItem 
-                    key={item._id} 
-                    item={item} 
-                    setUpdate={setUpdate} 
-                    setUpdateId={setUpdateId} 
+                  <TableItem
+                    user={props.user}
+                    org={props.org}
+                    key={item._id}
+                    item={item}
+                    setUpdate={setUpdate}
+                    setUpdateId={setUpdateId}
+                    setLoading={setLoading}
                   />
                 ))}
               </TableBody>
@@ -75,14 +79,14 @@ export default function Items(props) {
       </Grid>
 
       {update !== ''
-        ? <UpdateItem 
-            user={props.user} 
+        ? <UpdateItem
+            user={props.user}
             org={props.org}
             item={items.filter(item => item._id === updateId)[0]}
-            update={update} 
-            setUpdate={setUpdate} 
+            update={update}
+            setUpdate={setUpdate}
             setLoading={setLoading}
-          /> 
+          />
         : null
       }
     </React.Fragment>
