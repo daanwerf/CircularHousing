@@ -27,6 +27,12 @@ export default function SidebarItems(props) {
           </ListItemIcon>
           <ListItemText primary="Items" />
         </ListItem>
+        <ListItem button onClick={() => setShow('create')}>
+          <ListItemIcon>
+            <ShoppingCartIcon />
+          </ListItemIcon>
+          <ListItemText primary="Create Item" />
+        </ListItem>
         <ListItem button onClick={() => setShow('users')}>
           <ListItemIcon>
             <PeopleIcon />

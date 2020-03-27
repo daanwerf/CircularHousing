@@ -15,23 +15,22 @@ const useStyles = makeStyles(theme => ({
     overflow: 'auto',
     flexDirection: 'column',
   },
-  registerButton: {
+  updateButton: {
     marginLeft: theme.spacing(1),
     padding: theme.spacing(1)
   }
 }));
 
-export default function Register(props) {
+export default function UpdateQuality(props) {
   const classes = useStyles();
 
   const user = props.user;
   const org = props.org;
-  const setShow = props.setShow;
+  const itemId = props.itemId;
+  const setUpdate = props.setUpdate;
+  const setItemsLoading = props.setLoading;
 
-  const [name, setName] = React.useState('');
-  const [username, setUsername] = React.useState('');
-  const [msp, setMsp] = React.useState('');
-  const [fingerprint, setFingerprint] = React.useState('');
+  const [newQuality, setNewquality] = React.useState('');
 
   const [alertMessage, setAlert] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -40,24 +39,22 @@ export default function Register(props) {
     event.preventDefault();
     setLoading(true);
     setAlert('');
-    fetch('http://localhost:8000/participant/register?org=' + org + '&user=' + user, {
+    fetch('http://localhost:8000/item/updateQuality?org=' + org + '&user=' + user, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: username,
-        name: name,
-        msp: msp,
-        certificate: fingerprint
+        id: itemId,
+        quality: newQuality
       })
     })
     .then((response) => {
       setLoading(false);
       if (response.status === 200) {
-        setShow('users');
-        props.setFingerprint(fingerprint);
+        setUpdate('');
+        setItemsLoading(true);
       } else {
         setAlert(response.statusText);
       }
@@ -72,67 +69,30 @@ export default function Register(props) {
     <React.Fragment>
       <Grid item xs={12}>
         <Paper className={classes.paper}>
-          <Title>Register Participant</Title>
+          <Title>Update Quality of item {itemId}</Title>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
                 required
-                id="fullName"
-                name="fullName"
-                label="Full Name"
-                value={name}
-                onInput={(e : any) => setName(e.target.value)}
+                id="quality"
+                name="quality"
+                label="New Quality"
+                value={newQuality}
+                onInput={e => setNewquality(e.target.value)}
                 fullWidth
-                autoComplete="fname"
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                id="username"
-                name="username"
-                label="Username"
-                value={username}
-                onInput={(e : any) => setUsername(e.target.value)}
-                fullWidth
-                autoComplete="username"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                id="organisation"
-                name="organisation"
-                label="Organisation"
-                value={msp}
-                onInput={(e : any) => setMsp(e.target.value)}
-                fullWidth
-                autoComplete="organisation"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                id="fingerprint"
-                name="fingerprint"
-                label="Fingerprint"
-                value={fingerprint}
-                onInput={(e : any) => setFingerprint(e.target.value)}
-                fullWidth
-                autoComplete="fingerprint"
-              />
-            </Grid>
-            <Grid className={classes.registerButton}>
+            <Grid className={classes.updateButton}>
               {loading 
                 ? <CircularProgress /> 
                 : <Button 
                     onClick={handleSubmit} 
                     variant="contained"
-                  >Register
+                  >Update Item
                   </Button>
               }
             </Grid>
-            <Grid className={classes.registerButton}>
+            <Grid className={classes.createButton}>
               {alertMessage === '' ? null :
                 <Alert severity="error">{alertMessage}</Alert>
               }
