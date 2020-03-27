@@ -1,7 +1,12 @@
 import * as yup from 'yup';
 import { Event } from './Event';
-import {Transfer} from "./Transfer";
-import {ConvectorModel, Default, ReadOnly, Required, Validate} from '@worldsibu/convector-core-model';
+import {
+  ConvectorModel, 
+  Default, 
+  ReadOnly, 
+  Required, 
+  Validate
+} from '@worldsibu/convector-core-model';
 
 export class Item extends ConvectorModel<Item> {
   @ReadOnly()

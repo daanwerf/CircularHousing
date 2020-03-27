@@ -11,8 +11,7 @@ import {
 
 import {Item} from './item.model';
 import {Participant} from 'participant-cc';
-import {CreateEvent, Event, RenameEvent, TransferEvent} from './Event';
-import {Transfer} from "./Transfer";
+import {CreateEvent, Event, RenameEvent, UpdateEvent, TransferEvent} from './Event';
 
 function checkQuality(quality) {
   const allowedQualities = ['Good', 'Usable', 'Bad', 'Broken'];
@@ -96,7 +95,11 @@ export class ItemController extends ConvectorController {
     await ItemController.checkValidItem(item);
     await ItemController.checkValidOwner(this.sender, item.itemOwner);
     checkQuality(quality);
+    let oldQuality = item.quality;
     item.quality = quality;
+
+    var e : Event = new UpdateEvent(item.itemOwner, item.name, oldQuality, item.quality);
+    item.itemHistory.push(e);
 
     await item.save();
     console.log(`${item.itemOwner} changed the quality of item ${item.id} to ${item.quality}`)
