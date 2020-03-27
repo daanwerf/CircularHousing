@@ -9,9 +9,11 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from "@material-ui/core/Button";
 import Alert from "@material-ui/lab/Alert";
 import Grid from "@material-ui/core/Grid";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default function TableItem(props) {
   const [alertMessage, setAlert] = React.useState('');
+  const [loadingProposalAnswer, setLoadingProposalAnswer] = React.useState(false);
 
   let item = props.item;
   let setUpdate = props.setUpdate;
@@ -59,6 +61,7 @@ export default function TableItem(props) {
 
   function answerProposal(accept) {
     setAlert('');
+    setLoadingProposalAnswer(true);
     fetch('http://localhost:8000/item/answerProposal?org=' + org + '&user=' + user, {
       method: 'POST',
       headers: {
@@ -70,6 +73,7 @@ export default function TableItem(props) {
         accept: accept.toString()
       })
     }).then((response) => {
+      setLoadingProposalAnswer(false);
       if (response.status === 200) {
         setUpdate('');
         setLoading(true);
@@ -79,6 +83,7 @@ export default function TableItem(props) {
         console.log(response.statusText);
       }
     }).catch(response => {
+      setLoadingProposalAnswer(false);
       console.log(response);
     })
   }
@@ -90,13 +95,18 @@ export default function TableItem(props) {
         <TableCell>{item._name}</TableCell>
         <TableCell>{item._itemOwner}</TableCell>
         <TableCell>{item._quality}</TableCell>
-        <TableCell>{(item._proposedOwner && item._proposedOwner.length > 0) ?
-          <div>
-          <Button onClick={finishProposal} variant="contained">Accept</Button><Button onClick={refuseProposal} variant="contained">Deny</Button>
-            {alertMessage === '' ? null :
-              <Alert severity="error">{alertMessage}</Alert>
-            }
-        </div> : ""}</TableCell>
+        <TableCell>
+          {loadingProposalAnswer ? <CircularProgress /> :
+            item._proposedOwner && item._proposedOwner.length > 0 ?
+            	<div>
+  	          	<Button onClick={finishProposal} variant="contained">Accept</Button>
+                <Button onClick={refuseProposal} variant="contained">Deny</Button>
+  	            {alertMessage === '' ? null :
+  	              <Alert severity="error">{alertMessage}</Alert>
+  	            }
+          	</div> : ""
+          }
+        </TableCell>
         <TableCell align="right">
           <IconButton onClick={handleViewItem}>
             <ExpandMoreIcon color="primary"/>
