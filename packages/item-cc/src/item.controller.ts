@@ -9,9 +9,15 @@ import {
   Param
 } from '@worldsibu/convector-core';
 
-import {Item} from './item.model';
-import {Participant} from 'participant-cc';
-import {CreateEvent, Event, RenameEvent, UpdateEvent, TransferEvent} from './Event';
+import { Item } from './item.model';
+import { Participant } from 'participant-cc';
+import {
+  CreateEvent, 
+  Event, 
+  RenameEvent, 
+  UpdateEvent, 
+  TransferEvent
+} from './Event';
 
 function checkQuality(quality) {
   const allowedQualities = ['Good', 'Usable', 'Bad', 'Broken'];
@@ -37,12 +43,11 @@ export class ItemController extends ConvectorController {
       materials: string
   ) {
     let item = new Item();
+    await ItemController.checkValidOwner(this.sender, ownerID);
 
-    // TODO: POSSIBLY BETTER THAT WE CREATE SOME UUID AND RETURN IT RIGHT?
-    // ALSO: SHOULD BE CHECK THAT ITEM WITH THIS ID DOES NOT ALREADY EXIST
+    // Create a unique UUID for the item
     item.id = uuidv4();
 
-    // TODO: CHECK IF OWNER EXISTS
     item.name = name;
     item.itemOwner = ownerID;
 
@@ -51,7 +56,6 @@ export class ItemController extends ConvectorController {
 
     // TODO: DO SOME TRIMMING OF WHITESPACE HERE
     var a: Array<string> = materials.split(',');
-    console.log(a);
     item.materials = a;
 
     var h: Array<Event> = new Array<Event>();
@@ -59,7 +63,6 @@ export class ItemController extends ConvectorController {
     item.itemHistory = h;
 
     await item.save();
-    return item;
   }
 
   @Invokable()
@@ -76,12 +79,11 @@ export class ItemController extends ConvectorController {
     var oldName = item.name;
     item.name = name;
 
-    var e: Event = new RenameEvent(item.itemOwner, item.name, oldName);
+    var e : Event = new RenameEvent(item.itemOwner, item.name, oldName);
     item.itemHistory.push(e);
 
     await item.save();
     console.log(`${item.itemOwner} changed the name of item ${item.id} to ${item.name}`)
-
   }
 
   @Invokable()
