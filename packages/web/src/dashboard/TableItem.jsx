@@ -10,6 +10,8 @@ import Button from "@material-ui/core/Button";
 import Alert from "@material-ui/lab/Alert";
 import Grid from "@material-ui/core/Grid";
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ClearIcon from '@material-ui/icons/Clear';
+import CheckIcon from '@material-ui/icons/Check';
 
 export default function TableItem(props) {
   const [alertMessage, setAlert] = React.useState('');
@@ -91,7 +93,7 @@ export default function TableItem(props) {
   return (
     <React.Fragment>
       <TableRow>
-        <TableCell>{item._id}</TableCell>
+        <TableCell>{item._id.substring(0, 10)}...</TableCell>
         <TableCell>{item._name}</TableCell>
         <TableCell>{item._itemOwner}</TableCell>
         <TableCell>{item._quality}</TableCell>
@@ -99,8 +101,13 @@ export default function TableItem(props) {
           {loadingProposalAnswer ? <CircularProgress /> :
             item._proposedOwner && item._proposedOwner.length > 0 ?
             	<div>
-  	          	<Button onClick={finishProposal} variant="contained">Accept</Button>
-                <Button onClick={refuseProposal} variant="contained">Deny</Button>
+                {item._proposedOwner}
+                <IconButton onClick={finishProposal}>
+                  <CheckIcon style={{fill: "green"}} />
+                </IconButton>
+                <IconButton onClick={refuseProposal}>
+                  <ClearIcon style={{fill: "red"}} />
+                </IconButton>
   	            {alertMessage === '' ? null :
   	              <Alert severity="error">{alertMessage}</Alert>
   	            }
