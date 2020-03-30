@@ -81,8 +81,6 @@ export default function TableItem(props) {
         setLoading(true);
       } else {
         setAlert(response.statusText);
-        console.log(response);
-        console.log(response.statusText);
       }
     }).catch(response => {
       setLoadingProposalAnswer(false);
