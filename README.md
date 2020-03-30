@@ -135,6 +135,14 @@ To run tests use:
 npm run test
 ```
 
-# TODO:
-* Write complete usecase example
-* Explain how the network is set up (network file)
+## Troubleshooting
+This section describes common problems that can occur and how to fix them.
+
+
+### x509 module
+**Problem**
+`Cannot find module './build/Release/x509'` occurs when running e.g. `CERTIFICATE=$(node ./packages/admin/get_certificate.js WoodGatherer Casper)`, even though the package is in package.json and should have been installed with `npm i`. 
+
+**Solution**
+From root run:
+`npm install x509`
