@@ -139,6 +139,7 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(true);
   const [show, setShow] = React.useState('overview');
   const [fingerprint, setFingerprint] = React.useState('');
+  const [loadingItems, setLoadingitems] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -214,7 +215,13 @@ export default function Dashboard() {
             <NetworkNodes allUsers={users} user={user} org={org} fingerprint={fingerprint} />
 
             {show === 'items' 
-              ? <Items user={user} org={org} />
+              ? <Items 
+                  user={user} 
+                  org={org} 
+                  apiCall={'getAll'} 
+                  loading={loadingItems}
+                  setLoading={setLoadingitems}
+                />
               : null}
 
             {show === 'create'
@@ -222,7 +229,7 @@ export default function Dashboard() {
               : null}
 
             {show === 'users' 
-              ? <Participants />
+              ? <Participants user={user} org={org} />
               : null}
 
             {show === 'register' 

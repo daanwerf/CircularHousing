@@ -8,7 +8,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import StorageIcon from '@material-ui/icons/Storage';
+import IconButton from '@material-ui/core/IconButton';
 import Title from './Title';
+import Items from './Items';
 
 const useStyles = makeStyles(theme => ({
   seeMore: {
@@ -22,10 +25,20 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Participants() {
+export default function Participants(props) {
   const classes = useStyles();
   const [allPart, setAllpart] = React.useState([]);
   const [isLoading, setLoading] = React.useState(true);
+  const [showItems, setShowitems] = React.useState(false);
+  const [selectedPart, setSelectedpart] = React.useState('');
+  const [loadingItems, setLoadingitems] = React.useState(false);
+
+  function loadItems(event) {
+    const participant = event.currentTarget.getAttribute('data-item');
+    setLoadingitems(true);
+    setShowitems(true);
+    setSelectedpart(participant);
+  }
 
   React.useEffect(() => {
     fetch('http://localhost:8000/participant/getAll?org=Government&user=chaincodeAdmin')
@@ -64,7 +77,11 @@ export default function Participants() {
                     <TableCell>{part._msp}</TableCell>
                     <TableCell>{part._identities
                       .filter((identity : any) => identity.status === true)[0].fingerprint}</TableCell>
-                    <TableCell align="right">VIEWALLITEMSTODO</TableCell>
+                    <TableCell align="right" data-item={part._id}>
+                      <IconButton onClick={loadItems} data-item={part._id}>
+                        <StorageIcon />
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -72,6 +89,17 @@ export default function Participants() {
           }
         </Paper>
       </Grid>
+
+      {showItems
+        ? <Items 
+            user={props.user} 
+            org={props.org} 
+            apiCall={'getParticipantItems/' + selectedPart} 
+            loading={loadingItems}
+            setLoading={setLoadingitems}
+          />
+        : null
+      }
     </React.Fragment>
   );
 }

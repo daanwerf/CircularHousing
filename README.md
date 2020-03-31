@@ -39,7 +39,7 @@ hurl invoke circularhousing participant_register tim "Tim" WoodGatherer $CERTIFI
 hurl invoke circularhousing participant_get tim -o WoodGatherer -u Tim
 
 # Create an item
-hurl invoke circularhousing item_create item1 "Item 1" casper Good "material1,material2" -o WoodGatherer -u Casper
+hurl invoke circularhousing item_create "Item 1" casper Good "material1,material2" -o WoodGatherer -u Casper
 
 # Get item
 hurl invoke circularhousing item_get item1 -o WoodGatherer -u Casper
