@@ -63,6 +63,7 @@ export class ItemController extends ConvectorController {
     item.itemHistory = h;
 
     await item.save();
+    return item;
   }
 
   @Invokable()
