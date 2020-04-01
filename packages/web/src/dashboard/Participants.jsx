@@ -10,11 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import StorageIcon from '@material-ui/icons/Storage';
 import IconButton from '@material-ui/core/IconButton';
-import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown';
-import StreetviewIcon from '@material-ui/icons/Streetview';
 import Title from './Title';
-import Items from './Items';
-import Proposals from './Proposals';
 import ItemsDialog from './ItemsDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -34,25 +30,7 @@ export default function Participants(props) {
   const [allPart, setAllpart] = React.useState([]);
   const [isLoading, setLoading] = React.useState(true);
   const [dialogOpen, setDialogopen] = React.useState(false);
-  const [showItems, setShowitems] = React.useState(false);
   const [selectedPart, setSelectedpart] = React.useState('');
-  const [loadingItems, setLoadingitems] = React.useState(false);
-  const [showProposals, setShowproposals] = React.useState(false);
-  const [loadingProposals, setLoadingproposals] = React.useState(false);
-
-  function loadItems(event) {
-    const participant = event.currentTarget.getAttribute('data-item');
-    setLoadingitems(true);
-    setShowitems(true);
-    setSelectedpart(participant);
-  }
-
-  function loadProposals(event) {
-    const participant = event.currentTarget.getAttribute('data-item');
-    setLoadingproposals(true);
-    setShowproposals(true);
-    setSelectedpart(participant);
-  }
 
   function showDialog(event) {
     console.log('Show dialog!');
@@ -86,7 +64,6 @@ export default function Participants(props) {
                   <TableCell>Username</TableCell>
                   <TableCell>Full Name</TableCell>
                   <TableCell>Organisation</TableCell>
-                  <TableCell>Fingerprint</TableCell>
                   <TableCell align="right">View items</TableCell>
                 </TableRow>
               </TableHead>
@@ -96,17 +73,9 @@ export default function Participants(props) {
                     <TableCell>{part._id}</TableCell>
                     <TableCell>{part._name}</TableCell>
                     <TableCell>{part._msp}</TableCell>
-                    <TableCell>{part._identities
-                      .filter((identity : any) => identity.status === true)[0].fingerprint}</TableCell>
                     <TableCell align="right" data-item={part._id}>
-                      <IconButton onClick={loadItems} data-item={part._id}>
-                        <StorageIcon />
-                      </IconButton>
-                      <IconButton onClick={loadProposals} data-item={part._id}>
-                        <ThumbsUpDownIcon />
-                      </IconButton>
                       <IconButton onClick={showDialog} data-item={part._id}>
-                        <StreetviewIcon />
+                        <StorageIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -124,28 +93,6 @@ export default function Participants(props) {
         org={props.org}
         participant={selectedPart}
       />
-
-      {showItems
-        ? <Items 
-            user={props.user} 
-            org={props.org} 
-            apiCall={'getParticipantItems/' + selectedPart} 
-            loading={loadingItems}
-            setLoading={setLoadingitems}
-          />
-        : null
-      }
-
-      {showProposals
-        ? <Proposals 
-            user={props.user}
-            org={props.org}
-            participant={selectedPart}
-            loading={loadingProposals}
-            setLoading={setLoadingproposals}
-          />
-        : null
-      }
     </React.Fragment>
   );
 }

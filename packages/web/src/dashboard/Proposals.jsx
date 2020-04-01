@@ -7,7 +7,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import TableItem from './TableItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Alert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,7 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ClearIcon from '@material-ui/icons/Clear';
 import CheckIcon from '@material-ui/icons/Check';
 import Title from './Title';
-import UpdateItem from './UpdateItem';
+import FullItem from './FullItem';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -30,17 +29,19 @@ const useStyles = makeStyles(theme => ({
 export default function Proposals(props) {
   const [items, setItems] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-  const [update, setUpdate] = React.useState('');
-  const [updateId, setUpdateId] = React.useState('');
   const [alert, setAlert] = React.useState('');
   const [proposalAlert, setProposalalert] = React.useState('');
   const [loadingProposalAnswer, setLoadingproposalanswer] = React.useState(false);
-  const itemFetch = props.apiCall;
+  const [view, setView] = React.useState(false);
+  const [viewId, setViewId] = React.useState('');
 
   const classes = useStyles();
 
   function handleViewItem(event) {
-    console.log('View item!');
+    const itemId = event.currentTarget.getAttribute('data-item');
+    console.log('View item ' + itemId);
+    setViewId(itemId);
+    setView(true);
   }
 
   function acceptProposal(event) {
@@ -133,16 +134,15 @@ export default function Proposals(props) {
                       <TableCell>{item._name}</TableCell>
                       <TableCell>{item._itemOwner}</TableCell>
                       <TableCell>{item._quality}</TableCell>
-                      <TableCell align="right">
-                        <IconButton onClick={handleViewItem}>
+                      <TableCell>
+                        <IconButton onClick={handleViewItem} data-item={item._id}>
                           <ExpandMoreIcon color="primary"/>
                         </IconButton>
                       </TableCell>
-                      <TableCell>
+                      <TableCell align="right">
                         {loadingProposalAnswer ? <CircularProgress /> :
                           item._proposedOwner && item._proposedOwner.length > 0 ?
                             <div>
-                              {item._proposedOwner}
                               <IconButton onClick={acceptProposal} data-item={item._id}>
                                 <CheckIcon style={{fill: "green"}} />
                               </IconButton>
@@ -162,6 +162,13 @@ export default function Proposals(props) {
             }
         </Paper>
       </Grid>
+
+      {view
+        ? <FullItem
+            item={items.filter(item => item._id === viewId)[0]}
+          />
+        : null
+      }
     </React.Fragment>
   );
 }

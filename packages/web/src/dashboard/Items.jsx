@@ -12,6 +12,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Alert from '@material-ui/lab/Alert';
 import Title from './Title';
 import UpdateItem from './UpdateItem';
+import FullItem from './FullItem';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -29,8 +30,8 @@ export default function Items(props) {
   const org = props.org;
   const user = props.user;
 
-  const [update, setUpdate] = React.useState('');
-  const [updateId, setUpdateId] = React.useState('');
+  const [view, setView] = React.useState(false);
+  const [viewId, setViewId] = React.useState('');
   const [alert, setAlert] = React.useState('');
 
   const classes = useStyles();
@@ -66,7 +67,7 @@ export default function Items(props) {
       <Grid item xs={12}>
         <Paper className={classes.paper}>
           {alert !== '' ? <Alert severity="error">{alert}</Alert> 
-          : <div><Title>Items</Title>
+          : <div><Title>Items for {participant}</Title>
             {loading ? <LinearProgress /> :
               <Table size="small">
                 <TableHead>
@@ -86,9 +87,10 @@ export default function Items(props) {
                       org={props.org}
                       key={item._id}
                       item={item}
-                      setUpdate={setUpdate}
-                      setUpdateId={setUpdateId}
-                      setLoading={setLoading}
+                      view={view}
+                      setView={setView}
+                      viewId={viewId}
+                      setViewId={setViewId}
                     />
                   ))}
                 </TableBody>
@@ -97,14 +99,9 @@ export default function Items(props) {
         </Paper>
       </Grid>
 
-      {update !== ''
-        ? <UpdateItem
-            user={props.user}
-            org={props.org}
-            item={items.filter(item => item._id === updateId)[0]}
-            update={update}
-            setUpdate={setUpdate}
-            setLoading={setLoading}
+      {view
+        ? <FullItem
+            item={items.filter(item => item._id === viewId)[0]}
           />
         : null
       }

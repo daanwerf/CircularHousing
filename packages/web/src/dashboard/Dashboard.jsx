@@ -214,16 +214,6 @@ export default function Dashboard() {
           <Grid container spacing={3}>
             <NetworkNodes allUsers={users} user={user} org={org} fingerprint={fingerprint} />
 
-            {show === 'items' 
-              ? <Items 
-                  user={user} 
-                  org={org} 
-                  apiCall={'getAll'} 
-                  loading={loadingItems}
-                  setLoading={setLoadingitems}
-                />
-              : null}
-
             {show === 'create'
               ? <CreateItem user={user} org={org} setShow={setShow} />
               : null}

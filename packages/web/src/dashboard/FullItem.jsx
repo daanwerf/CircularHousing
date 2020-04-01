@@ -8,7 +8,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
-import SingleNode from './SingleNode';
 
 const useStyles = makeStyles(theme => ({
   paper: {
