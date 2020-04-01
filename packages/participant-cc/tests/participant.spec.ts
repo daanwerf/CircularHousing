@@ -32,21 +32,22 @@ describe('Participant', () => {
     'lwIgPC/qGM1yeVinfN0z7M68l8rWn4M4CVR2DtKMpk3G9k9=' +
     '-----END CERTIFICATE-----';
 
+    const mockIdentity2 = '66:D1:49:80:C8:AF:09:48:6E:0E:5F:0A:CA:EE:87:CB:16:C4:78:61';
     const mockCertificate2 = '-----BEGIN CERTIFICATE-----' +
-    'NIICjzCCAjWgAwIBAgIUITsRsw5SIJ+33SKwM4j1Dl4cDXQwCgYIKoZIzj0EAwIw' +
-    'czELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh' +
-    'biBGcmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMT' +
-    'E2NhLm9yZzEuZXhhbXBsZS5jb20wHhcNMTgwODEzMDEyOTAwWhcNMTkwODEzMDEz' +
-    'NDAwWjBCMTAwDQYDVQQLEwZjbGllbnQwCwYDVQQLEwRvcmcxMBIGA1UECxMLZGVw' +
-    'YXJ0bWVudDExDjAMBgNVBAMTBXVzZXIzMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcD' +
-    'QgAEcrfc0HHq5LG1UbyPSRLNjIQKqYoNY7/zPFC3UTJi3TTaIEqgVL6DF/8JIKuj' +
-    'IT/lwkuemafacXj8pdPw3Zyqs6OB1zCB1DAOBgNVHQ8BAf8EBAMCB4AwDAYDVR0T' +
-    'AQH/BAIwADAdBgNVHQ4EFgQUHFUlW/XJC7VcJe5pLFkz+xlMNpowKwYDVR0jBCQw' +
-    'IoAgQ3hSDt2ktmSXZrQ6AY0EK2UHhXMx8Yq6O7XiA+X6vS4waAYIKgMEBQYHCAEE' +
-    'XHsiYXR0cnMiOnsiaGYuQWZmaWxpYXRpb24iOiJvcmcxLmRlcGFydG1lbnQxIiwi' +
-    'aGYuRW5yb2xsbWVudElEIjoidXNlcjMiLCJoZi5UeXBlIjoiY2xpZW50In19MAoG' +
-    'CCqGSM49BAMCA0gAMEUCIQCNsmDjOXF/NvciSZebfk2hfSr/v5CqRD7pIHCq3lIR' +
-    'lwIgPC/qGM1yeVinfN0z7M68l8rWn4M4CVR2DtKMpk3G9k9=' +
+    'MIICiDCCAi+gAwIBAgIUUw89P4fY2y2ZpqF/sf2tnOuEAWEwCgYIKoZIzj0EAwIw' + 
+    'fTELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh' + 
+    'biBGcmFuY2lzY28xHjAcBgNVBAoTFUdvdmVybm1lbnQuaHVybGV5LmxhYjEhMB8G' + 
+    'A1UEAxMYY2EuR292ZXJubWVudC5odXJsZXkubGFiMB4XDTIwMDQwMTEwMDMwMFoX' +
+    'DTIxMDQwMTEwMDgwMFowKjEPMA0GA1UECxMGY2xpZW50MRcwFQYDVQQDEw5jaGFp' +
+    'bmNvZGVBZG1pbjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABCVQLqWOIPKTL7TX' +
+    '2/K9YDcAQ2LtStfNwHKOwDEmJ7BYdVxNISd16eRFBMrgoqnJ1CZksHcrJs3oGwis' +
+    'btMEy8mjgd8wgdwwDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwHQYDVR0O' + 
+    'BBYEFIbb2C6NelIrCq0W2ouQhtbEaf3FMCsGA1UdIwQkMCKAIH436+wd9sbxSRpi' +
+    'CFJYaZnArBqFq8t7oUYVmYg54QFJMHAGCCoDBAUGBwgBBGR7ImF0dHJzIjp7ImFk' +
+    'bWluIjoidHJ1ZSIsImhmLkFmZmlsaWF0aW9uIjoiIiwiaGYuRW5yb2xsbWVudElE' + 
+    'IjoiY2hhaW5jb2RlQWRtaW4iLCJoZi5UeXBlIjoiY2xpZW50In19MAoGCCqGSM49' +
+    'BAMCA0cAMEQCIBjctclmRmwFrp8aWA30wjCffGqnObarj/P6kfFmKxrCAiBltIGJ' +
+    'YvjWd6rVSyzrKstpXiXUym11FBcJb0CtjuMdfg==' +
     '-----END CERTIFICATE-----';
   
   before(async () => {
@@ -68,7 +69,7 @@ describe('Participant', () => {
     const name = 'mockName';
     const msp = 'mockOrganisation';
 
-    await participantCtrl.register(id, name, msp, mockCertificate);
+    await participantCtrl.register(id, name, msp, mockIdentity);
   
     const justSavedModel = await adapter.getById<Participant>(id);
   
@@ -80,7 +81,7 @@ describe('Participant', () => {
     const name = 'mockName2';
     const msp = 'mockOrganisation';
 
-    await expect(participantCtrl.register(id, name, msp, mockCertificate)).to.be.eventually
+    await expect(participantCtrl.register(id, name, msp, mockIdentity)).to.be.eventually
       .rejectedWith(Error);
   });
 
@@ -91,7 +92,7 @@ describe('Participant', () => {
     const id = 'mockID';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
-    await expect(participantCtrl.register(id, name, msp, mockCertificate2)).to.be.eventually
+    await expect(participantCtrl.register(id, name, msp, mockIdentity2)).to.be.eventually
       .rejectedWith(Error);
   });
 
@@ -99,7 +100,7 @@ describe('Participant', () => {
     const id = 'mockID2';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
-    await participantCtrl.register(id, name, msp, mockCertificate2);
+    await participantCtrl.register(id, name, msp, mockIdentity2);
   
     const justSavedModel = await adapter.getById<Participant>(id);
   
