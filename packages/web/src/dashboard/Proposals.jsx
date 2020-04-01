@@ -29,8 +29,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Proposals(props) {
   const [items, setItems] = React.useState([]);
-  const loading = props.loading;
-  const setLoading = props.setLoading;
+  const [loading, setLoading] = React.useState(true);
   const [update, setUpdate] = React.useState('');
   const [updateId, setUpdateId] = React.useState('');
   const [alert, setAlert] = React.useState('');

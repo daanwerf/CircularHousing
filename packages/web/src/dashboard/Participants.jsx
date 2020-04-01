@@ -56,12 +56,9 @@ export default function Participants(props) {
 
   function showDialog(event) {
     console.log('Show dialog!');
-    setDialogopen(true);
-
     const participant = event.currentTarget.getAttribute('data-item');
-    setLoadingitems(true);
-    setLoadingproposals(true);
     setSelectedpart(participant);
+    setDialogopen(true);
   }
 
   React.useEffect(() => {
@@ -125,12 +122,7 @@ export default function Participants(props) {
         setOpen={setDialogopen}
         user={props.user}
         org={props.org}
-        apiCall={'getParticipantItems/' + selectedPart} 
-        loading={loadingItems}
-        setLoading={setLoadingitems}
         participant={selectedPart}
-        loadingProposals={loadProposals}
-        setLoadingproposals={setLoadingproposals}
       />
 
       {showItems

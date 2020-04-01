@@ -24,12 +24,14 @@ const useStyles = makeStyles(theme => ({
 
 export default function Items(props) {
   const [items, setItems] = React.useState([]);
-  const loading = props.loading;
-  const setLoading = props.setLoading;
+  const [loading, setLoading] = React.useState(true);
+  const participant = props.participant;
+  const org = props.org;
+  const user = props.user;
+
   const [update, setUpdate] = React.useState('');
   const [updateId, setUpdateId] = React.useState('');
   const [alert, setAlert] = React.useState('');
-  const itemFetch = props.apiCall;
 
   const classes = useStyles();
 
@@ -37,7 +39,8 @@ export default function Items(props) {
     if (loading) {
       setAlert('');
 
-      fetch('http://localhost:8000/item/' + itemFetch + '?org=' + props.org + '&user=' + props.user)
+      fetch('http://localhost:8000/item/getParticipantItems/' + participant 
+            + '?org=' + org + '&user=' + user)
         .then(results => {
           if (results.status === 200) {
             results.json()
@@ -51,7 +54,8 @@ export default function Items(props) {
           }
         })
         .catch((error) => {
-          //TODO: MAKE ERROR MESSAGE HERE
+          //TODO: MAKE ERROR MESSAGE BETTER FORMATTED
+          setAlert(error);
           console.error(error);
         });
     }

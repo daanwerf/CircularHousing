@@ -39,7 +39,7 @@ export default function ItemsDialog(props) {
 			fullWidth={true}
 			maxWidth={"lg"}
 		>
-			<DialogTitle>Items for PARTICIPANTNAMEHERE</DialogTitle>
+			<DialogTitle>Items for {participant}</DialogTitle>
 			<DialogContent dividers={true}>
 				<Items 
 			        user={user} 
