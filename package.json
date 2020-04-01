@@ -8,8 +8,7 @@
   "scripts": {
     "install": "npm-run-all -s lerna:install",
     "env:restart": "hurl new",
-    "test": "npm-run-all -s lerna:test",
-    "test:e2e": "npm-run-all -s lerna:test:e2e",
+    "test": "lerna run test --ignore=server",
     "env:clean": "hurl clean",
     "cc:start": "f() { npm run cc:package -- $1; npm run cc:install $1 $2; }; f",
     "cc:upgrade": "f() { npm run cc:package -- $1; hurl upgrade ${3:-$1} node $2  -P ./chaincode-$1; }; f",

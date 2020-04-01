@@ -12,10 +12,10 @@ import {
 import { Item } from './item.model';
 import { Participant } from 'participant-cc';
 import {
-  CreateEvent, 
-  Event, 
-  RenameEvent, 
-  UpdateEvent, 
+  CreateEvent,
+  Event,
+  RenameEvent,
+  UpdateEvent,
   TransferEvent
 } from './Event';
 
@@ -53,8 +53,7 @@ export class ItemController extends ConvectorController {
 
     item.creationDate = new Date().getTime();
     item.quality = checkQuality(quality);
-
-    // TODO: DO SOME TRIMMING OF WHITESPACE HERE
+    
     var a: Array<string> = materials.split(',');
     item.materials = a;
 
@@ -63,6 +62,7 @@ export class ItemController extends ConvectorController {
     item.itemHistory = h;
 
     await item.save();
+    return item;
   }
 
   @Invokable()
@@ -120,7 +120,6 @@ export class ItemController extends ConvectorController {
     return await Item.getAll('io.worldsibu.item');
   }
 
-  //TODO needs spec test
   @Invokable()
   public async proposeTransfer(
     @Param(yup.string())
@@ -143,7 +142,7 @@ export class ItemController extends ConvectorController {
     //handle the proposal
     item.proposedOwner = transferTarget;
     await item.save();
-    console.log(`$Participant ${item.itemOwner} proposed a transfer of ownership of item ${item.name} to participant ${item.itemOwner}`);
+    console.log(`$Participant ${item.itemOwner} proposed a transfer of ownership of item ${item.name} to participant ${item.proposedOwner}`);
   }
 
   @Invokable()
@@ -201,7 +200,6 @@ export class ItemController extends ConvectorController {
     if (!owner || !owner.identities) {
       throw new Error('Given participant as owner does not currently exist on the ledger');
     }
-
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     //then check if the item is truly yours to be transferred
     if (currentOwnerIdentity.fingerprint !== sender) {
