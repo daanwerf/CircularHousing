@@ -10,8 +10,10 @@ import TableRow from '@material-ui/core/TableRow';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import StorageIcon from '@material-ui/icons/Storage';
 import IconButton from '@material-ui/core/IconButton';
+import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown';
 import Title from './Title';
 import Items from './Items';
+import Proposals from './Proposals';
 
 const useStyles = makeStyles(theme => ({
   seeMore: {
@@ -32,11 +34,20 @@ export default function Participants(props) {
   const [showItems, setShowitems] = React.useState(false);
   const [selectedPart, setSelectedpart] = React.useState('');
   const [loadingItems, setLoadingitems] = React.useState(false);
+  const [showProposals, setShowproposals] = React.useState(false);
+  const [loadingProposals, setLoadingproposals] = React.useState(false);
 
   function loadItems(event) {
     const participant = event.currentTarget.getAttribute('data-item');
     setLoadingitems(true);
     setShowitems(true);
+    setSelectedpart(participant);
+  }
+
+  function loadProposals(event) {
+    const participant = event.currentTarget.getAttribute('data-item');
+    setLoadingproposals(true);
+    setShowproposals(true);
     setSelectedpart(participant);
   }
 
@@ -81,6 +92,9 @@ export default function Participants(props) {
                       <IconButton onClick={loadItems} data-item={part._id}>
                         <StorageIcon />
                       </IconButton>
+                      <IconButton onClick={loadProposals} data-item={part._id}>
+                        <ThumbsUpDownIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -97,6 +111,17 @@ export default function Participants(props) {
             apiCall={'getParticipantItems/' + selectedPart} 
             loading={loadingItems}
             setLoading={setLoadingitems}
+          />
+        : null
+      }
+
+      {showProposals
+        ? <Proposals 
+            user={props.user}
+            org={props.org}
+            participant={selectedPart}
+            loading={loadingProposals}
+            setLoading={setLoadingproposals}
           />
         : null
       }
