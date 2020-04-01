@@ -101,7 +101,7 @@ describe('Participant', () => {
     const id = 'mockID';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
-    await expect(participantCtrl.register(id, name, msp, mockIdentity2)).to.be.eventually
+    await expect(participantCtrl.$withUser('admin').register(id, name, msp, mockIdentity2)).to.be.eventually
       .rejectedWith(Error);
   });
 
@@ -109,7 +109,7 @@ describe('Participant', () => {
     const id = 'mockID2';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
-    await participantCtrl.register(id, name, msp, mockIdentity2);
+    await participantCtrl.$withUser('admin').register(id, name, msp, mockIdentity2);
   
     const justSavedModel = await adapter.getById<Participant>(id);
   
@@ -129,6 +129,6 @@ describe('Participant', () => {
   it('should not be able to change identity', async () => {
     const id = 'mockID';
     const fake_cert = 'FakeCertificate';
-    await expect(participantCtrl.changeIdentity(id, fake_cert)).to.be.eventually.rejectedWith(Error);
+    await expect(participantCtrl.$withUser('Test').changeIdentity(id, fake_cert)).to.be.eventually.rejectedWith(Error);
   });
 });
