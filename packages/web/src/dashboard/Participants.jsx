@@ -11,9 +11,11 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import StorageIcon from '@material-ui/icons/Storage';
 import IconButton from '@material-ui/core/IconButton';
 import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown';
+import StreetviewIcon from '@material-ui/icons/Streetview';
 import Title from './Title';
 import Items from './Items';
 import Proposals from './Proposals';
+import ItemsDialog from './ItemsDialog';
 
 const useStyles = makeStyles(theme => ({
   seeMore: {
@@ -31,6 +33,7 @@ export default function Participants(props) {
   const classes = useStyles();
   const [allPart, setAllpart] = React.useState([]);
   const [isLoading, setLoading] = React.useState(true);
+  const [dialogOpen, setDialogopen] = React.useState(false);
   const [showItems, setShowitems] = React.useState(false);
   const [selectedPart, setSelectedpart] = React.useState('');
   const [loadingItems, setLoadingitems] = React.useState(false);
@@ -48,6 +51,16 @@ export default function Participants(props) {
     const participant = event.currentTarget.getAttribute('data-item');
     setLoadingproposals(true);
     setShowproposals(true);
+    setSelectedpart(participant);
+  }
+
+  function showDialog(event) {
+    console.log('Show dialog!');
+    setDialogopen(true);
+
+    const participant = event.currentTarget.getAttribute('data-item');
+    setLoadingitems(true);
+    setLoadingproposals(true);
     setSelectedpart(participant);
   }
 
@@ -95,6 +108,9 @@ export default function Participants(props) {
                       <IconButton onClick={loadProposals} data-item={part._id}>
                         <ThumbsUpDownIcon />
                       </IconButton>
+                      <IconButton onClick={showDialog} data-item={part._id}>
+                        <StreetviewIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -103,6 +119,19 @@ export default function Participants(props) {
           }
         </Paper>
       </Grid>
+
+      <ItemsDialog
+        open={dialogOpen}
+        setOpen={setDialogopen}
+        user={props.user}
+        org={props.org}
+        apiCall={'getParticipantItems/' + selectedPart} 
+        loading={loadingItems}
+        setLoading={setLoadingitems}
+        participant={selectedPart}
+        loadingProposals={loadProposals}
+        setLoadingproposals={setLoadingproposals}
+      />
 
       {showItems
         ? <Items 
