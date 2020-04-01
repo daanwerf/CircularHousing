@@ -64,12 +64,21 @@ describe('Participant', () => {
     ]);
   });
   
-  it('should create a participant', async () => {
+  it('should not be allowed, as only the admin can create a participant', async () => {
     const id = 'mockID';
     const name = 'mockName';
     const msp = 'mockOrganisation';
 
-    await participantCtrl.register(id, name, msp, mockIdentity);
+    await expect(participantCtrl.$withUser('Test').register(id, name, msp, mockIdentity)).to.be.eventually
+      .rejectedWith(Error);
+  });
+
+  it('should create a new participant', async () => {
+    const id = 'mockID';
+    const name = 'mockName';
+    const msp = 'mockOrganisation';
+
+    await participantCtrl.$withUser('admin').register(id, name, msp, mockIdentity);
   
     const justSavedModel = await adapter.getById<Participant>(id);
   
