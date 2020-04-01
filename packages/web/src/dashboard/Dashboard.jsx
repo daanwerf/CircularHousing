@@ -19,11 +19,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import SidebarItems from './SidebarItems';
-import Items from './Items';
-import CreateItem from './CreateItem';
-import Participants from './Participants';
-import Register from './Register';
-import NetworkNodes from './NetworkNodes';
+import Participants from '../participants/Participants';
+import Register from '../participants/Register';
+import NetworkNodes from '../network/NetworkNodes';
 
 function Copyright() {
   return (
@@ -139,7 +137,6 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(true);
   const [show, setShow] = React.useState('overview');
   const [fingerprint, setFingerprint] = React.useState('');
-  const [loadingItems, setLoadingitems] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -213,20 +210,6 @@ export default function Dashboard() {
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             <NetworkNodes allUsers={users} user={user} org={org} fingerprint={fingerprint} />
-
-            {show === 'items' 
-              ? <Items 
-                  user={user} 
-                  org={org} 
-                  apiCall={'getAll'} 
-                  loading={loadingItems}
-                  setLoading={setLoadingitems}
-                />
-              : null}
-
-            {show === 'create'
-              ? <CreateItem user={user} org={org} setShow={setShow} />
-              : null}
 
             {show === 'users' 
               ? <Participants user={user} org={org} />

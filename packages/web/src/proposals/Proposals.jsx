@@ -7,11 +7,11 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import TableItem from './TableItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Alert from '@material-ui/lab/Alert';
-import Title from './Title';
-import UpdateItem from './UpdateItem';
+import Title from '../dashboard/Title';
+import FullItem from '../items/FullItem';
+import SingleProposal from './SingleProposal';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -22,14 +22,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Items(props) {
+export default function Proposals(props) {
   const [items, setItems] = React.useState([]);
-  const loading = props.loading;
-  const setLoading = props.setLoading;
-  const [update, setUpdate] = React.useState('');
-  const [updateId, setUpdateId] = React.useState('');
+  const [loading, setLoading] = React.useState(true);
   const [alert, setAlert] = React.useState('');
-  const itemFetch = props.apiCall;
+  const [view, setView] = React.useState(false);
+  const [viewId, setViewId] = React.useState('');
 
   const classes = useStyles();
 
@@ -37,7 +35,8 @@ export default function Items(props) {
     if (loading) {
       setAlert('');
 
-      fetch('http://localhost:8000/item/' + itemFetch + '?org=' + props.org + '&user=' + props.user)
+      fetch('http://localhost:8000/item/getParticipantProposals/' 
+            + props.participant + '?org=' + props.org + '&user=' + props.user)
         .then(results => {
           if (results.status === 200) {
             results.json()
@@ -55,6 +54,8 @@ export default function Items(props) {
           console.error(error);
         });
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
   return (
@@ -62,28 +63,30 @@ export default function Items(props) {
       <Grid item xs={12}>
         <Paper className={classes.paper}>
           {alert !== '' ? <Alert severity="error">{alert}</Alert> 
-          : <div><Title>Items</Title>
+          : <div><Title>Proposals to {props.participant}</Title>
             {loading ? <LinearProgress /> :
               <Table size="small">
                 <TableHead>
                   <TableRow>
                     <TableCell>ID</TableCell>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Owner</TableCell>
+                    <TableCell>Item</TableCell>
+                    <TableCell>Current owner</TableCell>
                     <TableCell>Quality</TableCell>
-                    <TableCell>Transfer</TableCell>
+                    <TableCell></TableCell>
                     <TableCell align="right"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {items.map(item => (
-                    <TableItem
+                    <SingleProposal key={item._id}
+                      item={item}
                       user={props.user}
                       org={props.org}
-                      key={item._id}
-                      item={item}
-                      setUpdate={setUpdate}
-                      setUpdateId={setUpdateId}
+                      view={view}
+                      setView={setView}
+                      viewId={viewId}
+                      setViewId={setViewId}
+                      setProposalAccepted={props.setProposalAccepted}
                       setLoading={setLoading}
                     />
                   ))}
@@ -93,14 +96,9 @@ export default function Items(props) {
         </Paper>
       </Grid>
 
-      {update !== ''
-        ? <UpdateItem
-            user={props.user}
-            org={props.org}
-            item={items.filter(item => item._id === updateId)[0]}
-            update={update}
-            setUpdate={setUpdate}
-            setLoading={setLoading}
+      {view
+        ? <FullItem
+            item={items.filter(item => item._id === viewId)[0]}
           />
         : null
       }
