@@ -15,7 +15,8 @@ describe('Item', () => {
     name: "mockName",
     msp: "mockOrganisation",
     certificate: mockCertificate
-  })
+  });
+  
   let adapter: MockControllerAdapter;
   let itemCtrl: ConvectorControllerClient<ItemController>;
   let participantCtrl: ConvectorControllerClient<ParticipantController>;
