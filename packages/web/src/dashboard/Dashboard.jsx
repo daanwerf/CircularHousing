@@ -138,7 +138,6 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(true);
   const [show, setShow] = React.useState('overview');
   const [fingerprint, setFingerprint] = React.useState('');
-  const [loadingItems, setLoadingitems] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);

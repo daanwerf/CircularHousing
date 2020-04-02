@@ -19,6 +19,8 @@ export default function SingleNode(props) {
 				//TODO: MAKE ERROR MESSAGE HERE
 				console.error(error);
 			});
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	React.useEffect(() => {
@@ -35,6 +37,8 @@ export default function SingleNode(props) {
 					console.error(error);
 				});
 		} 
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [fingerprint, registeredFingerprint]);
 
 	return (

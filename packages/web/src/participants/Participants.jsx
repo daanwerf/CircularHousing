@@ -33,7 +33,6 @@ export default function Participants(props) {
   const [selectedPart, setSelectedpart] = React.useState('');
 
   function showDialog(event) {
-    console.log('Show dialog!');
     const participant = event.currentTarget.getAttribute('data-item');
     setSelectedpart(participant);
     setDialogopen(true);

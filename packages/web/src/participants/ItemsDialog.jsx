@@ -14,6 +14,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ItemsDialog(props) {
+	const [proposalAccepted, setProposalAccepted] = React.useState(false);
+
 	const classes = useStyles();
 	const open = props.open;
 	const setOpen = props.setOpen;
@@ -26,13 +28,9 @@ export default function ItemsDialog(props) {
 		setOpen(false);
 	};
 
-	React.useEffect(() => {
-		console.log('Opening the items dialog again!');
-	}, [open]);
-
 	return (
 		<Dialog
-			classes={{paper : classes.dialogPaper }}
+			classes={{ paper : classes.dialogPaper }}
 			open={open}
 			onClose={handleClose}
 			scroll={"paper"}
@@ -45,12 +43,15 @@ export default function ItemsDialog(props) {
 			        user={user} 
 			        org={org} 
 			        participant={participant}
+			        reload={proposalAccepted}
+			        setReload={setProposalAccepted}
 			    />
 
 			    <Proposals 
 		            user={user}
 		            org={org}
 		            participant={participant}
+		            setProposalAccepted={setProposalAccepted}
 		        />
 			</DialogContent>
 		</Dialog>

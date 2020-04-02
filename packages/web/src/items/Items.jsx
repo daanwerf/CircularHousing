@@ -25,6 +25,8 @@ const useStyles = makeStyles(theme => ({
 export default function Items(props) {
   const [items, setItems] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const reload = props.reload;
+  const setReload = props.setReload;
   const participant = props.participant;
   const org = props.org;
   const user = props.user;
@@ -36,7 +38,7 @@ export default function Items(props) {
   const classes = useStyles();
 
   React.useEffect(() => {
-    if (loading) {
+    if (loading || reload) {
       setAlert('');
 
       fetch('http://localhost:8000/item/getParticipantItems/' + participant 
@@ -47,10 +49,12 @@ export default function Items(props) {
             .then(data => {
               setItems(data);
               setLoading(false);
+              setReload(false);
             })
           } else {
             setAlert(results.statusText);
             setLoading(false);
+            setReload(false);
           }
         })
         .catch((error) => {
@@ -59,7 +63,9 @@ export default function Items(props) {
           console.error(error);
         });
     }
-  }, [loading]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, reload]);
 
   return (
     <React.Fragment>
@@ -67,7 +73,7 @@ export default function Items(props) {
         <Paper className={classes.paper}>
           {alert !== '' ? <Alert severity="error">{alert}</Alert> 
           : <div><Title>Items for {participant}</Title>
-            {loading ? <LinearProgress /> :
+            {loading || reload ? <LinearProgress /> :
               <Table size="small">
                 <TableHead>
                   <TableRow>
