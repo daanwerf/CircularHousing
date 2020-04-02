@@ -63,8 +63,12 @@ describe('Participant', () => {
       }
     ]);
   });
+
+  // Add a user called 'Test' to the mocked network and a the admin user
+  adapter.addUser('Test');
+  adapter.addUser('chaincodeAdmin');
   
-  it('should not be allowed, as only the admin can create a participant', async () => {
+  it('should not be allowed, as only the chaincodeAdmin can create a participant', async () => {
     const id = 'mockID';
     const name = 'mockName';
     const msp = 'mockOrganisation';
@@ -78,7 +82,7 @@ describe('Participant', () => {
     const name = 'mockName';
     const msp = 'mockOrganisation';
 
-    await participantCtrl.$withUser('admin').register(id, name, msp, mockIdentity);
+    await participantCtrl.$withUser('chaincodeAdmin').register(id, name, msp, mockIdentity);
   
     const justSavedModel = await adapter.getById<Participant>(id);
   
@@ -101,7 +105,7 @@ describe('Participant', () => {
     const id = 'mockID';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
-    await expect(participantCtrl.$withUser('admin').register(id, name, msp, mockIdentity2)).to.be.eventually
+    await expect(participantCtrl.$withUser('chaincodeAdmin').register(id, name, msp, mockIdentity2)).to.be.eventually
       .rejectedWith(Error);
   });
 
@@ -109,7 +113,7 @@ describe('Participant', () => {
     const id = 'mockID2';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
-    await participantCtrl.$withUser('admin').register(id, name, msp, mockIdentity2);
+    await participantCtrl.$withUser('chaincodeAdmin').register(id, name, msp, mockIdentity2);
   
     const justSavedModel = await adapter.getById<Participant>(id);
   
