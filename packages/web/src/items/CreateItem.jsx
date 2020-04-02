@@ -31,10 +31,12 @@ export default function CreateItem(props) {
 
   const user = props.user;
   const org = props.org;
-  const setShow = props.setShow;
+  // const setShow = props.setShow;
+  const setOpen = props.setOpen;
+  const participant = props.participant;
 
   const [itemName, setItemname] = React.useState('');
-  const [username, setUsername] = React.useState('');
+  const [username, setUsername] = React.useState(participant);
   const [quality, setQuality] = React.useState('');
   const [materials, setMaterials] = React.useState('');
 
@@ -61,7 +63,7 @@ export default function CreateItem(props) {
     .then((response) => {
       setLoading(false);
       if (response.status === 200) {
-        setShow('items');
+        setOpen(false);
       } else {
         setAlert(response.statusText);
       }

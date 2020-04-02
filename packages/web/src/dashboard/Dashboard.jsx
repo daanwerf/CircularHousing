@@ -19,7 +19,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import SidebarItems from './SidebarItems';
-import CreateItem from '../items/CreateItem';
 import Participants from '../participants/Participants';
 import Register from '../participants/Register';
 import NetworkNodes from '../network/NetworkNodes';
@@ -211,10 +210,6 @@ export default function Dashboard() {
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             <NetworkNodes allUsers={users} user={user} org={org} fingerprint={fingerprint} />
-
-            {show === 'create'
-              ? <CreateItem user={user} org={org} setShow={setShow} />
-              : null}
 
             {show === 'users' 
               ? <Participants user={user} org={org} />

@@ -9,9 +9,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import StorageIcon from '@material-ui/icons/Storage';
+import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import Title from '../dashboard/Title';
 import ItemsDialog from './ItemsDialog';
+import CreateDialog from './CreateDialog';
 
 const useStyles = makeStyles(theme => ({
   seeMore: {
@@ -30,12 +32,19 @@ export default function Participants(props) {
   const [allPart, setAllpart] = React.useState([]);
   const [isLoading, setLoading] = React.useState(true);
   const [dialogOpen, setDialogopen] = React.useState(false);
+  const [createOpen, setCreateopen] = React.useState(false);
   const [selectedPart, setSelectedpart] = React.useState('');
 
   function showDialog(event) {
     const participant = event.currentTarget.getAttribute('data-item');
     setSelectedpart(participant);
     setDialogopen(true);
+  }
+
+  function showCreate(event) {
+    const participant = event.currentTarget.getAttribute('data-item');
+    setSelectedpart(participant);
+    setCreateopen(true);
   }
 
   React.useEffect(() => {
@@ -73,6 +82,9 @@ export default function Participants(props) {
                     <TableCell>{part._name}</TableCell>
                     <TableCell>{part._msp}</TableCell>
                     <TableCell align="right" data-item={part._id}>
+                      <IconButton onClick={showCreate} data-item={part._id}>
+                        <AddIcon />
+                      </IconButton>
                       <IconButton onClick={showDialog} data-item={part._id}>
                         <StorageIcon />
                       </IconButton>
@@ -88,6 +100,14 @@ export default function Participants(props) {
       <ItemsDialog
         open={dialogOpen}
         setOpen={setDialogopen}
+        user={props.user}
+        org={props.org}
+        participant={selectedPart}
+      />
+
+      <CreateDialog
+        open={createOpen}
+        setOpen={setCreateopen}
         user={props.user}
         org={props.org}
         participant={selectedPart}
