@@ -10,7 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import StorageIcon from '@material-ui/icons/Storage';
 import IconButton from '@material-ui/core/IconButton';
-import Title from './Title';
+import Title from '../dashboard/Title';
 import ItemsDialog from './ItemsDialog';
 
 const useStyles = makeStyles(theme => ({

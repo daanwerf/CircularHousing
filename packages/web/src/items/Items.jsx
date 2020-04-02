@@ -10,8 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableItem from './TableItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Alert from '@material-ui/lab/Alert';
-import Title from './Title';
-import UpdateItem from './UpdateItem';
+import Title from '../dashboard/Title';
 import FullItem from './FullItem';
 
 const useStyles = makeStyles(theme => ({

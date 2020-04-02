@@ -14,8 +14,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ClearIcon from '@material-ui/icons/Clear';
 import CheckIcon from '@material-ui/icons/Check';
-import Title from './Title';
-import FullItem from './FullItem';
+import Title from '../dashboard/Title';
+import FullItem from '../items/FullItem';
 
 const useStyles = makeStyles(theme => ({
   paper: {

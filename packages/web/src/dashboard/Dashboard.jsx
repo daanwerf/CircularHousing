@@ -19,11 +19,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import SidebarItems from './SidebarItems';
-import Items from './Items';
-import CreateItem from './CreateItem';
-import Participants from './Participants';
-import Register from './Register';
-import NetworkNodes from './NetworkNodes';
+import CreateItem from '../items/CreateItem';
+import Participants from '../participants/Participants';
+import Register from '../participants/Register';
+import NetworkNodes from '../network/NetworkNodes';
 
 function Copyright() {
   return (
