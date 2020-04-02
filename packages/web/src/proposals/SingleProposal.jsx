@@ -8,6 +8,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import CheckIcon from '@material-ui/icons/Check';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
+import Tooltip from '@material-ui/core/Tooltip';
 
 export default function SingleProposal(props) {
   let item = props.item;
@@ -78,24 +79,32 @@ export default function SingleProposal(props) {
         <TableCell>{item._quality}</TableCell>
         <TableCell>
           {view && viewId === item._id
-            ? <IconButton onClick={handleHideItem}>
-                <ExpandLessIcon color="primary"/>
-              </IconButton>
-            : <IconButton onClick={handleViewItem}>
-                <ExpandMoreIcon color="primary"/>
-              </IconButton>
+            ? <Tooltip title="Show less">
+                <IconButton onClick={handleHideItem}>
+                  <ExpandLessIcon color="primary"/>
+                </IconButton>
+              </Tooltip>
+            : <Tooltip title="Show more">
+                <IconButton onClick={handleViewItem}>
+                  <ExpandMoreIcon color="primary"/>
+                </IconButton>
+              </Tooltip>
           }
         </TableCell>
         <TableCell align="right">
         	{loadingProposalAnswer ? <CircularProgress /> :
               item._proposedOwner && item._proposedOwner.length > 0 ?
                 <div>
-                  <IconButton onClick={acceptProposal}>
-                    <CheckIcon style={{fill: "green"}} />
-                  </IconButton>
-                  <IconButton onClick={rejectProposal}>
-                    <ClearIcon style={{fill: "red"}} />
-                  </IconButton>
+                  <Tooltip title="Accept proposal">
+                    <IconButton onClick={acceptProposal}>
+                      <CheckIcon style={{fill: "green"}} />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Reject proposal">
+                    <IconButton onClick={rejectProposal}>
+                      <ClearIcon style={{fill: "red"}} />
+                    </IconButton>
+                  </Tooltip>
                   {proposalAlert === '' ? null :
                     <Alert severity="error">{proposalAlert}</Alert>
                   }

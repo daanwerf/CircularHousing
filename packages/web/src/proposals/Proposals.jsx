@@ -73,7 +73,7 @@ export default function Proposals(props) {
                     <TableCell>Current owner</TableCell>
                     <TableCell>Quality</TableCell>
                     <TableCell></TableCell>
-                    <TableCell align="right">Answer proposal</TableCell>
+                    <TableCell align="right"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

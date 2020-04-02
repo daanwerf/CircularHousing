@@ -11,6 +11,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import StorageIcon from '@material-ui/icons/Storage';
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import Title from '../dashboard/Title';
 import ItemsDialog from './ItemsDialog';
 import CreateDialog from './CreateDialog';
@@ -72,7 +73,7 @@ export default function Participants(props) {
                   <TableCell>Username</TableCell>
                   <TableCell>Full Name</TableCell>
                   <TableCell>Organisation</TableCell>
-                  <TableCell align="right">View items</TableCell>
+                  <TableCell align="right"></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -82,12 +83,16 @@ export default function Participants(props) {
                     <TableCell>{part._name}</TableCell>
                     <TableCell>{part._msp}</TableCell>
                     <TableCell align="right" data-item={part._id}>
-                      <IconButton onClick={showCreate} data-item={part._id}>
-                        <AddIcon />
-                      </IconButton>
-                      <IconButton onClick={showDialog} data-item={part._id}>
-                        <StorageIcon />
-                      </IconButton>
+                      <Tooltip title="Create item">
+                        <IconButton onClick={showCreate} data-item={part._id}>
+                          <AddIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Show items">
+                        <IconButton onClick={showDialog} data-item={part._id}>
+                          <StorageIcon />
+                        </IconButton>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))}

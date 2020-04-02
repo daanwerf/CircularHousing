@@ -4,6 +4,7 @@ import TableCell from '@material-ui/core/TableCell';
 import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import Tooltip from '@material-ui/core/Tooltip';
 import EditableItemCell from './EditableItemCell';
 import { ALLOWEDQUALITIES } from '../config/Qualities';
 
@@ -54,12 +55,16 @@ export default function TableItem(props) {
 
         <TableCell align="right">
           {view && viewId === item._id
-            ? <IconButton onClick={handleHideItem}>
-                <ExpandLessIcon color="primary"/>
-              </IconButton>
-            : <IconButton onClick={handleViewItem}>
-                <ExpandMoreIcon color="primary"/>
-              </IconButton>
+            ? <Tooltip title="Show less">
+                <IconButton onClick={handleHideItem}>
+                  <ExpandLessIcon color="primary"/>
+                </IconButton>
+              </Tooltip>
+            : <Tooltip title="Show more"> 
+                <IconButton onClick={handleViewItem}>
+                  <ExpandMoreIcon color="primary"/>
+                </IconButton>
+              </Tooltip>
           }
         </TableCell>
       </TableRow>

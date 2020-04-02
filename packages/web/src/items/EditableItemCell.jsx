@@ -10,6 +10,7 @@ import Alert from "@material-ui/lab/Alert";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import Tooltip from '@material-ui/core/Tooltip';
 
 export default function EditableItemCell(props) {
 	const curValue = props.value;
@@ -94,17 +95,23 @@ export default function EditableItemCell(props) {
 									onInput={(e) => setNewvalue(e.target.value)}
 								/>
 							}
-							<IconButton onClick={handleUpdate}>
-								<CheckIcon color="primary" />
-							</IconButton>
-							<IconButton onClick={closeEdit}>
-								<ClearIcon color="secondary" />
-							</IconButton>
+							<Tooltip title="Confirm">
+								<IconButton onClick={handleUpdate}>
+									<CheckIcon color="primary" />
+								</IconButton>
+							</Tooltip>
+							<Tooltip title="Cancel">
+								<IconButton onClick={closeEdit}>
+									<ClearIcon color="secondary" />
+								</IconButton>
+							</Tooltip>
 						</div>
 					: 	<div>{value}
-							<IconButton onClick={openEdit}>
-				            	<EditIcon color="primary"/>
-				          	</IconButton>
+							<Tooltip title="Edit">
+								<IconButton onClick={openEdit}>
+					            	<EditIcon color="primary"/>
+					          	</IconButton>
+					          </Tooltip>
 			          	</div>
 				} </div>
 			}
