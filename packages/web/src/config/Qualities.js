@@ -1,0 +1,1 @@
+export const ALLOWEDQUALITIES = ['Good', 'Usable', 'Bad', 'Broken'];

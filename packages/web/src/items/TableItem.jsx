@@ -5,6 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import EditableItemCell from './EditableItemCell';
+import { ALLOWEDQUALITIES } from '../config/Qualities';
 
 export default function TableItem(props) {
   let item = props.item;
@@ -41,6 +42,8 @@ export default function TableItem(props) {
           apiCall={'item/updateQuality?org=' + org + '&user=' + user}
           itemId={item._id}
           editKey={'quality'}
+          dropdown={true}
+          values={ALLOWEDQUALITIES}
         />
         <EditableItemCell
           value={item._proposedOwner ? item._proposedOwner : ''}

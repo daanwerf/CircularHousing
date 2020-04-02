@@ -7,12 +7,16 @@ import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from "@material-ui/lab/Alert";
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 
 export default function EditableItemCell(props) {
 	const curValue = props.value;
 	const apiCall = props.apiCall;
 	const itemId = props.itemId;
 	const editKey = props.editKey;
+	const dropdown = props.dropdown;
 
 	const [edit, setEdit] = React.useState(false);
 	const [value, setValue] = React.useState(curValue);
@@ -72,11 +76,24 @@ export default function EditableItemCell(props) {
 				? <CircularProgress />
 				: <div> {edit
 					?	<div>
-							<TextField 
-								id="standard-basic" 
-								value={newValue}
-								onInput={(e : any) => setNewvalue(e.target.value)}
-							/>
+							{dropdown
+								? <FormControl>
+					                <Select
+					                  id="standard-basic"
+					                  value={newValue}
+					                  onChange={(e) => setNewvalue(e.target.value)}
+					                >
+					                  {props.values.map(val => (
+					                    <MenuItem key={val} value={val}>{val}</MenuItem>
+					                  ))}
+					                </Select>
+					              </FormControl>
+								: <TextField 
+									id="standard-basic" 
+									value={newValue}
+									onInput={(e) => setNewvalue(e.target.value)}
+								/>
+							}
 							<IconButton onClick={handleUpdate}>
 								<CheckIcon color="primary" />
 							</IconButton>

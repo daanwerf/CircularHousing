@@ -7,6 +7,11 @@ import Title from '../dashboard/Title';
 import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import { ALLOWEDQUALITIES } from '../config/Qualities';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -91,21 +96,24 @@ export default function CreateItem(props) {
                 name="username"
                 label="Username"
                 value={username}
-                onInput={(e : any) => setUsername(e.target.value)}
+                onInput={(e) => setUsername(e.target.value)}
                 fullWidth
                 autoComplete="username"
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                id="quality"
-                name="quality"
-                label="Quality"
-                value={quality}
-                onInput={(e : any) => setQuality(e.target.value)}
-                fullWidth
-              />
+            <Grid item xs={12} style={{minWidth: 120}}>
+              <FormControl fullWidth required>
+                <InputLabel>Quality</InputLabel>
+                <Select
+                  id="quality"
+                  value={quality}
+                  onChange={(e) => setQuality(e.target.value)}
+                >
+                  {ALLOWEDQUALITIES.map(qual => (
+                    <MenuItem key={qual} value={qual}>{qual}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -114,7 +122,7 @@ export default function CreateItem(props) {
                 name="materials"
                 label="materials"
                 value={materials}
-                onInput={(e : any) => setMaterials(e.target.value)}
+                onInput={(e) => setMaterials(e.target.value)}
                 fullWidth
               />
             </Grid>
