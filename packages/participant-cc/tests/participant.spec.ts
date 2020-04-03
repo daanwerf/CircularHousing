@@ -52,8 +52,8 @@ describe('Participant', () => {
   
   before(async () => {
     // Mocks the blockchain execution environment
-    const adapter = new MockControllerAdapter();
-    const participantCtrl = ClientFactory(ParticipantController, adapter);
+    adapter = new MockControllerAdapter();
+    participantCtrl = ClientFactory(ParticipantController, adapter);
 
     await adapter.init([
       {
