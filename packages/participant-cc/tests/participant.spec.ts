@@ -12,8 +12,8 @@ import { Participant, ParticipantController } from '../src';
 
 describe('Participant', () => {
   chai.use(chaiAsPromised);
-  const adapter = MockControllerAdapter;
-  const participantCtrl = ConvectorControllerClient<ParticipantController>;
+  let adapter: MockControllerAdapter;
+  let participantCtrl: ConvectorControllerClient<ParticipantController>;
   const mockIdentity = 'B6:0B:37:7C:DF:D2:7A:08:0B:98:BF:52:A4:2C:DC:4E:CC:70:91:E1';
   const mockCertificate = '-----BEGIN CERTIFICATE-----' +
     'MIICjzCCAjWgAwIBAgIUITsRsw5SIJ+33SKwM4j1Dl4cDXQwCgYIKoZIzj0EAwIw' +
@@ -52,8 +52,8 @@ describe('Participant', () => {
   
   before(async () => {
     // Mocks the blockchain execution environment
-    adapter = new MockControllerAdapter();
-    participantCtrl = ClientFactory(ParticipantController, adapter);
+    const adapter = new MockControllerAdapter();
+    const participantCtrl = ClientFactory(ParticipantController, adapter);
 
     await adapter.init([
       {
