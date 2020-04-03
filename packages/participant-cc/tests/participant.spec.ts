@@ -62,11 +62,13 @@ describe('Participant', () => {
         name: join(__dirname, '..')
       }
     ]);
-  });
 
-  // Add a user called 'Test' to the mocked network and a the admin user
+    // Add a user called 'Test' to the mocked network and a the admin user
   adapter.addUser('Test');
   adapter.addUser('chaincodeAdmin');
+  });
+
+  
   
   it('should not be allowed, as only the chaincodeAdmin can create a participant', async () => {
     const id = 'mockID';
