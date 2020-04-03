@@ -105,7 +105,6 @@ export async function ItemController_answerProposal_post(req: Request, res: Resp
   try {
     let params = req.body;
     let query = req.query;
-    console.log(JSON.stringify(params));
     let adp = await getAdapter(query.user, query.org);
     res.status(200).send(await ClientFactory(ItemController, adp)
         .answerProposal(params.id, params.accept));
@@ -168,6 +167,32 @@ export async function ItemController_getAll_get(req: Request, res: Response): Pr
         res.statusMessage = parseError(ex.message);
         res.status(500).end();
   }
+}
+
+export async function ItemController_getParticipantItems_get(req: Request, res: Response): Promise<void> {
+    try {
+        let params = req.params;
+        let query = req.query;
+        let adp = await getAdapter(query.user, query.org);
+        res.status(200).send(await ClientFactory(ItemController, adp).getParticipantItems(params.id));
+    } catch (ex) {
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
+    }
+}
+
+export async function ItemController_getParticipantProposals_get(req: Request, res: Response): Promise<void> {
+    try {
+        let params = req.params;
+        let query = req.query;
+        let adp = await getAdapter(query.user, query.org);
+        res.status(200).send(await ClientFactory(ItemController, adp).getParticipantProposals(params.id));
+    } catch (ex) {
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
+    }
 }
 
 // The below code is used to get the fingerprint (of a X509 certificate) belonging to

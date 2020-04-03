@@ -168,6 +168,34 @@ export class ItemController extends ConvectorController {
     await item.save();
   }
 
+  @Invokable()
+  public async getParticipantItems(
+    @Param(yup.string())
+      participantId: string
+  ) {
+    await ItemController.checkValidOwner(this.sender, participantId);
+
+    return await Item.query(Item, {
+      'selector': {
+        'itemOwner': participantId,
+      }
+    });
+  }
+
+  @Invokable()
+  public async getParticipantProposals(
+    @Param(yup.string())
+      participantId: string
+  ) {
+    await ItemController.checkValidOwner(this.sender, participantId);
+
+    return await Item.query(Item, {
+      'selector': {
+        'proposedOwner': participantId
+      }
+    });
+  }
+
   private static async checkValidOwner(sender: string, itemOwner: string) {
     const owner = await Participant.getOne(itemOwner);
     if (!owner || !owner.identities) {

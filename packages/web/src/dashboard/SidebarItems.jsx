@@ -3,9 +3,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 
@@ -15,23 +13,11 @@ export default function SidebarItems(props) {
   return (
     <List>
       <div>
-        <ListItem button>
+        <ListItem button onClick={() => setShow('overview')}>
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Overview" />
-        </ListItem>
-        <ListItem button onClick={() => setShow('items')}>
-          <ListItemIcon>
-            <ShoppingCartIcon />
-          </ListItemIcon>
-          <ListItemText primary="Items" />
-        </ListItem>
-        <ListItem button onClick={() => setShow('create')}>
-          <ListItemIcon>
-            <ShoppingCartIcon />
-          </ListItemIcon>
-          <ListItemText primary="Create Item" />
         </ListItem>
         <ListItem button onClick={() => setShow('users')}>
           <ListItemIcon>

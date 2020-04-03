@@ -3,6 +3,8 @@ import {
   ItemController_answerProposal_post,
   ItemController_create_post,
   ItemController_getAll_get,
+  ItemController_getParticipantItems_get,
+  ItemController_getParticipantProposals_get,
   ItemController_proposeTransfer_post,
   ItemController_updateName_post,
   ItemController_updateQuality_post,
@@ -21,6 +23,8 @@ export default express.Router()
   .get('/participant/getByFingerprint/:fingerprint', ParticipantController_getByFingerprint_get)
   .get('/participant/getAll', ParticipantController_getAll_get)
   .get('/item/getAll', ItemController_getAll_get)
+  .get('/item/getParticipantItems/:id', ItemController_getParticipantItems_get)
+  .get('/item/getParticipantProposals/:id', ItemController_getParticipantProposals_get)
   .post('/item/add', ItemController_create_post)
   .post('/item/updateQuality', ItemController_updateQuality_post)
   .post('/item/updateName', ItemController_updateName_post)

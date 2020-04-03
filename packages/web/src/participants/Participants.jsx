@@ -8,7 +8,13 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Title from './Title';
+import StorageIcon from '@material-ui/icons/Storage';
+import AddIcon from '@material-ui/icons/Add';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import Title from '../dashboard/Title';
+import ItemsDialog from './ItemsDialog';
+import CreateDialog from './CreateDialog';
 
 const useStyles = makeStyles(theme => ({
   seeMore: {
@@ -22,10 +28,25 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Participants() {
+export default function Participants(props) {
   const classes = useStyles();
   const [allPart, setAllpart] = React.useState([]);
   const [isLoading, setLoading] = React.useState(true);
+  const [dialogOpen, setDialogopen] = React.useState(false);
+  const [createOpen, setCreateopen] = React.useState(false);
+  const [selectedPart, setSelectedpart] = React.useState('');
+
+  function showDialog(event) {
+    const participant = event.currentTarget.getAttribute('data-item');
+    setSelectedpart(participant);
+    setDialogopen(true);
+  }
+
+  function showCreate(event) {
+    const participant = event.currentTarget.getAttribute('data-item');
+    setSelectedpart(participant);
+    setCreateopen(true);
+  }
 
   React.useEffect(() => {
     fetch('http://localhost:8000/participant/getAll?org=Government&user=chaincodeAdmin')
@@ -52,8 +73,7 @@ export default function Participants() {
                   <TableCell>Username</TableCell>
                   <TableCell>Full Name</TableCell>
                   <TableCell>Organisation</TableCell>
-                  <TableCell>Fingerprint</TableCell>
-                  <TableCell align="right">View items</TableCell>
+                  <TableCell align="right"></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -62,9 +82,18 @@ export default function Participants() {
                     <TableCell>{part._id}</TableCell>
                     <TableCell>{part._name}</TableCell>
                     <TableCell>{part._msp}</TableCell>
-                    <TableCell>{part._identities
-                      .filter((identity : any) => identity.status === true)[0].fingerprint}</TableCell>
-                    <TableCell align="right">VIEWALLITEMSTODO</TableCell>
+                    <TableCell align="right" data-item={part._id}>
+                      <Tooltip title="Create item">
+                        <IconButton onClick={showCreate} data-item={part._id}>
+                          <AddIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Show items">
+                        <IconButton onClick={showDialog} data-item={part._id}>
+                          <StorageIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -72,6 +101,22 @@ export default function Participants() {
           }
         </Paper>
       </Grid>
+
+      <ItemsDialog
+        open={dialogOpen}
+        setOpen={setDialogopen}
+        user={props.user}
+        org={props.org}
+        participant={selectedPart}
+      />
+
+      <CreateDialog
+        open={createOpen}
+        setOpen={setCreateopen}
+        user={props.user}
+        org={props.org}
+        participant={selectedPart}
+      />
     </React.Fragment>
   );
 }
