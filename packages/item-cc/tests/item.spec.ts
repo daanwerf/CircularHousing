@@ -68,10 +68,11 @@ describe('Item', () => {
         name: join(__dirname, '../../participant-cc')
       }
     ]);
-    (adapter.stub as any).usercert = mockAdmincertificate;
   });
   
   it('should initialize an Item', async () => {
+    (adapter.stub as any).usercert = mockAdmincertificate;
+    
     const ownerID = "mockID";
     const ownerName = "mockName";
     const ownerMsp = "mockOrganisation";
