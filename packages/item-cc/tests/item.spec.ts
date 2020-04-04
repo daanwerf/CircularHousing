@@ -85,7 +85,7 @@ describe('Item', () => {
     (adapter.stub as any).usercert = mockAdmincertificate;
     console.log((adapter.stub as any));    
 
-    const createdItem = await itemCtrl.$withUser('Participant').create(itemName, owner, itemQuality, materials);
+    const createdItem = await itemCtrl.$withUser('').create(itemName, owner, itemQuality, materials);
   
     const justSavedItem = await adapter.getById<Item>(createdItem.id);
     expect(justSavedItem.id).to.exist;
