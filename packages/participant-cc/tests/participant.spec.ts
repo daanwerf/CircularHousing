@@ -129,11 +129,20 @@ describe('Participant', () => {
   });
 
   // Test for Participant changeIdentity
-  it('should not be able to change identity', async () => {
+  it('should not be able to change identity, only the admin is allowed to', async () => {
     const id = 'mockID';
-    const fake_cert = 'FakeCertificate';
+    const fake_cert = '56:74:69:D7:D7:C5:A4:A4:C5:2D:4B:7B:7B:27:A9:6A:A8:6A:C9:26:FF:8B:82';    ;
 
     (adapter.stub as any).usercert = mockCertificate;
+    await expect(participantCtrl.changeIdentity(id, fake_cert)).to.be.eventually.rejectedWith(Error);
+  });
+
+  // Test for Participant changeIdentity
+  it('should not be able to change identity, as this identity does not exist', async () => {
+    const id = 'mockIDNotExist';
+    const fake_cert = '56:74:69:D7:D7:C5:A4:A4:C5:2D:4B:7B:7B:27:A9:6A:A8:6A:C9:26:FF:8B:82';    ;
+
+    (adapter.stub as any).usercert = mockAdmincertificate;
     await expect(participantCtrl.changeIdentity(id, fake_cert)).to.be.eventually.rejectedWith(Error);
   });
 
@@ -158,7 +167,6 @@ describe('Participant', () => {
 
     expect(userExisting[0] !== undefined);
   });
-
 
   // Test for Participant get
   it('should return a participant', async () => {
