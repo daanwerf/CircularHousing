@@ -68,9 +68,12 @@ describe('Item', () => {
         name: join(__dirname, '../../participant-cc')
       }
     ]);
+    adapter.addUser('User');
+    adapter.addUser('User2');
+
     (adapter.stub as any).usercert = mockAdmincertificate;
-    await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
-    await participantCtrl.register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
+    await participantCtrl.$withUser('User').register("mockID", "mockName", "mockOrganisation", mockIdentity);
+    await participantCtrl.$withUser('User2').register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
   });
   
   it('should initialize an Item', async () => {
@@ -79,12 +82,12 @@ describe('Item', () => {
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
-    // (adapter.stub as any).usercert = mockCertificate;
-    // (adapter.stub as any).id = "mockID";
-    // (adapter.stub as any).name = "mockName";
-    const createdItem = await itemCtrl.create(itemName, owner, itemQuality, materials);
+    (adapter.stub as any).usercert = mockCertificate;
+    (adapter.stub as any).id = "mockID";
+    (adapter.stub as any).name = "mockName";
+    const createdItem = await itemCtrl.$withUser('User').create(itemName, owner, itemQuality, materials);
   
-    const justSavedItem = await adapter.getById<Item>(createdItem.id);
+    const justSavedItem = await adapter.$withUser('User').getById<Item>(createdItem.id);
     expect(justSavedItem.id).to.exist;
   });
 });
