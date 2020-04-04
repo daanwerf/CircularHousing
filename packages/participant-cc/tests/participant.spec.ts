@@ -33,22 +33,24 @@ describe('Participant', () => {
     '-----END CERTIFICATE-----';
 
     const mockIdentity2 = '66:D1:49:80:C8:AF:09:48:6E:0E:5F:0A:CA:EE:87:CB:16:C4:78:61';
-    const mockCertificate2 = '-----BEGIN CERTIFICATE-----' +
-    'MIICiDCCAi+gAwIBAgIUUw89P4fY2y2ZpqF/sf2tnOuEAWEwCgYIKoZIzj0EAwIw' + 
-    'fTELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh' + 
-    'biBGcmFuY2lzY28xHjAcBgNVBAoTFUdvdmVybm1lbnQuaHVybGV5LmxhYjEhMB8G' + 
-    'A1UEAxMYY2EuR292ZXJubWVudC5odXJsZXkubGFiMB4XDTIwMDQwMTEwMDMwMFoX' +
-    'DTIxMDQwMTEwMDgwMFowKjEPMA0GA1UECxMGY2xpZW50MRcwFQYDVQQDEw5jaGFp' +
-    'bmNvZGVBZG1pbjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABCVQLqWOIPKTL7TX' +
-    '2/K9YDcAQ2LtStfNwHKOwDEmJ7BYdVxNISd16eRFBMrgoqnJ1CZksHcrJs3oGwis' +
-    'btMEy8mjgd8wgdwwDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwHQYDVR0O' + 
-    'BBYEFIbb2C6NelIrCq0W2ouQhtbEaf3FMCsGA1UdIwQkMCKAIH436+wd9sbxSRpi' +
-    'CFJYaZnArBqFq8t7oUYVmYg54QFJMHAGCCoDBAUGBwgBBGR7ImF0dHJzIjp7ImFk' +
-    'bWluIjoidHJ1ZSIsImhmLkFmZmlsaWF0aW9uIjoiIiwiaGYuRW5yb2xsbWVudElE' + 
-    'IjoiY2hhaW5jb2RlQWRtaW4iLCJoZi5UeXBlIjoiY2xpZW50In19MAoGCCqGSM49' +
-    'BAMCA0cAMEQCIBjctclmRmwFrp8aWA30wjCffGqnObarj/P6kfFmKxrCAiBltIGJ' +
-    'YvjWd6rVSyzrKstpXiXUym11FBcJb0CtjuMdfg==' +
-    '-----END CERTIFICATE-----';
+    const mockAdmincertificate = "-----BEGIN CERTIFICATE-----\n" +
+    "MIIC7DCCApOgAwIBAgIUcg3DffC8hY03iz6zRC6GZQUch7EwCgYIKoZIzj0EAwIw\n" +
+    "cTELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh\n" +
+    "biBGcmFuY2lzY28xGDAWBgNVBAoTD29yZzEuaHVybGV5LmxhYjEbMBkGA1UEAxMS\n" +
+    "Y2Eub3JnMS5odXJsZXkubGFiMB4XDTE5MDUwNjA4NDEwMFoXDTIwMDUwNTA4NDYw\n" +
+    "MFowfzELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYD\n" +
+    "VQQKEwtIeXBlcmxlZGdlcjEwMA0GA1UECxMGY2xpZW50MAsGA1UECxMEb3JnMTAS\n" +
+    "BgNVBAsTC2RlcGFydG1lbnQxMQ8wDQYDVQQDEwZhZG1pbjIwWTATBgcqhkjOPQIB\n" +
+    "BggqhkjOPQMBBwNCAATdhgd0fRPq4AYSvS9tiS7vcZamCG3PDAb0QM4UGyFADdWi\n" +
+    "RsQjglz2/MnId4rLkU6srIAJUhDZI+QYGGkDhZlBo4H6MIH3MA4GA1UdDwEB/wQE\n" +
+    "AwIHgDAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBSbHq5DcRCcBt0+y4miDuzLOq80\n" +
+    "8TArBgNVHSMEJDAigCD9XKUjIbuooHek1fmgbE768dWTkHdGpqGn8v/YEeBbyDAR\n" +
+    "BgNVHREECjAIggZ1YnVudHUweAYIKgMEBQYHCAEEbHsiYXR0cnMiOnsiYWRtaW4i\n" +
+    "OiJ0cnVlIiwiaGYuQWZmaWxpYXRpb24iOiJvcmcxLmRlcGFydG1lbnQxIiwiaGYu\n" +
+    "RW5yb2xsbWVudElEIjoiYWRtaW4yIiwiaGYuVHlwZSI6ImNsaWVudCJ9fTAKBggq\n" +
+    "hkjOPQQDAgNHADBEAiAzUQos0hPVPf3DuZaCW3gX+LlxL2G5d7iY1ZUh1murgwIg\n" +
+    "dkQIssMaMwkireuglUubT/Chee4jFgnhJqffnG+qCHs=\n" +
+    "-----END CERTIFICATE-----\n";
   
   before(async () => {
     // Mocks the blockchain execution environment
@@ -62,10 +64,7 @@ describe('Participant', () => {
         name: join(__dirname, '..')
       }
     ]);
-
-    // Add a user called 'Test' to the mocked network and a the admin user
-  adapter.addUser('Test');
-  adapter.addUser('chaincodeAdmin');
+    (adapter.stub as any).usercert = mockCertificate;
   });
 
   
@@ -75,7 +74,7 @@ describe('Participant', () => {
     const name = 'mockName';
     const msp = 'mockOrganisation';
 
-    await expect(participantCtrl.$withUser('Test').register(id, name, msp, mockIdentity)).to.be.eventually
+    await expect(participantCtrl.register(id, name, msp, mockIdentity)).to.be.eventually
       .rejectedWith(Error);
   });
 
@@ -84,7 +83,8 @@ describe('Participant', () => {
     const name = 'mockName';
     const msp = 'mockOrganisation';
 
-    await participantCtrl.$withUser('chaincodeAdmin').register(id, name, msp, mockIdentity);
+    (adapter.stub as any).usercert = mockAdmincertificate;
+    await participantCtrl.register(id, name, msp, mockIdentity);
   
     const justSavedModel = await adapter.getById<Participant>(id);
   
@@ -101,13 +101,12 @@ describe('Participant', () => {
   });
 
   it('should not be able to create a participant with the same id', async () => {
-    // Fake another certificate
-    (adapter.stub as any).usercert = mockCertificate2;
+    (adapter.stub as any).usercert = mockAdmincertificate;
 
     const id = 'mockID';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
-    await expect(participantCtrl.$withUser('chaincodeAdmin').register(id, name, msp, mockIdentity2)).to.be.eventually
+    await expect(participantCtrl.register(id, name, msp, mockIdentity2)).to.be.eventually
       .rejectedWith(Error);
   });
 
@@ -115,7 +114,9 @@ describe('Participant', () => {
     const id = 'mockID2';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
-    await participantCtrl.$withUser('chaincodeAdmin').register(id, name, msp, mockIdentity2);
+
+    (adapter.stub as any).usercert = mockAdmincertificate;
+    await participantCtrl.register(id, name, msp, mockIdentity2);
   
     const justSavedModel = await adapter.getById<Participant>(id);
   
@@ -135,6 +136,8 @@ describe('Participant', () => {
   it('should not be able to change identity', async () => {
     const id = 'mockID';
     const fake_cert = 'FakeCertificate';
-    await expect(participantCtrl.$withUser('Test').changeIdentity(id, fake_cert)).to.be.eventually.rejectedWith(Error);
+
+    (adapter.stub as any).usercert = mockCertificate;
+    await expect(participantCtrl.changeIdentity(id, fake_cert)).to.be.eventually.rejectedWith(Error);
   });
 });
