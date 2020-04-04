@@ -75,13 +75,13 @@ describe('Item', () => {
   
   it('should initialize an Item', async () => {
     const itemName = "item1";
-    const owner = "MockID"
+    const owner = "mockID"
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
-    (adapter.stub as any).usercert = mockCertificate;
-    (adapter.stub as any).id = "mockID";
-    (adapter.stub as any).name = "mockName";
+    // (adapter.stub as any).usercert = mockCertificate;
+    // (adapter.stub as any).id = "mockID";
+    // (adapter.stub as any).name = "mockName";
     const createdItem = await itemCtrl.create(itemName, owner, itemQuality, materials);
   
     const justSavedItem = await adapter.getById<Item>(createdItem.id);
