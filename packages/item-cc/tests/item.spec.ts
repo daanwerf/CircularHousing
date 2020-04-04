@@ -8,11 +8,11 @@ import 'mocha';
 import { Item, ItemController } from '../src';
 import { Participant, ParticipantController } from 'participant-cc';
 
-describe('Item', () => {  
+describe('Item', () => {
   let adapter: MockControllerAdapter;
   let itemCtrl: ConvectorControllerClient<ItemController>;
   let participantCtrl: ConvectorControllerClient<ParticipantController>;
-  const mockIdentity = 'B6:0B:37:7C:DF:D2:7A:08:0B:98:BF:52:A4:2C:DC:4E:CC:70:91:E1';
+  const mockIdentity = '8D:B9:F2:E7:77:CB:A9:A3:B9:0D:B7:C8:F1:FE:70:16:42:3B:BA:0D';
   const mockCertificate = '-----BEGIN CERTIFICATE-----' +
   'MIICjzCCAjWgAwIBAgIUITsRsw5SIJ+33SKwM4j1Dl4cDXQwCgYIKoZIzj0EAwIw' +
   'czELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh' +
@@ -69,23 +69,23 @@ describe('Item', () => {
       }
     ]);
     (adapter.stub as any).usercert = mockAdmincertificate;
+    adapter.stub['fingerprint'] = mockIdentity;
     await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
     await participantCtrl.register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
 
     await participantCtrl.changeIdentity("mockID", mockIdentity);
     await participantCtrl.changeIdentity("mockID2", mockIdentity2);
   });
-  
+  // await participantCtrl.$withUser("admin").register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
   it('should initialize an Item', async () => {
     const itemName = "item1";
-    const ownerID = "mockID"
+    const ownerID = "mockID";
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
-    // Sender identity does not match owner identity! I dont know how to fix this
     const createdItem = await itemCtrl.create(itemName, ownerID, itemQuality, materials);
-  
-    const justSavedItem = await adapter.getById<Item>(createdItem.id);
+
+    const justSavedItem = await adapter.getById<Item>(createdItem["_id"]);
     expect(justSavedItem.id).to.exist;
   });
 });

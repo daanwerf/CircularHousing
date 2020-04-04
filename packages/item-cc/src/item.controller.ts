@@ -12,10 +12,10 @@ import {
 import { Item } from './item.model';
 import { Participant } from 'participant-cc';
 import {
-  CreateEvent, 
-  Event, 
-  RenameEvent, 
-  UpdateEvent, 
+  CreateEvent,
+  Event,
+  RenameEvent,
+  UpdateEvent,
   TransferEvent
 } from './Event';
 
@@ -202,7 +202,6 @@ export class ItemController extends ConvectorController {
     if (!owner || !owner.identities) {
       throw new Error('Given participant as owner does not currently exist on the ledger');
     }
-
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     //then check if the item is truly yours to be transferred
     if (currentOwnerIdentity.fingerprint !== sender) {
