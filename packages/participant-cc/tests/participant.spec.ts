@@ -7,7 +7,6 @@ import * as uuid from 'uuid/v4';
 import { MockControllerAdapter } from '@worldsibu/convector-adapter-mock';
 import { ClientFactory, ConvectorControllerClient } from '@worldsibu/convector-core';
 import 'mocha';
-
 import { Participant, ParticipantController } from '../src';
 
 describe('Participant', () => {
@@ -88,7 +87,6 @@ describe('Participant', () => {
     await participantCtrl.register(id, name, msp, mockIdentity);
   
     const justSavedModel = await adapter.getById<Participant>(id);
-  
     expect(justSavedModel.id).to.exist;
   });
 
@@ -125,7 +123,6 @@ describe('Participant', () => {
     await participantCtrl.register(id, name, msp, mockIdentity2);
   
     const justSavedModel = await adapter.getById<Participant>(id);
-  
     expect(justSavedModel.id).to.exist;
   });
 
@@ -165,7 +162,6 @@ describe('Participant', () => {
         }
       }
     });
-
     expect(userExisting[0] !== undefined);
   });
 
@@ -195,10 +191,4 @@ describe('Participant', () => {
     const id = 'mockIDNotExist';
     await expect(participantCtrl.get(id).catch(e => e.responses[0].error.message)).to.be.eventually.eql('No identity exists with id ' + id);
   });
-
-
-
-
-
-
 });
