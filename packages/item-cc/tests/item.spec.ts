@@ -72,8 +72,6 @@ describe('Item', () => {
     adapter.addUser('User2');
 
     (adapter.stub as any).usercert = mockAdmincertificate;
-    (adapter.stub as any).id = "mockID";
-    (adapter.stub as any).name = "mockName";
     await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
     await participantCtrl.register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
   });
@@ -84,9 +82,9 @@ describe('Item', () => {
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
-    // (adapter.stub as any).usercert = mockCertificate;
-    (adapter.stub as any).id = "mockID";
-    (adapter.stub as any).name = "mockName";
+    (adapter.stub as any).usercert = mockAdmincertificate;
+    console.log((adapter.stub as any));    
+
     const createdItem = await itemCtrl.create(itemName, owner, itemQuality, materials);
   
     const justSavedItem = await adapter.getById<Item>(createdItem.id);
