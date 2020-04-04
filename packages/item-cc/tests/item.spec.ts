@@ -72,13 +72,13 @@ describe('Item', () => {
   
   it('should initialize an Item', async () => {
     (adapter.stub as any).usercert = mockAdmincertificate;
-    
     const ownerID = "mockID";
     const ownerName = "mockName";
     const ownerMsp = "mockOrganisation";
     const ownerIdentity = mockIdentity;
     await participantCtrl.register(ownerID, ownerName, ownerMsp, ownerIdentity);
 
+    (adapter.stub as any).usercert = mockCertificate;
     const itemName = "item1";
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
