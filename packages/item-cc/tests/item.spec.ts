@@ -93,7 +93,7 @@ describe('Item', () => {
       }
     }); 
 
-    const createdItem = await itemCtrl.$withUser(userExisting).create(itemName, owner, itemQuality, materials);
+    const createdItem = await itemCtrl.$withUser(userExisting.id).create(itemName, owner, itemQuality, materials);
   
     const justSavedItem = await adapter.getById<Item>(createdItem.id);
     expect(justSavedItem.id).to.exist;
