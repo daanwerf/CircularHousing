@@ -74,8 +74,8 @@ describe('Participant', () => {
     const name = 'mockName';
     const msp = 'mockOrganisation';
 
-    await expect(participantCtrl.register(id, name, msp, mockIdentity)).to.be.eventually
-      .rejectedWith(Error);
+    await expect(participantCtrl.register(id, name, msp, mockIdentity).catch(e => e.responses[0].error.message)).to.be.eventually
+      .eql('Unauthorized. Only admin can create a new participant.');
   });
 
   // Test for Participant create
@@ -99,8 +99,9 @@ describe('Participant', () => {
     const msp = 'mockOrganisation';
 
     (adapter.stub as any).usercert = mockAdmincertificate;
-    await expect(participantCtrl.register(id, name, msp, mockIdentity)).to.be.eventually
-      .rejectedWith(Error);
+    await expect(participantCtrl.register(id, name, msp, mockIdentity).catch(e => e.responses[0].error.message)).to.be.eventually
+      .eql('This user already has a participant on the blockchain.' +
+      'You can only create one participant for each node');
   });
 
   // Test for Participant create
@@ -110,8 +111,8 @@ describe('Participant', () => {
     const msp = 'mockOrganisation';
 
     (adapter.stub as any).usercert = mockAdmincertificate;
-    await expect(participantCtrl.register(id, name, msp, mockIdentity2)).to.be.eventually
-      .rejectedWith(Error);
+    await expect(participantCtrl.register(id, name, msp, mockIdentity2).catch(e => e.responses[0].error.message)).to.be.eventually
+      .eql('Identity exists already, please call changeIdentity fn for updates');
   });
 
   // Test for Participant create
@@ -134,7 +135,7 @@ describe('Participant', () => {
     const fake_cert = '56:74:69:D7:D7:C5:A4:A4:C5:2D:4B:7B:7B:27:A9:6A:A8:6A:C9:26:FF:8B:82';    ;
 
     (adapter.stub as any).usercert = mockCertificate;
-    await expect(participantCtrl.changeIdentity(id, fake_cert)).to.be.eventually.rejectedWith(Error);
+    await expect(participantCtrl.changeIdentity(id, fake_cert).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Unauthorized. Requester identity is not an admin');
   });
 
   // Test for Participant changeIdentity
@@ -171,13 +172,14 @@ describe('Participant', () => {
   // Test for Participant get
   it('should return a participant', async () => {
     const id = 'mockID';
-    await expect(participantCtrl.get(id)).to.not.be.eventually.rejectedWith(Error);
+    const retrievedParticipant = participantCtrl.get(id);
+    expect(retrievedParticipant).to.exist;
   });
 
   // Test for Participant get
   it('should not return a participant', async () => {
-    const id = 'non_existing_username';
-    await expect(participantCtrl.get(id)).to.be.eventually.rejectedWith(Error);
+    const id = 'mockIDNotExist';
+    await expect(participantCtrl.get(id).catch(e => e.responses[0].error.message)).to.be.eventually.eql('No identity exists with id ' + id);
   });
 
 
