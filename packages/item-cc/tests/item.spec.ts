@@ -68,8 +68,8 @@ describe('Item', () => {
         name: join(__dirname, '../../participant-cc')
       }
     ]);
-    adapter.addUser('User');
-    adapter.addUser('User2');
+    adapter.addUser('mockID');
+    adapter.addUser('mockID2');
 
     (adapter.stub as any).usercert = mockAdmincertificate;
     await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
