@@ -87,7 +87,7 @@ describe('Item', () => {
     (adapter.stub as any).name = "mockName";
     const createdItem = await itemCtrl.$withUser('User').create(itemName, owner, itemQuality, materials);
   
-    const justSavedItem = await adapter.$withUser('User').getById<Item>(createdItem.id);
+    const justSavedItem = await adapter.getById<Item>(createdItem.id);
     expect(justSavedItem.id).to.exist;
   });
 });
