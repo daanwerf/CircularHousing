@@ -68,9 +68,6 @@ describe('Item', () => {
         name: join(__dirname, '../../participant-cc')
       }
     ]);
-    adapter.addUser('mockID');
-    adapter.addUser('mockID2');
-
     (adapter.stub as any).usercert = mockAdmincertificate;
     await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
     await participantCtrl.register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
@@ -85,10 +82,18 @@ describe('Item', () => {
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
-    (adapter.stub as any).usercert = mockCertificate;
-    console.log((adapter.stub as any));    
+    const userExisting = await Participant.query(Participant, {
+      'selector': {
+        'identities': {
+          '$elemMatch': {
+            'fingerprint': mockIdentity,
+            'status': true
+          }
+        }
+      }
+    }); 
 
-    const createdItem = await itemCtrl.create(itemName, owner, itemQuality, materials);
+    const createdItem = await itemCtrl.$withUser(userExisting).create(itemName, owner, itemQuality, materials);
   
     const justSavedItem = await adapter.getById<Item>(createdItem.id);
     expect(justSavedItem.id).to.exist;
