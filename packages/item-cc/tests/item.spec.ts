@@ -78,22 +78,14 @@ describe('Item', () => {
   
   it('should initialize an Item', async () => {
     const itemName = "item1";
-    const owner = "mockID"
+    const ownerID = "mockID"
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
-    const userExisting = await Participant.query(Participant, {
-      'selector': {
-        'identities': {
-          '$elemMatch': {
-            'fingerprint': mockIdentity,
-            'status': true
-          }
-        }
-      }
-    }); 
+    const owner = await Participant.getOne(ownerID);
+    const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
 
-    const createdItem = await itemCtrl.$withUser(userExisting.id).create(itemName, owner, itemQuality, materials);
+    const createdItem = await itemCtrl.$withUser(currentOwnerIdentity).create(itemName, ownerID, itemQuality, materials);
   
     const justSavedItem = await adapter.getById<Item>(createdItem.id);
     expect(justSavedItem.id).to.exist;
