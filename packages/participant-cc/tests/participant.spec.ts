@@ -177,10 +177,10 @@ describe('Participant', () => {
   });
 
   // Test for Participant getByFingerprint
-  it('should not return a participant', async () => {
+  it('should return an empty list, as no participants for this fingerprint exist', async () => {
     const fingerprintNotExist = '23:74:69:D7:D7:C5:A4:A4:C5:2D:4B:7B:7B:27:A9:6A:A8:6A:C9:26:FF:8B:82';
     const retrievedParticipant = participantCtrl.getByFingerprint(fingerprintNotExist);
-    expect(retrievedParticipant).to.not.exist;
+    expect(retrievedParticipant).to.not.eventually.be.eql({});
   });
 
   // Test for Participant get
