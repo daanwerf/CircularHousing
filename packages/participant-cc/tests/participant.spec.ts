@@ -68,7 +68,7 @@ describe('Participant', () => {
   });
 
   
-  
+  // Test for Participant create
   it('should not be allowed, as only the chaincodeAdmin can create a participant', async () => {
     const id = 'mockID';
     const name = 'mockName';
@@ -78,6 +78,7 @@ describe('Participant', () => {
       .rejectedWith(Error);
   });
 
+  // Test for Participant create
   it('should create a new participant', async () => {
     const id = 'mockID';
     const name = 'mockName';
@@ -91,26 +92,30 @@ describe('Participant', () => {
     expect(justSavedModel.id).to.exist;
   });
 
-  it('should not be able to create a second participant for the same user', async () => {
+  // Test for Participant create
+  it('should not be possible to create a second participant for the same user', async () => {
     const id = 'mockID2';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
 
+    (adapter.stub as any).usercert = mockAdmincertificate;
     await expect(participantCtrl.register(id, name, msp, mockIdentity)).to.be.eventually
       .rejectedWith(Error);
   });
 
-  it('should not be able to create a participant with the same id', async () => {
-    (adapter.stub as any).usercert = mockAdmincertificate;
-
+  // Test for Participant create
+  it('should not be possible to create a participant with the same id', async () => {
     const id = 'mockID';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
+
+    (adapter.stub as any).usercert = mockAdmincertificate;
     await expect(participantCtrl.register(id, name, msp, mockIdentity2)).to.be.eventually
       .rejectedWith(Error);
   });
 
-  it('should be able to create a participant for the new user', async () => {
+  // Test for Participant create
+  it('should be possible to create a participant for the new user', async () => {
     const id = 'mockID2';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
@@ -123,16 +128,7 @@ describe('Participant', () => {
     expect(justSavedModel.id).to.exist;
   });
 
-  it('should return a participant', async () => {
-    const id = 'mockID';
-    await expect(participantCtrl.get(id)).to.not.be.eventually.rejectedWith(Error);
-  });
-
-  it('should not return a participant', async () => {
-    const id = 'non_existing_username';
-    await expect(participantCtrl.get(id)).to.be.eventually.rejectedWith(Error);
-  });
-
+  // Test for Participant changeIdentity
   it('should not be able to change identity', async () => {
     const id = 'mockID';
     const fake_cert = 'FakeCertificate';
@@ -140,4 +136,45 @@ describe('Participant', () => {
     (adapter.stub as any).usercert = mockCertificate;
     await expect(participantCtrl.changeIdentity(id, fake_cert)).to.be.eventually.rejectedWith(Error);
   });
+
+  // Test for Participant changeIdentity
+  it('should be able to change identity', async () => {
+    const id = 'mockID';
+    const fake_cert = '56:74:69:D7:D7:C5:A4:A4:C5:2D:4B:7B:7B:27:A9:6A:A8:6A:C9:26:FF:8B:82';
+
+    (adapter.stub as any).usercert = mockAdmincertificate;
+    await participantCtrl.changeIdentity(id, fake_cert);
+
+    const userExisting = await Participant.query(Participant, {
+      'selector': {
+        'identities': {
+          '$elemMatch': {
+            'fingerprint': fake_cert,
+            'status': true
+          }
+        }
+      }
+    });
+
+    expect(userExisting[0] !== undefined);
+  });
+
+
+  // Test for Participant get
+  it('should return a participant', async () => {
+    const id = 'mockID';
+    await expect(participantCtrl.get(id)).to.not.be.eventually.rejectedWith(Error);
+  });
+
+  // Test for Participant get
+  it('should not return a participant', async () => {
+    const id = 'non_existing_username';
+    await expect(participantCtrl.get(id)).to.be.eventually.rejectedWith(Error);
+  });
+
+
+
+
+
+
 });
