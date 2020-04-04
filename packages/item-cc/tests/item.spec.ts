@@ -75,7 +75,7 @@ describe('Item', () => {
     const ownerID = "mockID";
     const ownerName = "mockName";
     const ownerMsp = "mockOrganisation";
-    const ownerIdentity = mockIdentity;
+    const ownerIdentity = "56:74:69:D7:D7:C5:A4:A4:C5:2D:4B:7B:7B:27:A9:6A:A8:6A:C9:26:FF:8B:82";
     await participantCtrl.register(ownerID, ownerName, ownerMsp, ownerIdentity);
 
     (adapter.stub as any).usercert = mockCertificate;
