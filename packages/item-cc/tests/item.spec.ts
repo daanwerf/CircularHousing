@@ -93,20 +93,20 @@ describe('Item', () => {
     expect(justSavedItem[0]).to.exist;
   });
 
-    // Test for create item Event
-    it('should create an Item', async () => {
-      // Simulate being the user with id mockID
-      adapter.stub['fingerprint'] = mockIdentity;
-      const foundItem = await Item.query(Item, {
-        'selector': {
-          'name': "item1",
-        }
-      });
-      const itemID = await foundItem[0].id;
-      const retrievedItem = await adapter.getById<Item>(itemID);
-  
-      expect(retrievedItem.itemHistory[0].type).to.be.eql('CREATE');
+  // Test for create item Event
+  it('should have used the correct event type on the creation of Item', async () => {
+    // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
+    const foundItem = await Item.query(Item, {
+      'selector': {
+        'name': "item1",
+      }
     });
+    const itemID = await foundItem[0].id;
+    const retrievedItem = await adapter.getById<Item>(itemID);
+
+    expect(retrievedItem.itemHistory[0].type).to.be.eql('CREATE');
+  });
 
   // Test for create item
   it('should fail, as the owner doesnt exist', async () => {
@@ -160,6 +160,21 @@ describe('Item', () => {
 
     const justUpdatedItem = await adapter.getById<Item>(itemID);
     expect(justUpdatedItem.name).to.be.eql("item1NewName");
+  });
+
+  // Test for rename item Event
+  it('should have used the correct event type on the renaming of an Item', async () => {
+    // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
+    const foundItem = await Item.query(Item, {
+      'selector': {
+        'name': "item1NewName",
+      }
+    });
+    const itemID = await foundItem[0].id;
+    const retrievedItem = await adapter.getById<Item>(itemID);
+
+    expect(retrievedItem.itemHistory[1].type).to.be.eql('RENAME');
   });
 
   
