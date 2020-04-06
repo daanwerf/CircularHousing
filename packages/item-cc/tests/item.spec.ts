@@ -135,6 +135,7 @@ describe('Item', () => {
     adapter.stub['fingerprint'] = mockIdentity;
     const newName = "item1NewName";
 
+    console.log(await itemCtrl.getAll()[0]);
     const itemID = await itemCtrl.getAll()[0].id;
     await itemCtrl.updateName(itemID, newName);
 
