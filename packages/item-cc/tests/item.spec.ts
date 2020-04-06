@@ -143,7 +143,7 @@ describe('Item', () => {
     const newName = "item1NewName";
     await itemCtrl.updateName(itemID, newName);
 
-    const justUpdatedItem = await itemCtrl.getById<Item>(itemID);
+    const justUpdatedItem = await adapter.getById<Item>(itemID);
     expect(justUpdatedItem.id).to.be.eql("item1NewName");
   });
 
