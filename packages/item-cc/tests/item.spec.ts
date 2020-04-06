@@ -135,13 +135,12 @@ describe('Item', () => {
     adapter.stub['fingerprint'] = mockIdentity;
     const newName = "item1NewName";
 
-    console.log(await itemCtrl.getAll());
-    const itemID = await itemCtrl.getAll()[0].id;
+    const itemID = await itemCtrl.getAll()[0]["_id"];
     await itemCtrl.updateName(itemID, newName);
 
     const justUpdatedItem = await itemCtrl.getAll();
 
-    expect(justUpdatedItem[0].name).to.be.eql("item1NewName");
+    expect(justUpdatedItem[0]["_name"]).to.be.eql("item1NewName");
   });
 
   
