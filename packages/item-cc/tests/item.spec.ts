@@ -93,6 +93,21 @@ describe('Item', () => {
     expect(justSavedItem[0]).to.exist;
   });
 
+    // Test for create item Event
+    it('should create an Item', async () => {
+      // Simulate being the user with id mockID
+      adapter.stub['fingerprint'] = mockIdentity;
+      const foundItem = await Item.query(Item, {
+        'selector': {
+          'name': "item1",
+        }
+      });
+      const itemID = await foundItem[0].id;
+      const itemHistory = await adapter.getById<Item>(itemID).itemHistory;
+  
+      expect(itemHistory[0]).to.be.a('CreateEvent');
+    });
+
   // Test for create item
   it('should fail, as the owner doesnt exist', async () => {
     // Simulate being the user with id mockID
