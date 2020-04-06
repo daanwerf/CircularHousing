@@ -69,15 +69,14 @@ describe('Item', () => {
       }
     ]);
     (adapter.stub as any).usercert = mockAdmincertificate;
-    adapter.stub['fingerprint'] = mockIdentity;
     await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
     await participantCtrl.register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
-
-    await participantCtrl.changeIdentity("mockID", mockIdentity);
-    await participantCtrl.changeIdentity("mockID2", mockIdentity2);
   });
-  // await participantCtrl.$withUser("admin").register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
+
   it('should initialize an Item', async () => {
+    // Simulate being the user with id mockID
+    (adapter.stub as any).usercert = mockCertificate;
+    adapter.stub['fingerprint'] = mockIdentity;
     const itemName = "item1";
     const ownerID = "mockID";
     const itemQuality = "Good";
@@ -85,7 +84,7 @@ describe('Item', () => {
 
     const createdItem = await itemCtrl.create(itemName, ownerID, itemQuality, materials);
 
-    const justSavedItem = await adapter.getById<Item>(createdItem.id);
-    expect(justSavedItem).to.exist;
+    const justSavedItem = await adapter.getAll();
+    expect(justSavedItem[0]).to.exist;
   });
 });
