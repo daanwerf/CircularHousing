@@ -85,7 +85,7 @@ describe('Item', () => {
 
     const createdItem = await itemCtrl.create(itemName, ownerID, itemQuality, materials);
 
-    const justSavedItem = await adapter.getById<Item>(createdItem["_id"]);
-    expect(justSavedItem.id).to.exist;
+    const justSavedItem = await adapter.getById<Item>(createdItem.id);
+    expect(justSavedItem).to.exist;
   });
 });
