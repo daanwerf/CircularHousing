@@ -190,7 +190,12 @@ describe('Item', () => {
   it('should fail, as this is not the owner of the item', async () => {
     // Simulate being the user with id mockID2
     adapter.stub['fingerprint'] = mockIdentity2;
-    const itemID = "item1NewName"
+    const foundItem = await Item.query(Item, {
+      'selector': {
+        'name': "item1NewName",
+      }
+    });
+    const itemID = await foundItem[0].id;
 
     expect(itemCtrl.updateName(itemID, "newName").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
   });
@@ -211,6 +216,21 @@ describe('Item', () => {
 
     const justUpdatedItem = await adapter.getById<Item>(itemID);
     expect(justUpdatedItem.quality).to.be.eql("Bad");
+  });
+
+  // Test for update quality item Event
+  it('should have used the correct event type on the update of the quality of an Item', async () => {
+    // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
+    const foundItem = await Item.query(Item, {
+      'selector': {
+        'name': "item1NewName",
+      }
+    });
+    const itemID = await foundItem[0].id;
+    const retrievedItem = await adapter.getById<Item>(itemID);
+
+    expect(retrievedItem.itemHistory[2].type).to.be.eql('UPDATE');
   });
 
   
