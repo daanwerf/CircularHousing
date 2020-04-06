@@ -78,6 +78,7 @@ describe('Item', () => {
     await participantCtrl.register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
   });
 
+  // Test for create item
   it('should create an Item', async () => {
     // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity;
@@ -92,6 +93,7 @@ describe('Item', () => {
     expect(justSavedItem[0]).to.exist;
   });
 
+  // Test for create item
   it('should fail, as the owner doesnt exist', async () => {
     // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity;
@@ -103,6 +105,7 @@ describe('Item', () => {
     expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given participant as owner does not currently exist on the ledger');
   });
 
+  // Test for create item
   it('should fail, as the mocked user is not the owner of the item', async () => {
     // Simulate being the user with id mockID2
     adapter.stub['fingerprint'] = mockIdentity2;
@@ -114,7 +117,17 @@ describe('Item', () => {
     expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('You are not allowed to do this action, only mockName is allowed to');
   });
 
+  // Test for create item
+  it('should fail, as the given quality is not of the allowed format', async () => {
+    // Simulate being the user with id mockID2
+    adapter.stub['fingerprint'] = mockIdentity2;
+    const itemName = "item1";
+    const ownerID = "mockID";
+    const itemQuality = "WrongFormat";
+    const materials = "mockMaterial1, mockMaterial2";
 
+    expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Illegal argument given for quality.');
+  });
 
   
 });
