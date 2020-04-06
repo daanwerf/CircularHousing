@@ -75,7 +75,7 @@ describe('Item', () => {
     await participantCtrl.register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
   });
 
-  it('should initialize an Item', async () => {
+  it('should create an Item', async () => {
     // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity;
     const itemName = "item1";
@@ -83,9 +83,26 @@ describe('Item', () => {
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
-    const createdItem = await itemCtrl.create(itemName, ownerID, itemQuality, materials);
-
+    await itemCtrl.create(itemName, ownerID, itemQuality, materials);
     const justSavedItem = await itemCtrl.getAll();
+
     expect(justSavedItem[0]).to.exist;
   });
+
+  it('should fail, as the owner doesnt exist', async () => {
+    // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
+    const itemName = "item1";
+    const ownerID = "mockIDNotExist";
+    const itemQuality = "Good";
+    const materials = "mockMaterial1, mockMaterial2";
+
+    expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given participant as owner does not currently exist on the ledger');
+  });
+
+
+
+
+
+  
 });
