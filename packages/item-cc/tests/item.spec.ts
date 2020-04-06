@@ -270,8 +270,17 @@ describe('Item', () => {
     const newOwner = "mockID2";
     await itemCtrl.proposeTransfer(itemID, newOwner);
 
-    const justUpdatedItem = await adapter.getById<Item>(itemID);
+    var justUpdatedItem = await adapter.getById<Item>(itemID);
     expect(justUpdatedItem.proposedOwner).to.be.eql("mockID2");
+
+    // Simulate being the user with id mockID2
+    adapter.stub['fingerprint'] = mockIdentity2;
+
+    await itemCtrl.answerProposal(itemID, true);
+
+    justUpdatedItem = await adapter.getById<Item>(itemID);
+    expect(justUpdatedItem.itemOwner).to.be.eql("mockID2");
+    expect(justUpdatedItem.proposedOwner).to.be.eql("");
   });
 
   
