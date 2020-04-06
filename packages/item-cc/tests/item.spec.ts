@@ -103,7 +103,16 @@ describe('Item', () => {
     expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given participant as owner does not currently exist on the ledger');
   });
 
+  it('should fail, as the mocked user is not the owner of the item', async () => {
+    // Simulate being the user with id mockID2
+    adapter.stub['fingerprint'] = mockIdentity2;
+    const itemName = "item1";
+    const ownerID = "mockID";
+    const itemQuality = "Good";
+    const materials = "mockMaterial1, mockMaterial2";
 
+    expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only ${participantCtrl.get(ownerID).name} is allowed to`);
+  });
 
 
 
