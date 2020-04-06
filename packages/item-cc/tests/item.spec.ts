@@ -268,6 +268,10 @@ describe('Item', () => {
     const itemID = await foundItem[0].id;
 
     const newOwner = "mockID2";
+    const newpart = await Participant.getOne(newOwner);
+    const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
+    console.log(newpartidentity.fingerprint)
+
     await itemCtrl.proposeTransfer(itemID, newOwner);
 
     var justUpdatedItem = await adapter.getById<Item>(itemID);
@@ -277,7 +281,7 @@ describe('Item', () => {
 
   //Test for transfer ownership
   it('should accept ownership of an Item', async () => {
-    // Simulate being the user with id mockID
+    // Simulate being the user with id mockID2
     adapter.stub['fingerprint'] = mockIdentity2;
     const foundItem = await Item.query(Item, {
       'selector': {
@@ -289,7 +293,7 @@ describe('Item', () => {
     await itemCtrl.answerProposal(itemID, true);
 
     var justUpdatedItem = await adapter.getById<Item>(itemID);
-    
+
     expect(justUpdatedItem.itemOwner).to.be.eql("mockID2");
     expect(justUpdatedItem.proposedOwner).to.be.eql("");
   });

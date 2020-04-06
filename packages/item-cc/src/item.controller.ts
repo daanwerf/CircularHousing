@@ -143,7 +143,7 @@ export class ItemController extends ConvectorController {
     //handle the proposal
     item.proposedOwner = transferTarget;
     await item.save();
-    console.log(`$Participant ${item.itemOwner} proposed a transfer of ownership of item ${item.name} to participant ${transferTarget}`);
+    console.log(`$Participant ${item.itemOwner} proposed a transfer of ownership of item ${item.name} to participant ${item.proposedOwner}`);
   }
 
   @Invokable()
