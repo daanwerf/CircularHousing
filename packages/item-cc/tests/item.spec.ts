@@ -268,9 +268,10 @@ describe('Item', () => {
     const itemID = await foundItem[0].id;
 
     const newOwner = "mockID2";
-    const newpart = await Participant.getOne(newOwner);
-    const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
-    console.log(newpartidentity.fingerprint == mockIdentity2)
+    // const newpart = await Participant.getOne(newOwner);
+    // const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
+    // console.log(newpartidentity.fingerprint == mockIdentity2)
+    console.log(adapter)
 
     await itemCtrl.proposeTransfer(itemID, newOwner);
 
@@ -289,6 +290,8 @@ describe('Item', () => {
       }
     });
     const itemID = await foundItem[0].id;
+
+    console.log(adapter)
 
     await itemCtrl.answerProposal(itemID, true);
 
