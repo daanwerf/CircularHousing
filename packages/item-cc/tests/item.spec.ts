@@ -275,7 +275,6 @@ describe('Item', () => {
 
     // Simulate being the user with id mockID2
     adapter.stub['fingerprint'] = mockIdentity2;
-
     await itemCtrl.answerProposal(itemID, true);
 
     justUpdatedItem = await adapter.getById<Item>(itemID);
