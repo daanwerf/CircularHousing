@@ -183,7 +183,7 @@ describe('Item', () => {
     adapter.stub['fingerprint'] = mockIdentity;
     const itemID = "ItemIDNotExist"
 
-    expect(itemCtrl.updateName(itemID, "newName").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
+    expect(itemCtrl.updateName(itemID, "item1NewName").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
   });
 
   // Test for rename item
@@ -197,7 +197,7 @@ describe('Item', () => {
     });
     const itemID = await foundItem[0].id;
 
-    expect(itemCtrl.updateName(itemID, "newName").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
+    expect(itemCtrl.updateName(itemID, "item1NewName").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
   });
 
   // Test for update quality
