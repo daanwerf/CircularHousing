@@ -69,13 +69,14 @@ describe('Item', () => {
       }
     ]);
     (adapter.stub as any).usercert = mockAdmincertificate;
+    adapter.stub['fingerprint'] = mockIdentity;
     await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
+    adapter.stub['fingerprint'] = mockIdentity2;
     await participantCtrl.register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
   });
 
   it('should initialize an Item', async () => {
     // Simulate being the user with id mockID
-    (adapter.stub as any).usercert = mockCertificate;
     adapter.stub['fingerprint'] = mockIdentity;
     const itemName = "item1";
     const ownerID = "mockID";
