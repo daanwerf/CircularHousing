@@ -183,7 +183,7 @@ describe('Item', () => {
     adapter.stub['fingerprint'] = mockIdentity;
     const itemID = "ItemIDNotExist"
 
-    expect(itemCtrl.rename(itemID, "newName").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
+    expect(itemCtrl.updateName(itemID, "newName").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
   });
 
   
