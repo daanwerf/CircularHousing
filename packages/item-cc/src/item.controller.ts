@@ -204,7 +204,8 @@ export class ItemController extends ConvectorController {
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     //then check if the item is truly yours to be transferred
     if (currentOwnerIdentity.fingerprint !== sender) {
-      throw new Error(`You are not allowed to do this action, only ${owner.name} is allowed to: ${currentOwnerIdentity.fingerprint}`);
+      console.log("here: " + currentOwnerIdentity.fingerprint)
+      throw new Error(`You are not allowed to do this action, only ${owner.name} is allowed to`);
     }
     return true;
   }
