@@ -143,7 +143,7 @@ export class ItemController extends ConvectorController {
     //handle the proposal
     item.proposedOwner = transferTarget;
     await item.save();
-    console.log(`$Participant ${item.itemOwner} proposed a transfer of ownership of item ${item.name} to participant ${item.itemOwner}`);
+    console.log(`$Participant ${item.itemOwner} proposed a transfer of ownership of item ${item.name} to participant ${transferTarget}`);
   }
 
   @Invokable()
@@ -204,7 +204,6 @@ export class ItemController extends ConvectorController {
     const currentOwnerIdentity = owner.identities.filter(identity => identity.status === true)[0];
     //then check if the item is truly yours to be transferred
     if (currentOwnerIdentity.fingerprint !== sender) {
-      console.log("here: " + currentOwnerIdentity.fingerprint)
       throw new Error(`You are not allowed to do this action, only ${owner.name} is allowed to`);
     }
     return true;
