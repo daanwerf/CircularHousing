@@ -142,7 +142,7 @@ describe('Item', () => {
     });
 
     console.log(foundItem)
-    const itemID = await foundItem.id;
+    const itemID = await foundItem[0].id;
     await itemCtrl.updateName(itemID, newName);
 
     const justUpdatedItem = await itemCtrl.getAll();
