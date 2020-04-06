@@ -129,5 +129,19 @@ describe('Item', () => {
     expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Illegal argument given for quality.');
   });
 
+  // Test for update name
+  it('should update the name of an Item', async () => {
+    // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
+    const newName = "item1NewName";
+
+    const itemID = await itemCtrl.getAll()[0].id;
+    await itemCtrl.updateName(itemID, newName);
+
+    const justUpdatedItem = await itemCtrl.getAll();
+
+    expect(justUpdatedItem[0].name).to.be.eql("item1NewName");
+  });
+
   
 });
