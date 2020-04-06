@@ -206,7 +206,7 @@ describe('Item', () => {
     adapter.stub['fingerprint'] = mockIdentity;
     const foundItem = await Item.query(Item, {
       'selector': {
-        'name': "item1",
+        'name': "item1NewName",
       }
     });
     const itemID = await foundItem[0].id;
