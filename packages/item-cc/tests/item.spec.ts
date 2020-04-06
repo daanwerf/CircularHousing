@@ -105,7 +105,7 @@ describe('Item', () => {
       const itemID = await foundItem[0].id;
       const retrievedItem = await adapter.getById<Item>(itemID);
   
-      expect(retrievedItem.itemHistory[0].type).to.be.a('CreateEvent');
+      expect(retrievedItem.itemHistory[0].type).to.be.eventually.eql('CREATE');
     });
 
   // Test for create item
