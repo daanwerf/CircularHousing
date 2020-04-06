@@ -282,7 +282,7 @@ describe('Item', () => {
   //Test for transfer ownership
   it('should accept ownership of an Item', async () => {
     // Simulate being the user with id mockID2
-    adapter.stub['fingerprint'] = mockIdentity;
+    adapter.stub['fingerprint'] = mockIdentity2;
     const foundItem = await Item.query(Item, {
       'selector': {
         'name': "item1NewName",
@@ -290,6 +290,9 @@ describe('Item', () => {
     });
     const itemID = await foundItem[0].id;
 
+    // It goes wrong here, even though we use the fingerprint of mockName2, we get the error
+    // that this user is not mockName2. In the test above I checked that the fingerprints are 
+    // the same, so I'm not sure what is going wrong here
     await itemCtrl.answerProposal(itemID, true);
 
     var justUpdatedItem = await adapter.getById<Item>(itemID);
