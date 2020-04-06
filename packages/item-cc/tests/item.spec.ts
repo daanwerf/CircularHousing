@@ -270,7 +270,7 @@ describe('Item', () => {
     const newOwner = "mockID2";
     const newpart = await Participant.getOne(newOwner);
     const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
-    console.log(newpartidentity.fingerprint)
+    console.log(newpartidentity.fingerprint == mockIdentity2)
 
     await itemCtrl.proposeTransfer(itemID, newOwner);
 
