@@ -103,9 +103,9 @@ describe('Item', () => {
         }
       });
       const itemID = await foundItem[0].id;
-      const itemHistory = await adapter.getById<Item>(itemID).itemHistory;
+      const retrievedItem = await adapter.getById<Item>(itemID);
   
-      expect(itemHistory[0]).to.be.a('CreateEvent');
+      expect(retrievedItem.itemHistory[0]).to.be.a('CreateEvent');
     });
 
   // Test for create item
