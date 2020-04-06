@@ -233,5 +233,15 @@ describe('Item', () => {
     expect(retrievedItem.itemHistory[3].type).to.be.eql('UPDATE');
   });
 
+  // Test for rename item
+  it('should fail, as the item doesnt exist', async () => {
+    // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
+    const itemID = "ItemIDNotExist"
+
+    expect(itemCtrl.updateQuality(itemID, "Bad").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
+  });
+
+
   
 });
