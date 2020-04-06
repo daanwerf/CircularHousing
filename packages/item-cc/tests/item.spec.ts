@@ -257,7 +257,7 @@ describe('Item', () => {
   });
 
   //Test for transfer ownership
-  it('should transfer ownership of an Item', async () => {
+  it('should propse a new owner of an Item', async () => {
     // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity;
     const foundItem = await Item.query(Item, {
@@ -272,15 +272,33 @@ describe('Item', () => {
 
     var justUpdatedItem = await adapter.getById<Item>(itemID);
     expect(justUpdatedItem.proposedOwner).to.be.eql("mockID2");
+  });
 
-    // Simulate being the user with id mockID2
+
+  //Test for transfer ownership
+  it('should accept ownership of an Item', async () => {
+    // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity2;
+    const foundItem = await Item.query(Item, {
+      'selector': {
+        'name': "item1NewName",
+      }
+    });
+    const itemID = await foundItem[0].id;
+
     await itemCtrl.answerProposal(itemID, true);
 
-    justUpdatedItem = await adapter.getById<Item>(itemID);
+    var justUpdatedItem = await adapter.getById<Item>(itemID);
+    
     expect(justUpdatedItem.itemOwner).to.be.eql("mockID2");
     expect(justUpdatedItem.proposedOwner).to.be.eql("");
   });
+
+
+
+
+
+
 
   
 });
