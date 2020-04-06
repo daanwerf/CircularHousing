@@ -256,7 +256,23 @@ describe('Item', () => {
     expect(itemCtrl.updateQuality(itemID, "Bad").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
   });
 
+  //Test for transfer ownership
+  it('should transfer ownership of an Item', async () => {
+    // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
+    const foundItem = await Item.query(Item, {
+      'selector': {
+        'name': "item1NewName",
+      }
+    });
+    const itemID = await foundItem[0].id;
 
+    const newOwner = "mockID2";
+    await itemCtrl.proposeTransfer(itemID, newOwner);
+
+    const justUpdatedItem = await adapter.getById<Item>(itemID);
+    expect(justUpdatedItem.proposedOwner).to.be.eql("mockID2");
+  });
 
   
 });

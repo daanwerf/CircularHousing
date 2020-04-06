@@ -121,7 +121,6 @@ export class ItemController extends ConvectorController {
     return await Item.getAll('io.worldsibu.item');
   }
 
-  //TODO needs spec test
   @Invokable()
   public async proposeTransfer(
     @Param(yup.string())
