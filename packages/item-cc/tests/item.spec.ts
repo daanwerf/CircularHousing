@@ -84,7 +84,7 @@ describe('Item', () => {
 
     const createdItem = await itemCtrl.create(itemName, ownerID, itemQuality, materials);
 
-    const justSavedItem = await adapter.getAll();
+    const justSavedItem = await itemCtrl.getAll();
     expect(justSavedItem[0]).to.exist;
   });
 });
