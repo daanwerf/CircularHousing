@@ -133,17 +133,18 @@ describe('Item', () => {
   it('should update the name of an Item', async () => {
     // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity;
-    const itemID = await Item.query(Item, {
+    const foundItem = await Item.query(Item, {
       'selector': {
         'name': "item1",
       }
-    })[0].id;
+    });
+    const itemID = await foundItem[0].id;
 
     const newName = "item1NewName";
     await itemCtrl.updateName(itemID, newName);
 
-    const justUpdatedItem = await adapter.getById<Item>(itemID);
-    expect(justUpdatedItem.name).to.be.eql("item1NewName");
+    const justUpdatedItem = await itemCtrl.getById<Item>(itemID);
+    expect(justUpdatedItem.id).to.be.eql("item1NewName");
   });
 
   
