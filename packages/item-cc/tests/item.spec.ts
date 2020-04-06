@@ -1,6 +1,8 @@
 // tslint:disable:no-unused-expression
 import { join } from 'path';
+import * as chai from 'chai';
 import { expect } from 'chai';
+import * as chaiAsPromised from 'chai-as-promised';
 import { MockControllerAdapter } from '@worldsibu/convector-adapter-mock';
 import { ClientFactory, ConvectorControllerClient } from '@worldsibu/convector-core';
 import 'mocha';
@@ -9,6 +11,7 @@ import { Item, ItemController } from '../src';
 import { Participant, ParticipantController } from 'participant-cc';
 
 describe('Item', () => {
+  chai.use(chaiAsPromised);
   let adapter: MockControllerAdapter;
   let itemCtrl: ConvectorControllerClient<ItemController>;
   let participantCtrl: ConvectorControllerClient<ParticipantController>;
