@@ -302,7 +302,13 @@ describe('Item', () => {
 
   // Test for transfer Item Event
   it('should have used the correct event type after the transfer of an Item', async () => {
-    // Simulate being the user with id mockID
+    // The fingerprint obtained here is literally the one for mockID2 (also the same as mockIndentity2), still it says the wrong participant is used
+    const newpart = await Participant.getOne("mockID2");
+    const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
+    adapter.stub['fingerprint'] = newpartidentity.fingerprint;
+    (adapter.stub as any).usercert = mockCertificate;
+    (adapter.stub as any).usercert = mockCertificate;
+
     const foundItem = await Item.query(Item, {
       'selector': {
         'name': "item1NewName",
