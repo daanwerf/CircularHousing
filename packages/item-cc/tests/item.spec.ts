@@ -16,27 +16,8 @@ describe('Item', () => {
   let itemCtrl: ConvectorControllerClient<ItemController>;
   let participantCtrl: ConvectorControllerClient<ParticipantController>;
   const mockIdentity = '8D:B9:F2:E7:77:CB:A9:A3:B9:0D:B7:C8:F1:FE:70:16:42:3B:BA:0D';
-  const mockIdentity2 = 'DB:EE:E4:11:8B:AB:E1:7E:CF:BF:AF:E5:0D:47:4A:64:99:90:34:9E';
 
-  //Connects to mockIdentity2
-  const mockCertificate = '-----BEGIN CERTIFICATE-----' +
-  'MIICjzCCAjWgAwIBAgIUITsRsw5SIJ+33SKwM4j1Dl4cDXQwCgYIKoZIzj0EAwIw' +
-  'czELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh' +
-  'biBGcmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMT' +
-  'E2NhLm9yZzEuZXhhbXBsZS5jb20wHhcNMTgwODEzMDEyOTAwWhcNMTkwODEzMDEz' +
-  'NDAwWjBCMTAwDQYDVQQLEwZjbGllbnQwCwYDVQQLEwRvcmcxMBIGA1UECxMLZGVw' +
-  'YXJ0bWVudDExDjAMBgNVBAMTBXVzZXIzMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcD' +
-  'QgAEcrfc0HHq5LG1UbyPSRLNjIQKqYoNY7/zPFC3UTJi3TTaIEqgVL6DF/8JIKuj' +
-  'IT/lwkuemafacXj8pdPw3Zyqs6OB1zCB1DAOBgNVHQ8BAf8EBAMCB4AwDAYDVR0T' +
-  'AQH/BAIwADAdBgNVHQ4EFgQUHFUlW/XJC7VcJe5pLFkz+xlMNpowKwYDVR0jBCQw' +
-  'IoAgQ3hSDt2ktmSXZrQ6AY0EK2UHhXMx8Yq6O7XiA+X6vS4waAYIKgMEBQYHCAEE' +
-  'XHsiYXR0cnMiOnsiaGYuQWZmaWxpYXRpb24iOiJvcmcxLmRlcGFydG1lbnQxIiwi' +
-  'aGYuRW5yb2xsbWVudElEIjoidXNlcjMiLCJoZi5UeXBlIjoiY2xpZW50In19MAoG' +
-  'CCqGSM49BAMCA0gAMEUCIQCNsmDjOXF/NvciSZebfk2hfSr/v5CqRD7pIHCq3lIR' +
-  'lwIgPC/qGM1yeVinfN0z7M68l8rWn4M4CVR2DtKMpk3G9k9=' +
-  '-----END CERTIFICATE-----';
-
-  //Connects to mockIdentity
+  const mockIdentity2 = '66:D1:49:80:C8:AF:09:48:6E:0E:5F:0A:CA:EE:87:CB:16:C4:78:61';
   const mockAdmincertificate = "-----BEGIN CERTIFICATE-----\n" +
   "MIIC7DCCApOgAwIBAgIUcg3DffC8hY03iz6zRC6GZQUch7EwCgYIKoZIzj0EAwIw\n" +
   "cTELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh\n" +
@@ -76,16 +57,14 @@ describe('Item', () => {
     ]);
     (adapter.stub as any).usercert = mockAdmincertificate;
     adapter.stub['fingerprint'] = mockIdentity;
-    // (adapter.stub as any).usercert = mockAdmincertificate;
     await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
-    // adapter.stub['fingerprint'] = mockIdentity2;
+    adapter.stub['fingerprint'] = mockIdentity2;
     await participantCtrl.register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
   });
 
   // Test for create item
   it('should create an Item', async () => {
     // Simulate being the user with id mockID
-    (adapter.stub as any).usercert = mockAdmincertificate;
     adapter.stub['fingerprint'] = mockIdentity;
     const itemName = "item1";
     const ownerID = "mockID";
@@ -101,6 +80,7 @@ describe('Item', () => {
   // Test for create item Event
   it('should have used the correct event type on the creation of Item', async () => {
     // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
     const foundItem = await Item.query(Item, {
       'selector': {
         'name': "item1",
@@ -115,6 +95,7 @@ describe('Item', () => {
   // Test for create item
   it('should fail, as the owner doesnt exist', async () => {
     // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
     const itemName = "item1";
     const ownerID = "mockIDNotExist";
     const itemQuality = "Good";
@@ -126,7 +107,6 @@ describe('Item', () => {
   // Test for create item
   it('should fail, as the mocked user is not the owner of the item', async () => {
     // Simulate being the user with id mockID2
-    (adapter.stub as any).usercert = mockCertificate;
     adapter.stub['fingerprint'] = mockIdentity2;
     const itemName = "item1";
     const ownerID = "mockID";
@@ -139,6 +119,7 @@ describe('Item', () => {
   // Test for create item
   it('should fail, as the given quality is not of the allowed format', async () => {
     // Simulate being the user with id mockID2
+    adapter.stub['fingerprint'] = mockIdentity2;
     const itemName = "item1";
     const ownerID = "mockID";
     const itemQuality = "WrongFormat";
@@ -150,7 +131,6 @@ describe('Item', () => {
   // Test for update name
   it('should update the name of an Item', async () => {
     // Simulate being the user with id mockID
-    (adapter.stub as any).usercert = mockAdmincertificate;
     adapter.stub['fingerprint'] = mockIdentity;
     const foundItem = await Item.query(Item, {
       'selector': {
@@ -169,6 +149,7 @@ describe('Item', () => {
   // Test for rename item Event
   it('should have used the correct event type on the renaming of an Item', async () => {
     // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
     const foundItem = await Item.query(Item, {
       'selector': {
         'name': "item1NewName",
@@ -183,6 +164,7 @@ describe('Item', () => {
   // Test for rename item
   it('should fail, as the item doesnt exist', async () => {
     // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
     const itemID = "ItemIDNotExist"
 
     expect(itemCtrl.updateName(itemID, "item1NewName").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
@@ -191,7 +173,6 @@ describe('Item', () => {
   // Test for rename item
   it('should fail, as this is not the owner of the item', async () => {
     // Simulate being the user with id mockID2
-    (adapter.stub as any).usercert = mockCertificate;
     adapter.stub['fingerprint'] = mockIdentity2;
     const foundItem = await Item.query(Item, {
       'selector': {
@@ -206,7 +187,6 @@ describe('Item', () => {
   // Test for update quality
   it('should update the quality of an Item', async () => {
     // Simulate being the user with id mockID
-    (adapter.stub as any).usercert = mockAdmincertificate;
     adapter.stub['fingerprint'] = mockIdentity;
     const foundItem = await Item.query(Item, {
       'selector': {
@@ -225,6 +205,7 @@ describe('Item', () => {
   // Test for update quality item Event
   it('should have used the correct event type on the update of the quality of an Item', async () => {
     // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
     const foundItem = await Item.query(Item, {
       'selector': {
         'name': "item1NewName",
@@ -233,12 +214,13 @@ describe('Item', () => {
     const itemID = await foundItem[0].id;
     const retrievedItem = await adapter.getById<Item>(itemID);
 
-    expect(retrievedItem.itemHistory[2].type).to.be.eql('UPDATE');
+    expect(retrievedItem.itemHistory[3].type).to.be.eql('UPDATE');
   });
 
   // Test for update quality item
   it('should fail, as the item doesnt exist', async () => {
     // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
     const itemID = "ItemIDNotExist"
 
     expect(itemCtrl.updateQuality(itemID, "Bad").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
@@ -247,7 +229,6 @@ describe('Item', () => {
   // Test for update quality item
   it('should fail, as this is not the owner of the item', async () => {
     // Simulate being the user with id mockID2
-    (adapter.stub as any).usercert = mockCertificate;
     adapter.stub['fingerprint'] = mockIdentity2;
     const foundItem = await Item.query(Item, {
       'selector': {
@@ -262,7 +243,6 @@ describe('Item', () => {
   //Test for transfer ownership
   it('should propse a new owner of an Item', async () => {
     // Simulate being the user with id mockID
-    (adapter.stub as any).usercert = mockAdmincertificate;
     adapter.stub['fingerprint'] = mockIdentity;
     const foundItem = await Item.query(Item, {
       'selector': {
@@ -272,9 +252,6 @@ describe('Item', () => {
     const itemID = await foundItem[0].id;
 
     const newOwner = "mockID2";
-    // const newpart = await Participant.getOne(newOwner);
-    // const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
-    // console.log(newpartidentity.fingerprint == mockIdentity2)
 
     await itemCtrl.proposeTransfer(itemID, newOwner);
 
@@ -282,11 +259,9 @@ describe('Item', () => {
     expect(justUpdatedItem.proposedOwner).to.be.eql("mockID2");
   });
 
-
   //Test for transfer ownership
   it('should accept ownership of an Item', async () => {
     // Simulate being the user with id mockID2
-    (adapter.stub as any).usercert = mockCertificate;
     adapter.stub['fingerprint'] = mockIdentity2;
     const foundItem = await Item.query(Item, {
       'selector': {
@@ -295,9 +270,6 @@ describe('Item', () => {
     });
     const itemID = await foundItem[0].id;
 
-    // It goes wrong here, even though we use the fingerprint of mockName2, we get the error
-    // that this user is not mockName2. In the test above I checked that the fingerprints are
-    // the same, so I'm not sure what is going wrong here
     await itemCtrl.answerProposal(itemID, true);
 
     var justUpdatedItem = await adapter.getById<Item>(itemID);
@@ -313,4 +285,5 @@ describe('Item', () => {
 
 
 
+  
 });
