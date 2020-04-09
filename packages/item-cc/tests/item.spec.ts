@@ -109,7 +109,7 @@ describe('Item', () => {
   });
 
   // Test for create item
-  it('should fail, as the owner doesnt exist', async () => {
+  it('should throw an error, as the owner doesnt exist', async () => {
     // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity;
     const itemName = "item1";
@@ -121,7 +121,7 @@ describe('Item', () => {
   });
 
   // Test for create item
-  it('should fail, as the mocked user is not the owner of the item', async () => {
+  it('should throw an error, as the mocked user is not the owner of the item', async () => {
     // Simulate being the user with id mockID2
     adapter.stub['fingerprint'] = mockIdentity2;
     const itemName = "item1";
@@ -133,7 +133,7 @@ describe('Item', () => {
   });
 
   // Test for create item
-  it('should fail, as the given quality is not of the allowed format', async () => {
+  it('should throw an error, as the given quality is not of the allowed format', async () => {
     // Simulate being the user with id mockID2
     adapter.stub['fingerprint'] = mockIdentity2;
     const itemName = "item1";
@@ -178,7 +178,7 @@ describe('Item', () => {
   });
 
   // Test for rename item
-  it('should fail, as the item doesnt exist', async () => {
+  it('should throw an error, as the item doesnt exist', async () => {
     // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity;
     const itemID = "ItemIDNotExist"
@@ -187,7 +187,7 @@ describe('Item', () => {
   });
 
   // Test for rename item
-  it('should fail, as this is not the owner of the item', async () => {
+  it('should throw an error, as this is not the owner of the item', async () => {
     // Simulate being the user with id mockID2
     adapter.stub['fingerprint'] = mockIdentity2;
     const foundItem = await Item.query(Item, {
@@ -234,7 +234,7 @@ describe('Item', () => {
   });
 
   // Test for update quality item
-  it('should fail, as the item doesnt exist', async () => {
+  it('should throw an error, as the item doesnt exist', async () => {
     // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity;
     const itemID = "ItemIDNotExist"
@@ -243,7 +243,7 @@ describe('Item', () => {
   });
 
   // Test for update quality item
-  it('should fail, as this is not the owner of the item', async () => {
+  it('should throw an error, as this is not the owner of the item', async () => {
     // Simulate being the user with id mockID2
     adapter.stub['fingerprint'] = mockIdentity2;
     const foundItem = await Item.query(Item, {
@@ -300,7 +300,7 @@ describe('Item', () => {
   });
 
   // Test for propose transfer item
-  it('should fail, as the item doesnt exist', async () => {
+  it('should throw an error, as the item doesnt exist', async () => {
     // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity;
     const itemID = "ItemIDNotExist"
@@ -309,7 +309,7 @@ describe('Item', () => {
   });
 
   // Test for answer transfer item
-  it('should fail, as the item doesnt exist', async () => {
+  it('should throw an error, as the item doesnt exist', async () => {
     // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity2;
     const itemID = "ItemIDNotExist"
@@ -318,7 +318,7 @@ describe('Item', () => {
   });
 
   // Test for propose transfer item
-  it('should fail, as this is not the owner of the item', async () => {
+  it('should throw an error, as this is not the owner of the item', async () => {
     // Simulate being the user with id mockID2
     adapter.stub['fingerprint'] = mockIdentity2;
     const foundItem = await Item.query(Item, {
@@ -332,7 +332,7 @@ describe('Item', () => {
   });
 
 // Test for answer transfer item
-it('should fail, as this is not the participant the proposal was made to', async () => {
+it('should throw an error, as this is not the participant the proposal was made to', async () => {
   // First, successfully propose an item to participant mockName2, as mockName
   adapter.stub['fingerprint'] = mockIdentity;
   const foundItem = await Item.query(Item, {
