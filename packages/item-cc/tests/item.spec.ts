@@ -275,7 +275,6 @@ describe('Item', () => {
     expect(justUpdatedItem.proposedOwner).to.be.eql("mockID2");
   });
 
-
   //Test for transfer ownership
   it('should accept ownership of an Item', async () => {
     // Simulate being the user with id mockID2
@@ -300,9 +299,23 @@ describe('Item', () => {
     expect(justUpdatedItem.proposedOwner).to.be.eql("");
   });
 
+  // Test for propose transfer item
+  it('should fail, as the item doesnt exist', async () => {
+    // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity;
+    const itemID = "ItemIDNotExist"
 
+    expect(itemCtrl.proposeTransfer(itemID, "mockID").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
+  });
 
+  // Test for answer transfer item
+  it('should fail, as the item doesnt exist', async () => {
+    // Simulate being the user with id mockID
+    adapter.stub['fingerprint'] = mockIdentity2;
+    const itemID = "ItemIDNotExist"
 
+    expect(itemCtrl.answerProposal(itemID, "mockID2").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
+  });
 
 
 
