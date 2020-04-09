@@ -314,7 +314,7 @@ describe('Item', () => {
     adapter.stub['fingerprint'] = mockIdentity2;
     const itemID = "ItemIDNotExist"
 
-    expect(itemCtrl.answerProposal(itemID, "mockID2").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
+    expect(itemCtrl.answerProposal(itemID, true).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
   });
 
 
