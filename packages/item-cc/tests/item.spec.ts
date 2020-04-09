@@ -287,18 +287,12 @@ describe('Item', () => {
     });
     const itemID = await foundItem[0].id;
 
-    // It goes wrong here, even though we use the fingerprint of mockName2, we get the error
-    // that this user is not mockName2. In the test above I checked that the fingerprints are 
-    // the same, so I'm not sure what is going wrong here
-
-
     const newpart = await Participant.getOne("mockID2");
     const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
     adapter.stub['fingerprint'] = newpartidentity;
-    console.log(newpartidentity.fingerprint == mockIdentity2)
+    console.log(newpartidentity.fingerprint == mockIdentity2) // will return true
 
-
-    await itemCtrl.answerProposal(itemID, true);
+    await itemCtrl.$withUser("mockID2").answerProposal(itemID, true);
 
     var justUpdatedItem = await adapter.getById<Item>(itemID);
 
