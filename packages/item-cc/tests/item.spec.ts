@@ -317,7 +317,7 @@ describe('Item', () => {
     const itemID = await foundItem[0].id;
     const retrievedItem = await adapter.getById<Item>(itemID);
 
-    expect(retrievedItem.itemHistory[4].type).to.be.eql('TRANSFER');
+    expect(retrievedItem.itemHistory[5].type).to.be.eql('TRANSFER');
   });
 
   // Test for propose transfer item
