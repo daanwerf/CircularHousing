@@ -16,6 +16,22 @@ describe('Item', () => {
   let itemCtrl: ConvectorControllerClient<ItemController>;
   let participantCtrl: ConvectorControllerClient<ParticipantController>;
   const mockIdentity = '8D:B9:F2:E7:77:CB:A9:A3:B9:0D:B7:C8:F1:FE:70:16:42:3B:BA:0D';
+  const mockCertificate = '-----BEGIN CERTIFICATE-----' +
+  'MIICjzCCAjWgAwIBAgIUITsRsw5SIJ+33SKwM4j1Dl4cDXQwCgYIKoZIzj0EAwIw' +
+  'czELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh' +
+  'biBGcmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMT' +
+  'E2NhLm9yZzEuZXhhbXBsZS5jb20wHhcNMTgwODEzMDEyOTAwWhcNMTkwODEzMDEz' +
+  'NDAwWjBCMTAwDQYDVQQLEwZjbGllbnQwCwYDVQQLEwRvcmcxMBIGA1UECxMLZGVw' +
+  'YXJ0bWVudDExDjAMBgNVBAMTBXVzZXIzMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcD' +
+  'QgAEcrfc0HHq5LG1UbyPSRLNjIQKqYoNY7/zPFC3UTJi3TTaIEqgVL6DF/8JIKuj' +
+  'IT/lwkuemafacXj8pdPw3Zyqs6OB1zCB1DAOBgNVHQ8BAf8EBAMCB4AwDAYDVR0T' +
+  'AQH/BAIwADAdBgNVHQ4EFgQUHFUlW/XJC7VcJe5pLFkz+xlMNpowKwYDVR0jBCQw' +
+  'IoAgQ3hSDt2ktmSXZrQ6AY0EK2UHhXMx8Yq6O7XiA+X6vS4waAYIKgMEBQYHCAEE' +
+  'XHsiYXR0cnMiOnsiaGYuQWZmaWxpYXRpb24iOiJvcmcxLmRlcGFydG1lbnQxIiwi' +
+  'aGYuRW5yb2xsbWVudElEIjoidXNlcjMiLCJoZi5UeXBlIjoiY2xpZW50In19MAoG' +
+  'CCqGSM49BAMCA0gAMEUCIQCNsmDjOXF/NvciSZebfk2hfSr/v5CqRD7pIHCq3lIR' +
+  'lwIgPC/qGM1yeVinfN0z7M68l8rWn4M4CVR2DtKMpk3G9k9=' +
+  '-----END CERTIFICATE-----';
 
   const mockIdentity2 = '66:D1:49:80:C8:AF:09:48:6E:0E:5F:0A:CA:EE:87:CB:16:C4:78:61';
   const mockAdmincertificate = "-----BEGIN CERTIFICATE-----\n" +
@@ -252,12 +268,16 @@ describe('Item', () => {
     const itemID = await foundItem[0].id;
 
     const newOwner = "mockID2";
+    // const newpart = await Participant.getOne(newOwner);
+    // const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
+    // console.log(newpartidentity.fingerprint == mockIdentity2)
 
     await itemCtrl.proposeTransfer(itemID, newOwner);
 
     var justUpdatedItem = await adapter.getById<Item>(itemID);
     expect(justUpdatedItem.proposedOwner).to.be.eql("mockID2");
   });
+
 
   //Test for transfer ownership
   it('should accept ownership of an Item', async () => {
@@ -270,6 +290,9 @@ describe('Item', () => {
     });
     const itemID = await foundItem[0].id;
 
+    // It goes wrong here, even though we use the fingerprint of mockName2, we get the error
+    // that this user is not mockName2. In the test above I checked that the fingerprints are 
+    // the same, so I'm not sure what is going wrong here
     await itemCtrl.answerProposal(itemID, true);
 
     var justUpdatedItem = await adapter.getById<Item>(itemID);
@@ -277,7 +300,6 @@ describe('Item', () => {
     expect(justUpdatedItem.itemOwner).to.be.eql("mockID2");
     expect(justUpdatedItem.proposedOwner).to.be.eql("");
   });
-
 
 
 
