@@ -16,6 +16,7 @@ describe('Item', () => {
   let itemCtrl: ConvectorControllerClient<ItemController>;
   let participantCtrl: ConvectorControllerClient<ParticipantController>;
   const mockIdentity = '8D:B9:F2:E7:77:CB:A9:A3:B9:0D:B7:C8:F1:FE:70:16:42:3B:BA:0D';
+  const mockIdentity2 = 'DB:EE:E4:11:8B:AB:E1:7E:CF:BF:AF:E5:0D:47:4A:64:99:90:34:9E';
   const mockCertificate = '-----BEGIN CERTIFICATE-----' +
   'MIICjzCCAjWgAwIBAgIUITsRsw5SIJ+33SKwM4j1Dl4cDXQwCgYIKoZIzj0EAwIw' +
   'czELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh' +
@@ -33,7 +34,6 @@ describe('Item', () => {
   'lwIgPC/qGM1yeVinfN0z7M68l8rWn4M4CVR2DtKMpk3G9k9=' +
   '-----END CERTIFICATE-----';
 
-  const mockIdentity2 = '66:D1:49:80:C8:AF:09:48:6E:0E:5F:0A:CA:EE:87:CB:16:C4:78:61';
   const mockAdmincertificate = "-----BEGIN CERTIFICATE-----\n" +
   "MIIC7DCCApOgAwIBAgIUcg3DffC8hY03iz6zRC6GZQUch7EwCgYIKoZIzj0EAwIw\n" +
   "cTELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh\n" +
@@ -290,6 +290,7 @@ describe('Item', () => {
     const newpart = await Participant.getOne("mockID2");
     const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
     adapter.stub['fingerprint'] = newpartidentity.fingerprint;
+    (adapter.stub as any).usercert = mockCertificate;
 
     await itemCtrl.answerProposal(itemID, true);
 
@@ -352,5 +353,5 @@ it('should throw an error, as this is not the participant the proposal was made 
 });
 
 
-  
+
 });
