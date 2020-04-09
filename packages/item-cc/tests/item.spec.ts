@@ -289,10 +289,10 @@ describe('Item', () => {
 
     const newpart = await Participant.getOne("mockID2");
     const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
-    adapter.stub['fingerprint'] = newpartidentity;
+    adapter.stub['fingerprint'] = newpartidentity.fingerprint;
     console.log(newpartidentity.fingerprint == mockIdentity2) // will return true
 
-    await itemCtrl.$withUser("mockID2").answerProposal(itemID, true);
+    await itemCtrl.answerProposal(itemID, true);
 
     var justUpdatedItem = await adapter.getById<Item>(itemID);
 
