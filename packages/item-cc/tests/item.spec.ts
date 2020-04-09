@@ -287,10 +287,10 @@ describe('Item', () => {
     });
     const itemID = await foundItem[0].id;
 
+    // The fingerprint obtained here is literally the one for mockID2 (also the same as mockIndentity2), still it says the wrong participant is used
     const newpart = await Participant.getOne("mockID2");
     const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
     adapter.stub['fingerprint'] = newpartidentity.fingerprint;
-    console.log(newpartidentity.fingerprint == mockIdentity2) // will return true
 
     await itemCtrl.answerProposal(itemID, true);
 
