@@ -300,6 +300,20 @@ describe('Item', () => {
     expect(justUpdatedItem.proposedOwner).to.be.eql("");
   });
 
+  // Test for transfer Item Event
+  it('should have used the correct event type after the transfer of an Item', async () => {
+    // Simulate being the user with id mockID
+    const foundItem = await Item.query(Item, {
+      'selector': {
+        'name': "item1NewName",
+      }
+    });
+    const itemID = await foundItem[0].id;
+    const retrievedItem = await adapter.getById<Item>(itemID);
+
+    expect(retrievedItem.itemHistory[4].type).to.be.eql('TRANSFER');
+  });
+
   // Test for propose transfer item
   it('should throw an error, as the item doesnt exist', async () => {
     // Simulate being the user with id mockID
