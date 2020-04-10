@@ -8,7 +8,7 @@
   "scripts": {
     "install": "npm-run-all -s lerna:install",
     "env:restart": "hurl new",
-    "test": "npm-run-all -s lerna:test",
+    "test": "npm-run-all -s lerna:test --ignore=admin,server,web",
     "test:e2e": "npm-run-all -s lerna:test:e2e",
     "env:clean": "hurl clean",
     "cc:start": "f() { npm run cc:package -- $1; npm run cc:install $1 $2; }; f",
