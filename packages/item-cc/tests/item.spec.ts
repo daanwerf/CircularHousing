@@ -305,7 +305,6 @@ describe('Item', () => {
     // Simulate being the user thats not the owner
     adapter.addUser('NotOwner');
     adapter.stub['fingerprint'] = adapter.getUserFingerprint('NotOwner');
-    (adapter.stub as any).usercert = adapter.getUserCertificate('NotOwner');
     
     const foundItem = await Item.query(Item, {
       'selector': {
