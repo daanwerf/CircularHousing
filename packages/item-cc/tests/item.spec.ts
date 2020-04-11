@@ -300,11 +300,18 @@ describe('Item', () => {
     expect(itemCtrl.proposeTransfer(itemID, "mockID").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
   });
 
-  // test for not being the owner of an item used in a transaction
-  it('should throw an error, as the person is not the owner of the item used in the transaction', async () => {
-    // The actual owner of an item
-    const itemOwnerID = "mockID"
+  // Test for update quality item
+  it('should throw an error, as this is not the owner of the item', async () => {
+    // Simulate being the user thats not the owner
+    adapter.stub['fingerprint'] = mockIdentity2;
+    const foundItem = await Item.query(Item, {
+      'selector': {
+        'name': "item1NewName",
+      }
+    });
+    const itemID = await foundItem[0].id;
 
-    expect(itemCtrl.checkValidOwner(itemOwnerID, "mockID2").catch(e => e.responses[0].error.message)).to.be.eventually.eql('You are not allowed to do this action, only ${owner.name} is allowed to');
+    expect(itemCtrl.updateQuality(itemID, "Bad").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
   });
+
 });
