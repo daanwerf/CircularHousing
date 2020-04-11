@@ -245,8 +245,8 @@ describe('Item', () => {
 
   // Test for update quality item
   it('should throw an error, as this is not the owner of the item', async () => {
-    // Simulate being the user with id mockID2
-    adapter.stub['fingerprint'] = 'FakeIdentity';
+    // Simulate being the user thats not the owner
+    adapter.stub['fingerprint'] = 'mockIdentity';
     const foundItem = await Item.query(Item, {
       'selector': {
         'name': "item1NewName",
