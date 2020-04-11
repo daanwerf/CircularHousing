@@ -130,12 +130,12 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       transferTarget: string,
   ) {
+    //first check if item exists
+    let item = await Item.getOne(itemId);
     if (item.proposalAccepted) {
       throw new Error('This proposal has already been accepted, a new owner cannot be proposed anymore');
     }
-
-    //first check if item exists
-    let item = await Item.getOne(itemId);
+    
     await ItemController.checkValidItem(item);
     await ItemController.checkValidOwner(this.sender, item.itemOwner);
 
@@ -160,12 +160,13 @@ export class ItemController extends ConvectorController {
     @Param(yup.boolean())
       accept: boolean
   ) {
+    //first check if item exists
+    let item = await Item.getOne(itemId);
+
     if (item.proposalAccepted) {
       throw new Error('This proposal was already accepted, this cannot be changed anymore.');
     }
 
-    //first check if item exists
-    let item = await Item.getOne(itemId);
     await ItemController.checkValidItem(item);
     await ItemController.checkValidOwner(this.sender, item.proposedOwner);
 

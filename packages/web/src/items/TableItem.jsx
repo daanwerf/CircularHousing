@@ -28,7 +28,7 @@ export default function TableItem(props) {
   }
 
   function parseStatus(item) {
-    if (item._proposedOwner === '') {
+    if (!item._proposedOwner || item._proposedOwner === '') {
       return "Ok";
     } else if (!item._proposalAccepted) {
       return "Pending proposal..";
