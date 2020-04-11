@@ -124,7 +124,6 @@ describe('Item', () => {
   it('should throw an error, as the mocked user is not the owner of the item', async () => {
     // Simulate being the user with an fingerprint that doesnt exist
     adapter.stub['fingerprint'] = 'FakeIdentity';
-    (adapter.stub as any).usercert = "FakeCertificate";
 
     const itemName = "item1";
     const ownerID = "mockID";
