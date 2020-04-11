@@ -132,7 +132,7 @@ describe('Item', () => {
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
-    expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('You are not allowed to do this action, only mockName is allowed to');
+    expect(itemCtrl.$withUser('NotOwner').create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('You are not allowed to do this action, only mockName is allowed to');
   });
 
   // Test for create item
