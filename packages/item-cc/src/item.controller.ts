@@ -53,8 +53,7 @@ export class ItemController extends ConvectorController {
 
     item.creationDate = new Date().getTime();
     item.quality = checkQuality(quality);
-
-    // TODO: DO SOME TRIMMING OF WHITESPACE HERE
+    
     var a: Array<string> = materials.split(',');
     item.materials = a;
 

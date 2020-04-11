@@ -301,4 +301,10 @@ describe('Item', () => {
   });
 
   // test for not being the owner of an item used in a transaction
+  it('should throw an error, as the person is not the owner of the item used in the transaction', async () => {
+    // The actual owner of an item
+    const itemOwnerID = "mockID"
+
+    expect(itemCtrl.checkValidOwner(itemOwnerID, "mockID2").catch(e => e.responses[0].error.message)).to.be.eventually.eql('You are not allowed to do this action, only ${owner.name} is allowed to');
+  });
 });
