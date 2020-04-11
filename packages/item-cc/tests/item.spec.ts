@@ -190,7 +190,7 @@ describe('Item', () => {
   // Test for rename item
   it('should throw an error, as this is not the owner of the item', async () => {
     // Simulate being the user with id mockID2
-    adapter.stub['fingerprint'] = mockIdentity;
+    adapter.stub['fingerprint'] = mockIdentity2;
     const foundItem = await Item.query(Item, {
       'selector': {
         'name': "item1NewName",
@@ -198,7 +198,7 @@ describe('Item', () => {
     });
     const itemID = await foundItem[0].id;
     console.log(foundItem[0].itemOwner)
-    expect(itemCtrl.updateName(itemID, "item1NewName").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
+    expect(itemCtrl.withUser('NotOwner').updateName(itemID, "item1NewName").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
   });
 
   // Test for update quality
