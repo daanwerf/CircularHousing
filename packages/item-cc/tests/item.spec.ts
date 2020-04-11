@@ -199,6 +199,7 @@ describe('Item', () => {
     const itemID = await foundItem[0].id;
     console.log(foundItem[0].itemOwner)
     expect(itemCtrl.$withUser('NotOwner').updateName(itemID, "item1NewName").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
+
   });
 
   // Test for update quality
@@ -217,6 +218,7 @@ describe('Item', () => {
 
     const justUpdatedItem = await adapter.getById<Item>(itemID);
     expect(justUpdatedItem.quality).to.be.eql("Bad");
+    (adapter.stub as any).usercert = mockAdmincertificate;
   });
 
   // Test for update quality item Event
@@ -258,7 +260,7 @@ describe('Item', () => {
   });
 
   //Test for transfer ownership
-  it('should propse a new owner of an Item', async () => {
+  it('should propose a new owner of an Item', async () => {
     // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity;
     const foundItem = await Item.query(Item, {
