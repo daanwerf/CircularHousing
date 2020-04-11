@@ -100,7 +100,7 @@ describe('Item', () => {
       }
     });
     const itemID = await foundItem[0].id;
-    const retrievedItem = await adapter.$withUser('User1').getById<Item>(itemID);
+    const retrievedItem = await adapter.getById<Item>(itemID);
 
     expect(retrievedItem.itemHistory[0].type).to.be.eql('CREATE');
   });
