@@ -274,7 +274,6 @@ describe('Item', () => {
 
   // Test for transfer Item Event
   it('should have used the correct event type after the transfer of an Item', async () => {
-    // The fingerprint obtained here is literally the one for mockID2 (also the same as mockIndentity2), still it says the wrong participant is used
     const newpart = await Participant.getOne("mockID2");
     const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
     adapter.stub['fingerprint'] = newpartidentity.fingerprint;
@@ -301,36 +300,5 @@ describe('Item', () => {
     expect(itemCtrl.proposeTransfer(itemID, "mockID").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
   });
 
-  // Test for propose transfer item
-  it('should throw an error, as this is not the owner of the item', async () => {
-    // Simulate being the user with id mockID2
-    adapter.stub['fingerprint'] = mockIdentity2;
-    const foundItem = await Item.query(Item, {
-      'selector': {
-        'name': "item1NewName",
-      }
-    });
-    const itemID = await foundItem[0].id;
-
-    expect(itemCtrl.proposeTransfer(itemID, "mockID").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
-  });
-
-  // Test for answer transfer item
-  it('should throw an error, as this is not the participant the proposal was made to', async () => {
-    // First, successfully propose an item to participant mockName2, as mockName
-    adapter.stub['fingerprint'] = mockIdentity;
-    const foundItem = await Item.query(Item, {
-      'selector': {
-        'name': "item1NewName",
-      }
-    });
-    const itemID = await foundItem[0].id;
-
-    const newOwner = "mockID2";
-    await itemCtrl.proposeTransfer(itemID, newOwner);
-
-    // Try to answer proposal as the wrong user
-    adapter.stub['fingerprint'] = "WrongIdentity";
-    expect(itemCtrl.answerProposal(itemID, true).catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName2 is allowed to`);
-  });
+  // test for not being the owner of an item used in a transaction
 });
