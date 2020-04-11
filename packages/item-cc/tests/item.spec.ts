@@ -304,6 +304,7 @@ describe('Item', () => {
   it('should throw an error, as this is not the owner of the item', async () => {
     // Simulate being the user thats not the owner
     adapter.stub['fingerprint'] = mockIdentity2;
+    (adapter.stub as any).usercert = mockCertificate;
     const foundItem = await Item.query(Item, {
       'selector': {
         'name': "item1NewName",
