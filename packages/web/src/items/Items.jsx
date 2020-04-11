@@ -82,6 +82,8 @@ export default function Items(props) {
                     <TableCell>Owner</TableCell>
                     <TableCell>Quality</TableCell>
                     <TableCell>Transfer</TableCell>
+                    <TableCell>Transporter</TableCell>
+                    <TableCell>Status</TableCell>
                     <TableCell align="right"></TableCell>
                   </TableRow>
                 </TableHead>

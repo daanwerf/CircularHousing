@@ -14,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Title from '../dashboard/Title';
 import ItemsDialog from './ItemsDialog';
+import TransportDialog from '../transportation/TransportDialog';
 import CreateDialog from './CreateDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -35,10 +36,13 @@ export default function Participants(props) {
   const [dialogOpen, setDialogopen] = React.useState(false);
   const [createOpen, setCreateopen] = React.useState(false);
   const [selectedPart, setSelectedpart] = React.useState('');
+  const [selectedType, setSelectedType] = React.useState('');
 
   function showDialog(event) {
     const participant = event.currentTarget.getAttribute('data-item');
+    const type = event.currentTarget.getAttribute('data-type');
     setSelectedpart(participant);
+    setSelectedType(type);
     setDialogopen(true);
   }
 
@@ -46,6 +50,16 @@ export default function Participants(props) {
     const participant = event.currentTarget.getAttribute('data-item');
     setSelectedpart(participant);
     setCreateopen(true);
+  }
+
+  function parseType(type) {
+    if (type === 'participant') {
+      return "Item Owner";
+    } else if (type === 'transporter') {
+      return "Transporter";
+    } else {
+      return type;
+    }
   }
 
   React.useEffect(() => {
@@ -73,6 +87,7 @@ export default function Participants(props) {
                   <TableCell>Username</TableCell>
                   <TableCell>Full Name</TableCell>
                   <TableCell>Organisation</TableCell>
+                  <TableCell>Type</TableCell>
                   <TableCell align="right"></TableCell>
                 </TableRow>
               </TableHead>
@@ -82,6 +97,7 @@ export default function Participants(props) {
                     <TableCell>{part._id}</TableCell>
                     <TableCell>{part._name}</TableCell>
                     <TableCell>{part._msp}</TableCell>
+                    <TableCell>{parseType(part._type)}</TableCell>
                     <TableCell align="right" data-item={part._id}>
                       <Tooltip title="Create item">
                         <IconButton onClick={showCreate} data-item={part._id}>
@@ -89,7 +105,7 @@ export default function Participants(props) {
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Show items">
-                        <IconButton onClick={showDialog} data-item={part._id}>
+                        <IconButton onClick={showDialog} data-item={part._id} data-type={part._type}>
                           <StorageIcon />
                         </IconButton>
                       </Tooltip>
@@ -102,13 +118,22 @@ export default function Participants(props) {
         </Paper>
       </Grid>
 
-      <ItemsDialog
-        open={dialogOpen}
-        setOpen={setDialogopen}
-        user={props.user}
-        org={props.org}
-        participant={selectedPart}
-      />
+      {selectedType === 'participant' 
+        ? <ItemsDialog
+            open={dialogOpen}
+            setOpen={setDialogopen}
+            user={props.user}
+            org={props.org}
+            participant={selectedPart}
+          />
+        : <TransportDialog
+            open={dialogOpen}
+            setOpen={setDialogopen}
+            user={props.user}
+            org={props.org}
+            participant={selectedPart}
+          />
+      }
 
       <CreateDialog
         open={createOpen}
