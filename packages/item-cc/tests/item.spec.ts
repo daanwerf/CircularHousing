@@ -312,7 +312,7 @@ describe('Item', () => {
     });
     const itemID = await foundItem[0].id;
 
-    expect(itemCtrl.$withUser('NotOwner').updateQuality(itemID, "Bad").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
+    expect(itemCtrl.$withUser('NotOwner').updateQuality(itemID, "Bad").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName2 is allowed to`);
   });
 
 });
