@@ -71,6 +71,7 @@ describe('Item', () => {
         name: join(__dirname, '../../participant-cc')
       }
     ]);
+    adapter.addUser('NotOwner');
     (adapter.stub as any).usercert = mockAdmincertificate;
     adapter.stub['fingerprint'] = mockIdentity;
     await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
@@ -302,9 +303,6 @@ describe('Item', () => {
 
   // Test for update quality item
   it('should throw an error, as this is not the owner of the item', async () => {
-    // Simulate being the user thats not the owner
-    adapter.addUser('NotOwner');
-    
     const foundItem = await Item.query(Item, {
       'selector': {
         'name': "item1NewName",
@@ -335,7 +333,7 @@ describe('Item', () => {
     });
     const itemID = await foundItem[0].id;
 
-    expect(itemCtrl.$withUser('NotOwner').proposeTransfer(itemID, "mockID").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
+    expect(itemCtrl.$withUser('NotOwner').proposeTransfer(itemID, "mockID").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName2 is allowed to`);
   });
 
 });
