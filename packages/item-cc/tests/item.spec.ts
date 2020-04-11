@@ -71,23 +71,22 @@ describe('Item', () => {
         name: join(__dirname, '../../participant-cc')
       }
     ]);
+    adapter.addUser('User1');
+    adapter.addUser('User2');
+
     (adapter.stub as any).usercert = mockAdmincertificate;
-    adapter.stub['fingerprint'] = mockIdentity;
     await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
-    adapter.stub['fingerprint'] = mockIdentity2;
     await participantCtrl.register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
   });
 
   // Test for create item
   it('should create an Item', async () => {
-    // Simulate being the user with id mockID
-    adapter.stub['fingerprint'] = mockIdentity;
     const itemName = "item1";
     const ownerID = "mockID";
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
-    await itemCtrl.create(itemName, ownerID, itemQuality, materials);
+    await itemCtrl.$withUser('User1').create(itemName, ownerID, itemQuality, materials);
     const justSavedItem = await itemCtrl.getAll();
 
     expect(justSavedItem[0]).to.exist;
@@ -95,23 +94,19 @@ describe('Item', () => {
 
   // Test for create item Event
   it('should have used the correct event type on the creation of Item', async () => {
-    // Simulate being the user with id mockID
-    adapter.stub['fingerprint'] = mockIdentity;
     const foundItem = await Item.query(Item, {
       'selector': {
         'name': "item1",
       }
     });
     const itemID = await foundItem[0].id;
-    const retrievedItem = await adapter.getById<Item>(itemID);
+    const retrievedItem = await adapter.$withUser('User1').getById<Item>(itemID);
 
     expect(retrievedItem.itemHistory[0].type).to.be.eql('CREATE');
   });
 
   // Test for create item
   it('should throw an error, as the owner doesnt exist', async () => {
-    // Simulate being the user with id mockID
-    adapter.stub['fingerprint'] = mockIdentity;
     const itemName = "item1";
     const ownerID = "mockIDNotExist";
     const itemQuality = "Good";
@@ -122,15 +117,12 @@ describe('Item', () => {
 
   // Test for create item
   it('should throw an error, as the mocked user is not the owner of the item', async () => {
-    // Simulate being the user with an fingerprint that doesnt exist
-    adapter.stub['fingerprint'] = mockIdentity;
-
     const itemName = "item1";
-    const ownerID = "mockID2";
+    const ownerID = "mockID";
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
-    expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('You are not allowed to do this action, only mockName2 is allowed to');
+    expect(itemCtrl.$withUser('User2').create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('You are not allowed to do this action, only mockName2 is allowed to');
   });
 
   // Test for create item
