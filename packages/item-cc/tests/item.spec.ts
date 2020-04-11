@@ -71,8 +71,6 @@ describe('Item', () => {
         name: join(__dirname, '../../participant-cc')
       }
     ]);
-    adapter.addUser('NotOwner');
-
     (adapter.stub as any).usercert = mockAdmincertificate;
     adapter.stub['fingerprint'] = mockIdentity;
     await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
@@ -192,7 +190,7 @@ describe('Item', () => {
   // Test for rename item
   it('should throw an error, as this is not the owner of the item', async () => {
     // Simulate being the user with id mockID2
-    adapter.stub['fingerprint'] = mockIdentity2;
+    adapter.stub['fingerprint'] = mockIdentity;
     const foundItem = await Item.query(Item, {
       'selector': {
         'name': "item1NewName",
