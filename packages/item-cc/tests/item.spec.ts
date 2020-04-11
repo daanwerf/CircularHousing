@@ -217,7 +217,7 @@ describe('Item', () => {
     const itemID = await foundItem[0].id;
     const retrievedItem = await adapter.getById<Item>(itemID);
 
-    expect(retrievedItem.itemHistory[3].type).to.be.eql('UPDATE');
+    expect(retrievedItem.itemHistory[2].type).to.be.eql('UPDATE');
   });
 
   // Test for update quality item
@@ -289,7 +289,7 @@ describe('Item', () => {
     const itemID = await foundItem[0].id;
     const retrievedItem = await adapter.getById<Item>(itemID);
 
-    expect(retrievedItem.itemHistory[5].type).to.be.eql('TRANSFER');
+    expect(retrievedItem.itemHistory[3].type).to.be.eql('TRANSFER');
   });
 
   // Test for propose transfer item
