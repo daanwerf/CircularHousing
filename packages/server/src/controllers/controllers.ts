@@ -21,7 +21,7 @@ export async function ParticipantController_register_post(req: Request, res: Res
         let query = req.query;
         let adp = await getAdapter(query.user, query.org);
         let fact = await ClientFactory(ParticipantController, adp)
-            .register(params.id, params.name, params.msp, params.certificate);
+            .register(params.type, params.id, params.name, params.msp, params.certificate);
         res.status(200).send(fact);
     } catch(ex) {
         console.log(ex.message);
@@ -115,6 +115,34 @@ export async function ItemController_answerProposal_post(req: Request, res: Resp
   }
 }
 
+export async function ItemController_transport_post(req: Request, res: Response): Promise<void> {
+  try {
+    let params = req.body;
+    let query = req.query;
+    let adp = await getAdapter(query.user, query.org);
+    res.status(200).send(await ClientFactory(ItemController, adp)
+        .transport(params.id, params.transporter));
+  } catch (ex) {
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
+  }
+}
+
+export async function ItemController_deliverItem_post(req: Request, res: Response): Promise<void> {
+  try {
+    let params = req.body;
+    let query = req.query;
+    let adp = await getAdapter(query.user, query.org);
+    res.status(200).send(await ClientFactory(ItemController, adp)
+        .deliverItem(params.id));
+  } catch (ex) {
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
+  }
+}
+
 export async function ItemController_create_post(req: Request, res: Response): Promise<void> {
   try {
     let params = req.body;
@@ -188,6 +216,19 @@ export async function ItemController_getParticipantProposals_get(req: Request, r
         let query = req.query;
         let adp = await getAdapter(query.user, query.org);
         res.status(200).send(await ClientFactory(ItemController, adp).getParticipantProposals(params.id));
+    } catch (ex) {
+        console.log(ex.message);
+        res.statusMessage = parseError(ex.message);
+        res.status(500).end();
+    }
+}
+
+export async function ItemController_getTransportItems_get(req: Request, res: Response): Promise<void> {
+    try {
+        let params = req.params;
+        let query = req.query;
+        let adp = await getAdapter(query.user, query.org);
+        res.status(200).send(await ClientFactory(ItemController, adp).getTransportItems(params.id));
     } catch (ex) {
         console.log(ex.message);
         res.statusMessage = parseError(ex.message);

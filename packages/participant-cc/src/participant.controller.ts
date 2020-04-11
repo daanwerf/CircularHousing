@@ -30,6 +30,8 @@ export class ParticipantController extends ConvectorController<ParticipantContro
   @Invokable()
   public async register(
     @Param(yup.string())
+      type: string,
+    @Param(yup.string())
       id: string,
     @Param(yup.string())
       name: string,
@@ -38,6 +40,9 @@ export class ParticipantController extends ConvectorController<ParticipantContro
     @Param(yup.string())
       certificate: string
   ) {
+    // Check if the input type is valid
+    ParticipantController.checkValidType(type);
+
     // Check if there is not already a participant existing for this certificate,
     // because only one participant per certificate is allowed
     const userExisting = await Participant.query(Participant, {
@@ -79,10 +84,22 @@ export class ParticipantController extends ConvectorController<ParticipantContro
         status: true
       }];
 
+      participant.type = type;
+
       await participant.save();
     } else {
       throw new Error('Identity exists already, please call changeIdentity fn for updates');
     }
+  }
+
+  private static async checkValidType(type) {
+    const allowedTypes = ['participant', 'transporter'];
+
+    if (allowedTypes.indexOf(type) === -1) {
+      throw new Error('Illegal argument given for type.');
+    }
+
+    return true;
   }
 
   /*
@@ -165,6 +182,8 @@ export class ParticipantController extends ConvectorController<ParticipantContro
   */
   @Invokable()
   public async getAll() {
-    return await Participant.getAll('circular.economy.participant');
+    const participants = await Participant.getAll('participant');
+    const transporters = await Participant.getAll('transporter');
+    return participants.concat(transporters);
   }
 }

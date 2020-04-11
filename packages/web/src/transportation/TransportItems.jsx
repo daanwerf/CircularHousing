@@ -7,11 +7,10 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import TransportItem from './TransportItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Alert from '@material-ui/lab/Alert';
 import Title from '../dashboard/Title';
-import FullItem from '../items/FullItem';
-import SingleProposal from './SingleProposal';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -22,12 +21,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Proposals(props) {
+export default function Items(props) {
   const [items, setItems] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const participant = props.participant;
+  const org = props.org;
+  const user = props.user;
+
   const [alert, setAlert] = React.useState('');
-  const [view, setView] = React.useState(false);
-  const [viewId, setViewId] = React.useState('');
 
   const classes = useStyles();
 
@@ -35,8 +36,8 @@ export default function Proposals(props) {
     if (loading) {
       setAlert('');
 
-      fetch('http://localhost:8000/item/getParticipantProposals/' 
-            + props.participant + '?org=' + props.org + '&user=' + props.user)
+      fetch('http://localhost:8000/item/getTransportItems/' + participant 
+            + '?org=' + org + '&user=' + user)
         .then(results => {
           if (results.status === 200) {
             results.json()
@@ -50,7 +51,8 @@ export default function Proposals(props) {
           }
         })
         .catch((error) => {
-          //TODO: MAKE ERROR MESSAGE HERE
+          //TODO: MAKE ERROR MESSAGE BETTER FORMATTED
+          setAlert(error);
           console.error(error);
         });
     }
@@ -63,31 +65,25 @@ export default function Proposals(props) {
       <Grid item xs={12}>
         <Paper className={classes.paper}>
           {alert !== '' ? <Alert severity="error">{alert}</Alert> 
-          : <div><Title>Proposals to {props.participant}</Title>
+          : <div><Title>Items</Title>
             {loading ? <LinearProgress /> :
               <Table size="small">
                 <TableHead>
                   <TableRow>
                     <TableCell>ID</TableCell>
-                    <TableCell>Item</TableCell>
-                    <TableCell>Current owner</TableCell>
-                    <TableCell>Quality</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell align="right"></TableCell>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Shipping from</TableCell>
+                    <TableCell>Shipping to</TableCell>
+                    <TableCell align="right">Deliver</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {items.map(item => (
-                    <SingleProposal key={item._id}
-                      item={item}
+                    <TransportItem
                       user={props.user}
                       org={props.org}
-                      view={view}
-                      setView={setView}
-                      viewId={viewId}
-                      setViewId={setViewId}
-                      setProposalAccepted={props.setProposalAccepted}
+                      key={item._id}
+                      item={item}
                       setLoading={setLoading}
                     />
                   ))}
@@ -96,13 +92,6 @@ export default function Proposals(props) {
             }
         </Paper>
       </Grid>
-
-      {view
-        ? <FullItem
-            item={items.filter(item => item._id === viewId)[0]}
-          />
-        : null
-      }
     </React.Fragment>
   );
 }

@@ -35,6 +35,12 @@ export class Item extends ConvectorModel<Item> {
   @Validate(yup.string())
   public proposedOwner: string;
 
+  @Validate(yup.boolean())
+  public proposalAccepted: boolean;
+
+  @Validate(yup.string())
+  public transporter: string;
+
   // A list of strings describing the materials of which the item consists
   @Required()
   @Validate(yup.array())

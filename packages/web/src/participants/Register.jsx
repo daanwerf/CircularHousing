@@ -7,6 +7,10 @@ import Title from '../dashboard/Title';
 import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -28,6 +32,7 @@ export default function Register(props) {
   const org = props.org;
   const setShow = props.setShow;
 
+  const [type, setType] = React.useState('');
   const [name, setName] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [msp, setMsp] = React.useState('');
@@ -47,6 +52,7 @@ export default function Register(props) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        type: type,
         id: username,
         name: name,
         msp: msp,
@@ -74,6 +80,19 @@ export default function Register(props) {
         <Paper className={classes.paper}>
           <Title>Register Participant</Title>
           <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <FormControl fullWidth required>
+                <InputLabel>Participant Type</InputLabel>
+                <Select
+                  id="type"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                >
+                  <MenuItem value={'participant'}>Item Owner</MenuItem>
+                  <MenuItem value={'transporter'}>Transporter</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 required
