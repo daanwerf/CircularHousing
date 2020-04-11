@@ -71,8 +71,6 @@ describe('Item', () => {
         name: join(__dirname, '../../participant-cc')
       }
     ]);
-    adapter.addUser('NotAnOwner');
-
     (adapter.stub as any).usercert = mockAdmincertificate;
     adapter.stub['fingerprint'] = mockIdentity;
     await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
@@ -124,15 +122,15 @@ describe('Item', () => {
 
   // Test for create item
   it('should throw an error, as the mocked user is not the owner of the item', async () => {
-    // Simulate being the user with id mockID2
-    // adapter.stub['fingerprint'] = mockIdentity;
+    // Simulate being the user with an fingerprint that doesnt exist
+    adapter.stub['fingerprint'] = '66:D1:49:80:C8:AF:09:48:6E:0E:5F:0A:CA:EE:87:CB:16:C4:78:61';
     
     const itemName = "item1";
     const ownerID = "mockID";
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
-    expect(itemCtrl.$withUser('NotAnOwner').create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('You are not allowed to do this action, only mockName is allowed to');
+    expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('You are not allowed to do this action, only mockName is allowed to');
   });
 
   // Test for create item
