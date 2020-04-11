@@ -187,19 +187,6 @@ describe('Item', () => {
     expect(itemCtrl.updateName(itemID, "item1NewName").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
   });
 
-  // Test for rename item
-  it('should throw an error, as this is not the owner of the item', async () => {
-    // Simulate being the user with id mockID2
-    adapter.stub['fingerprint'] = mockIdentity2;
-    const foundItem = await Item.query(Item, {
-      'selector': {
-        'name': "item1NewName",
-      }
-    });
-    const itemID = await foundItem[0].id;
-    expect(itemCtrl.updateName(itemID, "item1NewName").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
-  });
-
   // Test for update quality
   it('should update the quality of an Item', async () => {
     // Simulate being the user with id mockID
@@ -242,20 +229,6 @@ describe('Item', () => {
     expect(itemCtrl.updateQuality(itemID, "Bad").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
   });
 
-  // Test for update quality item
-  it('should throw an error, as this is not the owner of the item', async () => {
-    // Simulate being the user thats not the owner
-    adapter.stub['fingerprint'] = mockIdentity2;
-    const foundItem = await Item.query(Item, {
-      'selector': {
-        'name': "item1NewName",
-      }
-    });
-    const itemID = await foundItem[0].id;
-
-    expect(itemCtrl.updateQuality(itemID, "Bad").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
-  });
-
   //Test for transfer ownership
   it('should propose a new owner of an Item', async () => {
     // Simulate being the user with id mockID
@@ -286,7 +259,6 @@ describe('Item', () => {
     });
     const itemID = await foundItem[0].id;
 
-    // The fingerprint obtained here is literally the one for mockID2 (also the same as mockIndentity2), still it says the wrong participant is used
     const newpart = await Participant.getOne("mockID2");
     const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
     adapter.stub['fingerprint'] = newpartidentity.fingerprint;
@@ -327,15 +299,6 @@ describe('Item', () => {
     const itemID = "ItemIDNotExist"
 
     expect(itemCtrl.proposeTransfer(itemID, "mockID").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
-  });
-
-  // Test for answer transfer item
-  it('should throw an error, as the item doesnt exist', async () => {
-    // Simulate being the user with id mockID
-    adapter.stub['fingerprint'] = mockIdentity2;
-    const itemID = "ItemIDNotExist"
-
-    expect(itemCtrl.answerProposal(itemID, true).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
   });
 
   // Test for propose transfer item
