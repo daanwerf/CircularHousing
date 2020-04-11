@@ -126,7 +126,7 @@ describe('Item', () => {
     // adapter.stub['fingerprint'] = mockIdentity;
 
     const itemName = "item1";
-    const ownerID = "mockID2";
+    const ownerID = "mockID";
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
