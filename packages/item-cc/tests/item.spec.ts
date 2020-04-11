@@ -123,7 +123,7 @@ describe('Item', () => {
   // Test for create item
   it('should throw an error, as the mocked user is not the owner of the item', async () => {
     // Simulate being the user with id mockID2
-    adapter.stub['fingerprint'] = mockIdentity2;
+    adapter.stub['fingerprint'] = "NotTheOwner";
     const itemName = "item1";
     const ownerID = "mockID";
     const itemQuality = "Good";
