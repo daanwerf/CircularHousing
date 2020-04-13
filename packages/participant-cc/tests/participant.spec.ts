@@ -65,26 +65,39 @@ describe('Participant', () => {
     ]);
     (adapter.stub as any).usercert = mockCertificate;
   });
-
   
   // Test for Participant create
   it('should not be allowed, as only the chaincodeAdmin can create a participant', async () => {
+    const type = 'participant';
     const id = 'mockID';
     const name = 'mockName';
     const msp = 'mockOrganisation';
 
-    await expect(participantCtrl.register(id, name, msp, mockIdentity).catch(e => e.responses[0].error.message)).to.be.eventually
+    await expect(participantCtrl.register(type, id, name, msp, mockIdentity).catch(e => e.responses[0].error.message)).to.be.eventually
       .eql('Unauthorized. Only admin can create a new participant.');
   });
 
   // Test for Participant create
-  it('should create a new participant', async () => {
+  it('should not be possible to create a participant with a wrong type', async () => {
+    const type = 'wrongType';
+    const id = 'mockIDWrong';
+    const name = 'mockNameWrong';
+    const msp = 'mockOrganisation';
+
+    (adapter.stub as any).usercert = mockAdmincertificate;
+    await expect(participantCtrl.register(type, id, name, msp, mockIdentity).catch(e => e.responses[0].error.message)).to.be.eventually
+      .eql('Illegal argument given for type.');
+  });
+
+  // Test for Participant create
+  it('should create a new general participant', async () => {
+    const type = 'participant';
     const id = 'mockID';
     const name = 'mockName';
     const msp = 'mockOrganisation';
 
     (adapter.stub as any).usercert = mockAdmincertificate;
-    await participantCtrl.register(id, name, msp, mockIdentity);
+    await participantCtrl.register(type, id, name, msp, mockIdentity);
   
     const justSavedModel = await adapter.getById<Participant>(id);
     expect(justSavedModel.id).to.exist;
@@ -92,35 +105,38 @@ describe('Participant', () => {
 
   // Test for Participant create
   it('should not be possible to create a second participant for the same user', async () => {
+    const type = 'participant';
     const id = 'mockID2';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
 
     (adapter.stub as any).usercert = mockAdmincertificate;
-    await expect(participantCtrl.register(id, name, msp, mockIdentity).catch(e => e.responses[0].error.message)).to.be.eventually
+    await expect(participantCtrl.register(type, id, name, msp, mockIdentity).catch(e => e.responses[0].error.message)).to.be.eventually
       .eql('This user already has a participant on the blockchain.' +
       'You can only create one participant for each node');
   });
 
   // Test for Participant create
   it('should not be possible to create a participant with the same id', async () => {
+    const type = 'participant';
     const id = 'mockID';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
 
     (adapter.stub as any).usercert = mockAdmincertificate;
-    await expect(participantCtrl.register(id, name, msp, mockIdentity2).catch(e => e.responses[0].error.message)).to.be.eventually
+    await expect(participantCtrl.register(type, id, name, msp, mockIdentity2).catch(e => e.responses[0].error.message)).to.be.eventually
       .eql('Identity exists already, please call changeIdentity fn for updates');
   });
 
   // Test for Participant create
   it('should be possible to create a participant for the new user', async () => {
+    const type = 'participant';
     const id = 'mockID2';
     const name = 'mockName2';
     const msp = 'mockOrganisation';
 
     (adapter.stub as any).usercert = mockAdmincertificate;
-    await participantCtrl.register(id, name, msp, mockIdentity2);
+    await participantCtrl.register(type, id, name, msp, mockIdentity2);
   
     const justSavedModel = await adapter.getById<Participant>(id);
     expect(justSavedModel.id).to.exist;

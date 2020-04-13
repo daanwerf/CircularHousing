@@ -1,5 +1,4 @@
 import * as yup from 'yup';
-
 import {
   BaseStorage,
   Controller,
@@ -7,9 +6,19 @@ import {
   Invokable,
   Param
 } from '@worldsibu/convector-core';
-
 import { Participant } from './participant.model';
 import { ClientIdentity } from 'fabric-shim';
+
+
+function checkValidType(type) {
+  const allowedTypes = ['participant', 'transporter'];
+
+  if (allowedTypes.indexOf(type) === -1) {
+    throw new Error('Illegal argument given for type.');
+  }
+
+  return true;
+}
 
 @Controller('participant')
 export class ParticipantController extends ConvectorController<ParticipantController> {
@@ -41,7 +50,7 @@ export class ParticipantController extends ConvectorController<ParticipantContro
       certificate: string
   ) {
     // Check if the input type is valid
-    ParticipantController.checkValidType(type);
+    checkValidType(type);
 
     // Check if there is not already a participant existing for this certificate,
     // because only one participant per certificate is allowed
@@ -90,16 +99,6 @@ export class ParticipantController extends ConvectorController<ParticipantContro
     } else {
       throw new Error('Identity exists already, please call changeIdentity fn for updates');
     }
-  }
-
-  private static async checkValidType(type) {
-    const allowedTypes = ['participant', 'transporter'];
-
-    if (allowedTypes.indexOf(type) === -1) {
-      throw new Error('Illegal argument given for type.');
-    }
-
-    return true;
   }
 
   /*
