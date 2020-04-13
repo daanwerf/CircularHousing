@@ -1,5 +1,12 @@
 # Circular Housing Blockchain
 
+This is a blockchain implementation for Circular Housing, built on top of <a href="https://hyperledger-fabric.readthedocs.io/en/release-1.4/" target="_blank">Hyperledger Fabric</a> using the <a href="https://github.com/hyperledger-labs/convector" target="_blank">Convector framework</a>. It allows to specify a custom Fabric network in `network.config.json` and to run this network locally. There is one admin entity that can create one participant for each user, which this user can then use to act on the network (creating, updating, and transferring items). The system also contains a REST Server that creates a REST API for the chaincode, which can be used to communicate with the chaincode from a client application. And we built a web client to demonstrate the system. This README gives instructions on how to setup the network, how to use it on the CLI, how to run the REST server, and how to run the web client. 
+
+## Table of Contents
+[Setup](#setup)
+[Start the network](#start)
+
+<a name="setup" />
 ## Setup
 To run this project, you first need to setup Convector and Hurley. See <a href="https://docs.covalentx.com/article/71-getting-started" target="_blank">their docs</a> for instructions on how to do this (note there are separate instructions for Ubuntu 18.04 users). Make sure to install Hurley globally. 
 
@@ -11,7 +18,8 @@ cd CircularHousing
 npm i
 ```
 
-## Run the project
+<a name="start" />
+## Start the network
 Once Convector/Hurley/Fabric are all setup, run the following commands to get the project running:
 ```
 # Create a new development blockchain network as specified in network.config.json
