@@ -74,9 +74,11 @@ describe('Item', () => {
     adapter.addUser('NotOwner');
     (adapter.stub as any).usercert = mockAdmincertificate;
     adapter.stub['fingerprint'] = mockIdentity;
-    await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
+    await participantCtrl.register("participant", "mockID", "mockName", "mockOrganisation", mockIdentity);
     adapter.stub['fingerprint'] = mockIdentity2;
-    await participantCtrl.register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
+    await participantCtrl.register("participant", "mockID2", "mockName2", "mockOrganisation", mockIdentity2);
+    adapter.stub['fingerprint'] = "transporterMockIdentity";
+    await participantCtrl.register("transporter", "mockID3", "mockName3", "mockOrganisation", mockIdentity2);
   });
 
   // Test for create item
@@ -144,6 +146,18 @@ describe('Item', () => {
     const materials = "mockMaterial1, mockMaterial2";
 
     expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Illegal argument given for quality.');
+  });
+
+   // Test for create item
+  it('should throw an error, as a transporter is not allowed to create items', async () => {
+    // Simulate being the user with transporter type
+    adapter.stub['fingerprint'] = "transporterMockIdentity";
+    const itemName = "item3";
+    const ownerID = "mockID3";
+    const itemQuality = "Good";
+    const materials = "mockMaterial1, mockMaterial2";
+
+    expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given participant is not a participant, and therefore is not allowed to perform this action.');
   });
 
   // Test for update name
