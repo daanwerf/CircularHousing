@@ -126,7 +126,7 @@ describe('Item', () => {
 
   // Test for create item
   it('should throw an error, as the mocked user is not the owner of the item', async () => {
-    // Simulate being the user with an fingerprint that doesnt exist
+    // Simulate being the user with mockID
     adapter.stub['fingerprint'] = mockIdentity;
 
     const itemName = "item1";
@@ -152,7 +152,7 @@ describe('Item', () => {
    // Test for create item
   it('should throw an error, as a transporter is not allowed to create items', async () => {
     // Simulate being the user with transporter type
-    adapter.stub['fingerprint'] = "transporterMockIdentity";
+    adapter.stub['fingerprint'] = mockIdentity3;
     const itemName = "item3";
     const ownerID = "mockID3";
     const itemQuality = "Good";
