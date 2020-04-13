@@ -1,6 +1,6 @@
 # Circular Housing Blockchain
 
-This is a blockchain implementation for Circular Housing, built on top of <a href="https://hyperledger-fabric.readthedocs.io/en/release-1.4/" target="_blank">Hyperledger Fabric</a> using the <a href="https://github.com/hyperledger-labs/convector" target="_blank">Convector framework</a>. It allows to specify a custom Fabric network in `network.config.json` and to run this network locally. There is one admin entity that can create one participant for each user, which this user can then use to act on the network (creating, updating, and transferring items). The system also contains a REST Server that creates a REST API for the chaincode, which can be used to communicate with the chaincode from a client application. And we built a web client to demonstrate the system. This README gives instructions on how to setup the network, how to use it on the CLI, how to run the REST server, and how to run the web client. 
+This is a blockchain implementation for Circular Housing, built on top of <a href="https://hyperledger-fabric.readthedocs.io/en/release-1.4/" target="_blank">Hyperledger Fabric</a> using the <a href="https://github.com/hyperledger-labs/convector" target="_blank">Convector framework</a>. It allows to specify a custom Fabric network in `network.config.json` and to run this network locally. There is one admin entity that can create one participant for each user, which this user can then use to act on the network (creating, updating, and transferring items). The system also contains a REST Server that creates a REST API for the chaincode, which can be used to communicate with the chaincode from a client application. And we built a web client to demonstrate the system. This README gives instructions on how to setup the network, how to use it on the CLI, how to run the REST server, and how to run the web client. Note that this project has only been run and tested on Ubuntu. 
 
 ## Table of Contents
 * [Network overview](#network-overview)
@@ -181,11 +181,20 @@ hurl upgrade circularhousing node <versionno> -P ./chaincode-circularhousing -o 
 This section describes common problems that can occur and how to fix them.
 
 ### x509 module
-**Problem**
+**Problem**  
 `Cannot find module './build/Release/x509'` occurs when running e.g. `CERTIFICATE=$(node ./packages/admin/get_certificate.js WoodGatherer Casper)`, even though the package is in package.json and should have been installed with `npm i`. 
 
 **Solution**
 From root run:
 `npm install x509`
 
-### TODO: ADD WATCHER PROBLEMS
+### Node Watcher issue
+**Problem**  
+When you run the REST server and the Web servers, Nodejs needs to watch both servers for possible changes. An error can occur on Ubuntu because it does not allow enough watchers for this. The error will look something like: `Error: watch ...`.
+
+**Solution**  
+```
+sudo -i
+echo 1048576 > /proc/sys/fs/inotify/max_user_watches
+exit
+```
