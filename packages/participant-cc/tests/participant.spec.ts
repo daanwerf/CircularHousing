@@ -78,6 +78,18 @@ describe('Participant', () => {
   });
 
   // Test for Participant create
+  it('should not be possible to create a participant with a wrong type', async () => {
+    const type = 'wrongType';
+    const id = 'mockID2';
+    const name = 'mockName2';
+    const msp = 'mockOrganisation';
+
+    (adapter.stub as any).usercert = mockAdmincertificate;
+    await expect(participantCtrl.register(type, id, name, msp, mockIdentity).catch(e => e.responses[0].error.message)).to.be.eventually
+      .eql('Illegal argument given for type.');
+  });
+
+  // Test for Participant create
   it('should create a new general participant', async () => {
     const type = 'participant';
     const id = 'mockID';
@@ -91,20 +103,6 @@ describe('Participant', () => {
     expect(justSavedModel.id).to.exist;
   });
 
-    // Test for Participant create
-    it('should create a new transporter participant', async () => {
-      const type = 'transporter';
-      const id = 'mockIDTransporter';
-      const name = 'mockNameTransporter';
-      const msp = 'mockOrganisation';
-  
-      (adapter.stub as any).usercert = mockAdmincertificate;
-      await participantCtrl.register(type, id, name, msp, mockIdentity);
-    
-      const justSavedModel = await adapter.getById<Participant>(id);
-      expect(justSavedModel.id).to.exist;
-    });
-
   // Test for Participant create
   it('should not be possible to create a second participant for the same user', async () => {
     const type = 'participant';
@@ -117,18 +115,6 @@ describe('Participant', () => {
       .eql('This user already has a participant on the blockchain.' +
       'You can only create one participant for each node');
   });
-
-    // Test for Participant create
-    it('should not be possible to create a participant with a wrong type', async () => {
-      const type = 'wrongType';
-      const id = 'mockID2';
-      const name = 'mockName2';
-      const msp = 'mockOrganisation';
-  
-      (adapter.stub as any).usercert = mockAdmincertificate;
-      await expect(participantCtrl.register(type, id, name, msp, mockIdentity).catch(e => e.responses[0].error.message)).to.be.eventually
-        .eql('Illegal argument given for type.');
-    });
 
   // Test for Participant create
   it('should not be possible to create a participant with the same id', async () => {
