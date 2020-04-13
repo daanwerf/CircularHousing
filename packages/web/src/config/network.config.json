@@ -5,17 +5,21 @@
       "channels": ["ch1"],
       "users": []
     },
-    "SocialHousing": {
+    "Manufacturer": {
       "channels": ["ch1"],
-      "users": ["Sultan"]
+      "users": ["manu_user"]
     },
-    "TableMaker": {
+    "Transporter": {
       "channels": ["ch1"],
-      "users": ["Zeki"]
+      "users": ["transporter_user"]
     },
-    "WoodGatherer": {
+    "Retailer": {
       "channels": ["ch1"],
-      "users": ["Casper", "Daan", "Naqib", "Tim"]
+      "users": ["retailer_user"]
+    },
+    "SocialHousingOrganization": {
+      "channels": ["ch1"],
+      "users": ["sho_user"]
     }
   }
 }

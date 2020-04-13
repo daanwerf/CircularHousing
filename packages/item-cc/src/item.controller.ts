@@ -114,8 +114,6 @@ export class ItemController extends ConvectorController {
     @Param(yup.string())
       id: string
   ) {
-    await ItemController.isParticipant(id);
-
     return await Item.getOne(id);
   }
 
