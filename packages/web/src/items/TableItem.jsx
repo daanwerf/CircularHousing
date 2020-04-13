@@ -27,6 +27,20 @@ export default function TableItem(props) {
     setView(false);
   }
 
+  function parseStatus(item) {
+    if (!item._proposedOwner || item._proposedOwner === '') {
+      return "Ok";
+    } else if (!item._proposalAccepted) {
+      return "Pending proposal..";
+    } else if (item._proposalAccepted && item._transporter && item._transporter !== "") {
+      return `Transporting with ${item._transporter}`;
+    } else if (item._proposalAccepted) {
+      return "Ready for transportation.."; 
+    } else {
+      return "Status unknown";
+    }
+  }
+
   return (
     <React.Fragment>
       <TableRow>
@@ -46,12 +60,27 @@ export default function TableItem(props) {
           dropdown={true}
           values={ALLOWEDQUALITIES}
         />
-        <EditableItemCell
-          value={item._proposedOwner ? item._proposedOwner : ''}
-          apiCall={'item/proposeTransfer?org=' + org + '&user=' + user}
-          itemId={item._id}
-          editKey={'newOwner'}
-        />
+        {item._proposalAccepted 
+          ? <TableCell>{item._proposedOwner}</TableCell>
+          : <EditableItemCell
+              value={item._proposedOwner ? item._proposedOwner : ''}
+              apiCall={'item/proposeTransfer?org=' + org + '&user=' + user}
+              itemId={item._id}
+              editKey={'newOwner'}
+            />
+        }
+
+        {item._proposalAccepted
+          ? <EditableItemCell
+              value={item._transporter ? item._transporter : ''}
+              apiCall={'item/transport?org=' + org + '&user=' + user}
+              itemId={item._id}
+              editKey={'transporter'}
+            />
+          : <TableCell></TableCell>
+        }
+
+        <TableCell>{parseStatus(item)}</TableCell>
 
         <TableCell align="right">
           {view && viewId === item._id

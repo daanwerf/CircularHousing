@@ -70,6 +70,18 @@ export default function SingleProposal(props) {
     })
   }
 
+  function parseStatus(item) {
+    if (!item._proposalAccepted) {
+      return "Waiting for your response..";
+    } else if (item._proposalAccepted && item._transporter && item._transporter !== "") {
+      return `Transporting with ${item._transporter}`;
+    } else if (item._proposalAccepted) {
+      return "Waiting for transportation"; 
+    } else {
+      return "Status unknown";
+    }
+  }
+
   return (
     <React.Fragment>
       <TableRow>
@@ -77,23 +89,10 @@ export default function SingleProposal(props) {
         <TableCell>{item._name}</TableCell>
         <TableCell>{item._itemOwner}</TableCell>
         <TableCell>{item._quality}</TableCell>
-        <TableCell>
-          {view && viewId === item._id
-            ? <Tooltip title="Show less">
-                <IconButton onClick={handleHideItem}>
-                  <ExpandLessIcon color="primary"/>
-                </IconButton>
-              </Tooltip>
-            : <Tooltip title="Show more">
-                <IconButton onClick={handleViewItem}>
-                  <ExpandMoreIcon color="primary"/>
-                </IconButton>
-              </Tooltip>
-          }
-        </TableCell>
+        <TableCell>{parseStatus(item)}</TableCell>
         <TableCell align="right">
         	{loadingProposalAnswer ? <CircularProgress /> :
-              item._proposedOwner && item._proposedOwner.length > 0 ?
+              item._proposedOwner && item._proposedOwner.length > 0 && !item._proposalAccepted ?
                 <div>
                   <Tooltip title="Accept proposal">
                     <IconButton onClick={acceptProposal}>
@@ -108,8 +107,22 @@ export default function SingleProposal(props) {
                   {proposalAlert === '' ? null :
                     <Alert severity="error">{proposalAlert}</Alert>
                   }
-              </div> : ""
+              </div> : <div>{item._proposalAccepted ? "Proposal accepted" : ""}</div>
             }
+        </TableCell>
+        <TableCell>
+          {view && viewId === item._id
+            ? <Tooltip title="Show less">
+                <IconButton onClick={handleHideItem}>
+                  <ExpandLessIcon color="primary"/>
+                </IconButton>
+              </Tooltip>
+            : <Tooltip title="Show more">
+                <IconButton onClick={handleViewItem}>
+                  <ExpandMoreIcon color="primary"/>
+                </IconButton>
+              </Tooltip>
+          }
         </TableCell>
       </TableRow>
     </React.Fragment>

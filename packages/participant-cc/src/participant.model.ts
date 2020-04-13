@@ -22,7 +22,9 @@ export class x509Identities extends ConvectorModel<x509Identities> {
 
 export class Participant extends ConvectorModel<Participant> {
   @ReadOnly()
-  public readonly type = 'circular.economy.participant';
+  @Required()
+  @Validate(yup.string())
+  public type;
 
   @ReadOnly()
   @Required()
