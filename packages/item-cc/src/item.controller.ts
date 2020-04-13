@@ -55,7 +55,7 @@ export class ItemController extends ConvectorController {
 
     item.creationDate = new Date().getTime();
     item.quality = checkQuality(quality);
-    
+
     var a: Array<string> = materials.split(',');
     item.materials = a;
 
@@ -134,7 +134,7 @@ export class ItemController extends ConvectorController {
     if (item.proposalAccepted) {
       throw new Error('This proposal has already been accepted, a new owner cannot be proposed anymore');
     }
-    
+
     await ItemController.checkValidItem(item);
     await ItemController.checkValidOwner(this.sender, item.itemOwner);
 

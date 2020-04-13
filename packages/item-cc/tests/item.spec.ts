@@ -17,6 +17,8 @@ describe('Item', () => {
   let participantCtrl: ConvectorControllerClient<ParticipantController>;
   const mockIdentity = '8D:B9:F2:E7:77:CB:A9:A3:B9:0D:B7:C8:F1:FE:70:16:42:3B:BA:0D';
   const mockIdentity2 = 'DB:EE:E4:11:8B:AB:E1:7E:CF:BF:AF:E5:0D:47:4A:64:99:90:34:9E';
+  const mockIdentity3 = 'FC:83:E3:73:3A:FD:78:BF:DB:FD:65:5F:06:6D:ED:40:47:BF:69:A6';
+
   const mockCertificate = '-----BEGIN CERTIFICATE-----' +
   'MIICjzCCAjWgAwIBAgIUITsRsw5SIJ+33SKwM4j1Dl4cDXQwCgYIKoZIzj0EAwIw' +
   'czELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh' +
@@ -53,6 +55,28 @@ describe('Item', () => {
   "dkQIssMaMwkireuglUubT/Chee4jFgnhJqffnG+qCHs=\n" +
   "-----END CERTIFICATE-----\n";
 
+  const mockCertificate3 = "-----BEGIN CERTIFICATE-----\n" +
+  "MIIDazCCAlOgAwIBAgIUdCxRokNawcQLsINp4A6D6RchubAwDQYJKoZIhvcNAQEL\n" +
+  "BQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM\n" +
+  "GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMDA0MTMxNzQwMzlaFw0yMTA0\n" +
+  "MTMxNzQwMzlaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw\n" +
+  "HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEB\n" +
+  "AQUAA4IBDwAwggEKAoIBAQCv3uM6z2LFfH5ZbQ0zh815PS2/kZFxgyVd2hHcYYt8\n" +
+  "pycw/IxpNlIAJbXFzsWPz9FQ9pV2CVA53hNe4uzkaPuUizmPLN3ZKtCt9bawODi5\n" +
+  "fVHll82zEk0TziT8qunPfcahA3j9KCJRkcaLunpQ0zk8tP9bu4zj16TX9tj4DmM6\n" +
+  "j5UBwasm59uSdUEZ/PikAO959+g4ZbX0RXsyBfeR7gVdiaWqP+nQqsrHpVroaC1h\n" +
+  "mGh2rxaafft9T+4nQIN5UEO7inQRN+v1bv47NVHvVfcRqiB6EhZfCLYLfBrDM1sl\n" +
+  "ma70ckZn7JaeHHMyOLSi0Go9hjX1hSDTl9kSYMlHlGHXAgMBAAGjUzBRMB0GA1Ud\n" +
+  "DgQWBBSlITBzK2n9UlzvZO4nixCleYaTPTAfBgNVHSMEGDAWgBSlITBzK2n9Ulzv\n" +
+  "ZO4nixCleYaTPTAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCC\n" +
+  "f58t6rf0U/GBVzOzvcalQjN2mXLjhns4j+bxDD4wpU4ul7G1jEp4mXGOXl5Sm6nF\n" +
+  "R4RbD55baNsEH2A6IgMufUMgsc+wLu7EbGDnZLZzpfBEXYBR02Ey1muqiQt7+UZ2\n" +
+  "LmDXYDZlFo7LeqQIxVUphgs1/dQtOckapIhjGPC5lle5ezt5xLPNEtdlnAZ991sg\n" +
+  "OHYgV2hRXOLa2p5+WWvrcg/PPFcN4CdFgBzfIFBGooQO1aVkiRRkpElPWOQCJppx\n" +
+  "DX5R19GBKmBm/0sP0K3Mti1HdtAY2+WdsPhggeiJ6n/8I4DDfAsCNpQV050O/1ju\n" +
+  "s7XkNquSYWa84TaqkDFi\n" +
+  "-----END CERTIFICATE-----\n";
+
   before(async () => {
     // Mocks the blockchain execution environment
     adapter = new MockControllerAdapter();
@@ -72,11 +96,14 @@ describe('Item', () => {
       }
     ]);
     adapter.addUser('NotOwner');
+    adapter.addUser('Transporter');
     (adapter.stub as any).usercert = mockAdmincertificate;
     adapter.stub['fingerprint'] = mockIdentity;
-    await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
+    await participantCtrl.register("participant", "mockID", "mockName", "mockOrganisation", mockIdentity);
     adapter.stub['fingerprint'] = mockIdentity2;
-    await participantCtrl.register("mockID2", "mockName2", "mockOrganisation", mockIdentity2);
+    await participantCtrl.register("participant", "mockID2", "mockName2", "mockOrganisation", mockIdentity2);
+    adapter.stub['fingerprint'] = mockIdentity3;
+    await participantCtrl.register("transporter", "mockID3", "mockName3", "mockOrganisation", mockIdentity3);
   });
 
   // Test for create item
@@ -123,7 +150,7 @@ describe('Item', () => {
 
   // Test for create item
   it('should throw an error, as the mocked user is not the owner of the item', async () => {
-    // Simulate being the user with an fingerprint that doesnt exist
+    // Simulate being the user with mockID
     adapter.stub['fingerprint'] = mockIdentity;
 
     const itemName = "item1";
@@ -144,6 +171,18 @@ describe('Item', () => {
     const materials = "mockMaterial1, mockMaterial2";
 
     expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Illegal argument given for quality.');
+  });
+
+   // Test for create item
+  it('should throw an error, as a transporter is not allowed to create items', async () => {
+    // Simulate being the user with transporter type
+    adapter.stub['fingerprint'] = mockIdentity3;
+    const itemName = "item3";
+    const ownerID = "mockID3";
+    const itemQuality = "Good";
+    const materials = "mockMaterial1, mockMaterial2";
+
+    expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given participant is not a participant, and therefore is not allowed to perform this action.');
   });
 
   // Test for update name
@@ -262,15 +301,37 @@ describe('Item', () => {
 
     const newpart = await Participant.getOne("mockID2");
     const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
+
+    //Answer as wrong person
+    await expect(itemCtrl.answerProposal(itemID, true)).to.be.eventually.rejectedWith(Error);
     adapter.stub['fingerprint'] = newpartidentity.fingerprint;
     (adapter.stub as any).usercert = mockCertificate;
-
     await itemCtrl.answerProposal(itemID, true);
-
     var justUpdatedItem = await adapter.getById<Item>(itemID);
 
-    expect(justUpdatedItem.itemOwner).to.be.eql("mockID2");
-    expect(justUpdatedItem.proposedOwner).to.be.eql("");
+    expect(justUpdatedItem.proposalAccepted).to.be.eql(true);
+    //Answer after it has already been accepted
+    expect(itemCtrl.answerProposal(itemID, true)).to.be.eventually.rejectedWith(Error);
+  });
+
+  it('should transport', async () => {
+    adapter.stub['fingerprint'] = mockIdentity;
+    (adapter.stub as any).usercert = mockAdmincertificate;
+    const foundItem = await Item.query(Item, {
+      'selector': {
+        'name': "item1NewName",
+      }
+    });
+
+    const itemID = await foundItem[0].id;
+    await itemCtrl.transport(itemID, "mockID3");
+    await expect(itemCtrl.deliverItem(itemID).catch(e => e.responses[0].error.message)).to.be.eventually.eql('You are not allowed to do this action, only mockName3 is allowed to');
+
+     adapter.stub['fingerprint'] = mockIdentity3;
+    (adapter.stub as any).usercert = mockCertificate3;
+    await itemCtrl.deliverItem(itemID);
+    var justUpdatedItem = await adapter.getById<Item>(itemID);
+    expect(justUpdatedItem.transporter).to.be.eql("");
   });
 
   // Test for transfer Item Event
@@ -278,7 +339,6 @@ describe('Item', () => {
     const newpart = await Participant.getOne("mockID2");
     const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
     adapter.stub['fingerprint'] = newpartidentity.fingerprint;
-    (adapter.stub as any).usercert = mockCertificate;
     (adapter.stub as any).usercert = mockCertificate;
 
     const foundItem = await Item.query(Item, {
@@ -299,24 +359,6 @@ describe('Item', () => {
     const itemID = "ItemIDNotExist"
 
     expect(itemCtrl.proposeTransfer(itemID, "mockID").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
-  });
-
-  // Test for answer transfer item
-  it('should throw an error, as this is not the participant the proposal was made to', async () => {
-    // First, successfully propose an item to participant mockName2, as mockName
-    adapter.stub['fingerprint'] = mockIdentity;
-    const foundItem = await Item.query(Item, {
-      'selector': {
-        'name': "item1NewName",
-      }
-    });
-    const itemID = await foundItem[0].id;
-
-    const newOwner = "mockID2";
-    await itemCtrl.proposeTransfer(itemID, newOwner);
-
-    // Try to answer proposal as the wrong user
-    expect(itemCtrl.$withUser('NotOwner').answerProposal(itemID, true).catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName2 is allowed to`);
   });
 
   // Test for update quality item
