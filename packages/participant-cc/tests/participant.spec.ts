@@ -199,8 +199,8 @@ describe('Participant', () => {
   // Test for Participant create
   it('should not be possible to create a participant with a wrong type', async () => {
     const type = 'wrongType';
-    const id = 'mockID2';
-    const name = 'mockName2';
+    const id = 'mockIDWrong';
+    const name = 'mockNameWrong';
     const msp = 'mockOrganisation';
 
     (adapter.stub as any).usercert = mockAdmincertificate;
