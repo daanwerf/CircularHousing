@@ -78,6 +78,17 @@ describe('Participant', () => {
   });
 
   // Test for Participant create
+  it('should not be possible to create a participant with a wrong type', async () => {
+    const type = 'wrongType';
+    const id = 'mockIDWrong';
+    const name = 'mockNameWrong';
+    const msp = 'mockOrganisation';
+
+    (adapter.stub as any).usercert = mockAdmincertificate;
+    await expect(participantCtrl.register(type, id, name, msp, mockIdentity)).to.be.eventually.rejectedWith(Error);
+  });
+
+  // Test for Participant create
   it('should create a new general participant', async () => {
     const type = 'participant';
     const id = 'mockID';
@@ -194,17 +205,5 @@ describe('Participant', () => {
   it('should not return a participant', async () => {
     const id = 'mockIDNotExist';
     await expect(participantCtrl.get(id).catch(e => e.responses[0].error.message)).to.be.eventually.eql('No identity exists with id ' + id);
-  });
-
-  // Test for Participant create
-  it('should not be possible to create a participant with a wrong type', async () => {
-    const type = 'wrongType';
-    const id = 'mockIDWrong';
-    const name = 'mockNameWrong';
-    const msp = 'mockOrganisation';
-
-    (adapter.stub as any).usercert = mockAdmincertificate;
-    expect(participantCtrl.register(type, id, name, msp, mockIdentity).catch(e => e.responses[0].error.message)).to.be.eventually
-      .eql('Illegal argument given for type.');
   });
 });
