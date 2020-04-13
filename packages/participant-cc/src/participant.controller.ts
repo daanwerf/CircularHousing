@@ -1,5 +1,4 @@
 import * as yup from 'yup';
-
 import {
   BaseStorage,
   Controller,
@@ -7,9 +6,9 @@ import {
   Invokable,
   Param
 } from '@worldsibu/convector-core';
-
 import { Participant } from './participant.model';
 import { ClientIdentity } from 'fabric-shim';
+
 
 function checkValidType(type) {
   const allowedTypes = ['participant', 'transporter'];

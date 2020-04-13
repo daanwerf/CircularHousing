@@ -85,7 +85,8 @@ describe('Participant', () => {
     const msp = 'mockOrganisation';
 
     (adapter.stub as any).usercert = mockAdmincertificate;
-    await expect(participantCtrl.register(type, id, name, msp, mockIdentity)).to.be.eventually.rejectedWith(Error);
+    await expect(participantCtrl.register(type, id, name, msp, mockIdentity).catch(e => e.responses[0].error.message)).to.be.eventually
+      .eql('Illegal argument given for type.');
   });
 
   // Test for Participant create
