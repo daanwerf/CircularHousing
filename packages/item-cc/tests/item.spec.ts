@@ -303,7 +303,6 @@ describe('Item', () => {
     const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
 
     //Answer as wrong person
-    // const itemCtrlWithOtherOwner = itemCtrl.$withUser('NotOwner');
     await expect(itemCtrl.answerProposal(itemID, true)).to.be.eventually.rejectedWith(Error);
     adapter.stub['fingerprint'] = newpartidentity.fingerprint;
     (adapter.stub as any).usercert = mockCertificate;
