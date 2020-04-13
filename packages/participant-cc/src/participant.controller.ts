@@ -92,7 +92,7 @@ export class ParticipantController extends ConvectorController<ParticipantContro
     }
   }
 
-  private static async checkValidType(type) {
+  private static checkValidType(type) {
     const allowedTypes = ['participant', 'transporter'];
 
     if (allowedTypes.indexOf(type) === -1) {
