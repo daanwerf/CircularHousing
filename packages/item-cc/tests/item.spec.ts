@@ -17,6 +17,7 @@ describe('Item', () => {
   let participantCtrl: ConvectorControllerClient<ParticipantController>;
   const mockIdentity = '8D:B9:F2:E7:77:CB:A9:A3:B9:0D:B7:C8:F1:FE:70:16:42:3B:BA:0D';
   const mockIdentity2 = 'DB:EE:E4:11:8B:AB:E1:7E:CF:BF:AF:E5:0D:47:4A:64:99:90:34:9E';
+  const mockIdentity3 = 'A9:EE:E4:11:8B:AB:E1:7E:CF:BF:AF:E5:0D:47:4A:64:99:90:34:9E';
   const mockCertificate = '-----BEGIN CERTIFICATE-----' +
   'MIICjzCCAjWgAwIBAgIUITsRsw5SIJ+33SKwM4j1Dl4cDXQwCgYIKoZIzj0EAwIw' +
   'czELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh' +
@@ -77,8 +78,8 @@ describe('Item', () => {
     await participantCtrl.register("participant", "mockID", "mockName", "mockOrganisation", mockIdentity);
     adapter.stub['fingerprint'] = mockIdentity2;
     await participantCtrl.register("participant", "mockID2", "mockName2", "mockOrganisation", mockIdentity2);
-    adapter.stub['fingerprint'] = "transporterMockIdentity";
-    await participantCtrl.register("transporter", "mockID3", "mockName3", "mockOrganisation", mockIdentity2);
+    adapter.stub['fingerprint'] = mockIdentity3;
+    await participantCtrl.register("transporter", "mockID3", "mockName3", "mockOrganisation", mockIdentity3);
   });
 
   // Test for create item
