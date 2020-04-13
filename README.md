@@ -3,9 +3,25 @@
 This is a blockchain implementation for Circular Housing, built on top of <a href="https://hyperledger-fabric.readthedocs.io/en/release-1.4/" target="_blank">Hyperledger Fabric</a> using the <a href="https://github.com/hyperledger-labs/convector" target="_blank">Convector framework</a>. It allows to specify a custom Fabric network in `network.config.json` and to run this network locally. There is one admin entity that can create one participant for each user, which this user can then use to act on the network (creating, updating, and transferring items). The system also contains a REST Server that creates a REST API for the chaincode, which can be used to communicate with the chaincode from a client application. And we built a web client to demonstrate the system. This README gives instructions on how to setup the network, how to use it on the CLI, how to run the REST server, and how to run the web client. 
 
 ## Table of Contents
+* [Network overview](#network-overview)
 * [Setup](#setup)
 * [Start the network](#start)
 * [Interact with the network via CLI](#cli)
+* [REST Server](#server)
+* [Webclient](#web)
+* [Tests](#tests)
+* [Upgrade chaincode](#upgrade)
+* [Troubleshooting](#troubleshooting)
+
+<a name="network-overview"></a>
+## Network overview
+To understand the system we built, we give a short overview here of how it works. The system is made to allow manufacturers/retailers/housing organizations to create/update/transfer items. Each organization has one or more users. To transfer an item, transporters are needed which are also part of the ecosystem.  
+
+For a user of an organization to be able to act on the blockchain (e.g. create an item) he needs a participant to be registered (which can be seen as a user account). Only a central authority can register new participants, so this central authority can decide who can act on the blockchain, and in what role (regular participant or transport, we will come to this in a bit). The way this is implemented is based on Attribute-Based Access Control, more information can be found <a href="https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/users-guide.html#attribute-based-access-control" target="_blank">here</a> and <a href="https://github.com/worldsibu/convector-identity-patterns" target="_blank">here</a>.  
+
+There are two types of participants. There is a regular participant, that can create/update/transfer items, and there is a transporter participant, which cannot perform these actions, but can only deliver an item to another regular participant when a deal is made between two regular participants.  
+
+Transferring items works as follows: participant A makes a proposal to transfer item I to participant B. Participant B can accept or reject this proposal. If he accepts it, participant A can send the item to transporter T. Transporter T can then deliver the item to participant B, who is then the new owner of the item. 
 
 <a name="setup"></a>
 ## Setup
@@ -28,7 +44,7 @@ sh launchBlockchain.sh
 
 <a name="cli"></a>
 ## Interact with the network via CLI
-This section describes how to interact with the local blockchain network via the command line. The commands assume `network.config.json` has not been modified. 
+This section describes how to interact with the local blockchain network via the command line. The commands assume `network.config.json` has not been modified and the network is running.
 
 ### Creating participants
 First, you need to create participants on the network, which users can then use to create/update/transfer/transport items on the network. There are 2 types of participant: a regular "participant" type, and a "transporter" type. The "participant" type can create/update/transfer items to other "participant" types. The "transporter" cannot do this, a "transporter" can only deliver an item to a different participant. 
@@ -100,10 +116,11 @@ hurl invoke circularhousing item_deliverItem $UUID -o Transporter -u transporter
 hurl invoke circularhousing item_get $UUID -o Retailer -u retailer_user
 ```
 
+<a name="server"></a>
 ## REST Server
 To allow interaction with the blockchain from a web client, we created a REST Server (see <a href="" target="_blank">Convector Docs</a> for details).  
 
-To start the server, run:
+To start the server, make sure the blockchain network has been started, then run:
 ```
 npx lerna run start --scope server --stream
 ```
@@ -119,8 +136,14 @@ curl 'http://localhost:8000/participant/register?org=Government&user=chaincodeAd
 curl 'http://localhost:8000/participant/getAll?org=Government&user=chaincodeAdmin'
 ```
 
+<a name="web"></a>
 ## Webclient
-To setup and run the web client, execute the following commands:
+To setup and run the web client, first make sure the blockchain network and the REST server are running. If you just started the network and the server, the first API call will take a lot of time. When you start the website, it will immediately make multiple API calls, which can take a toll on your machine. Therefore, we recommend running one curl command to the REST server before starting the website, for example:
+```
+curl 'http://localhost:8000/participant/getAll?org=Government&user=chaincodeAdmin'
+```
+
+Then, the web client can be started with the following commands:
 ```
 # cd into the web folder
 cd packages/web
@@ -130,6 +153,7 @@ npm i
 npm start
 ```
 
+<a name="tests"></a>
 ## Tests
 To test if everything works as expected, we wrote tests for the chaincode. To run these tests, do:
 ```
@@ -139,29 +163,20 @@ npm run cc:package
 npm run test
 ```
 
-## Install or upgrade chaincode
-To install and/or upgrade chaincode, the following commands from the root of the project can be run (see <a href="https://www.npmjs.com/package/@worldsibu/hurley" target="_blank">Hurley docs</a> for full specification):
+<a name="upgrade"></a>
+## Upgrade chaincode
+When changes are made to the chaincode and you want to reflect these changes on a running blockchain network, you can upgrade the chaincode with the following commands from the root of the project (see <a href="https://www.npmjs.com/package/@worldsibu/hurley" target="_blank">Hurley docs</a> for full specification):
 ```
 # Regardless of installation or upgrading, first chaincode needs to be packaged
 npm run cc:package
 
-# Install <mychaincode> to blockchain (replace <mychaincode> with the name of the chaincode 
-# you want to install and <org1> with the organisation to which you want to install the chaincode. 
-# It is possible to install to multiple organisations at once.
-hurl install <mychaincode> node -P ./chaincode-<mychaincode> -o <org1>
-
-# Upgrade existing chaincode (replace <versionno> by a version number of your choice)
-hurl upgrade <mychaincode> node <versionno> -P ./chaincode-<mychaincode> -o <org1>
+# Upgrade existing chaincode (replace <versionno> by a version number of your choice and replace
+# <org1> by the organization you want to upgrade the chaincode of. If you want to upgrade
+# on multiple organizations, you can add multiple -o arguments. 
+hurl upgrade circularhousing node <versionno> -P ./chaincode-circularhousing -o <org1>
 ```
 
-## Network setup
-TODO: POSSIBLY PUT THIS AT BEGINNING
-Every user in the network (users are predefined in the `network.config.json` file) can register itself in the network (by invoking participant_register). Once a user registers itself on the blockchain as a participant, it can perform actions on the blockchain (like creating a new item). A participant has a number of fields, one of which is its identity, consisting of a fingerprint and a boolean value status. The fingerprint is the X509 certificate of the user and `status` indicates whether the certificate is still valid. 
-
-When a participant tries to perform actions on the blockchain, like updating an item, the logic in the chaincode checks to see if the X509 certificate of the user invoking that action, is the same as the X509 certficiate of the participant that owns the item. If this is the case, the user is allowed to update the item, otherwise it is not. This is why the Participant model is useful, because it allows to implement logic on the blockchain to see if an invoker of a smart contract is the real owner. 
-
-It can happen that X509 certificates need to be changed or revoked from participants. To this end, there is an admin user (that needs to be enrolled once the network is started) which has a specific attribute field called "admin" that can call `changeIdentity` which changes the CA certficate of a participant. Only the user with this "admin" attribute can perform this action. This is called Attribute-Based Access Control, more information can be found <a href="https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/users-guide.html#attribute-based-access-control" target="_blank">here</a> and <a href="https://github.com/worldsibu/convector-identity-patterns" target="_blank">here</a>.
-
+<a name="troubleshooting"></a>
 ## Troubleshooting
 This section describes common problems that can occur and how to fix them.
 
