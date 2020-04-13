@@ -6,7 +6,7 @@ This is a blockchain implementation for Circular Housing, built on top of <a hre
 [Setup](#setup)
 [Start the network](#start)
 
-<a name="setup" />
+<a name="setup"></a>
 ## Setup
 To run this project, you first need to setup Convector and Hurley. See <a href="https://docs.covalentx.com/article/71-getting-started" target="_blank">their docs</a> for instructions on how to do this (note there are separate instructions for Ubuntu 18.04 users). Make sure to install Hurley globally. 
 
@@ -18,7 +18,7 @@ cd CircularHousing
 npm i
 ```
 
-<a name="start" />
+<a name="start"></a>
 ## Start the network
 Once Convector/Hurley/Fabric are all setup, run the following commands to get the project running:
 ```
