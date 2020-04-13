@@ -71,6 +71,7 @@ describe('Item', () => {
         name: join(__dirname, '../../participant-cc')
       }
     ]);
+    adapter.addUser('NotOwner');
     (adapter.stub as any).usercert = mockAdmincertificate;
     adapter.stub['fingerprint'] = mockIdentity;
     await participantCtrl.register("mockID", "mockName", "mockOrganisation", mockIdentity);
@@ -122,14 +123,15 @@ describe('Item', () => {
 
   // Test for create item
   it('should throw an error, as the mocked user is not the owner of the item', async () => {
-    // Simulate being the user with id mockID2
-    adapter.stub['fingerprint'] = mockIdentity2;
+    // Simulate being the user with an fingerprint that doesnt exist
+    adapter.stub['fingerprint'] = mockIdentity;
+
     const itemName = "item1";
-    const ownerID = "mockID";
+    const ownerID = "mockID2";
     const itemQuality = "Good";
     const materials = "mockMaterial1, mockMaterial2";
 
-    expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('You are not allowed to do this action, only mockName is allowed to');
+    expect(itemCtrl.create(itemName, ownerID, itemQuality, materials).catch(e => e.responses[0].error.message)).to.be.eventually.eql('You are not allowed to do this action, only mockName2 is allowed to');
   });
 
   // Test for create item
@@ -186,20 +188,6 @@ describe('Item', () => {
     expect(itemCtrl.updateName(itemID, "item1NewName").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
   });
 
-  // Test for rename item
-  it('should throw an error, as this is not the owner of the item', async () => {
-    // Simulate being the user with id mockID2
-    adapter.stub['fingerprint'] = mockIdentity2;
-    const foundItem = await Item.query(Item, {
-      'selector': {
-        'name': "item1NewName",
-      }
-    });
-    const itemID = await foundItem[0].id;
-
-    expect(itemCtrl.updateName(itemID, "item1NewName").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
-  });
-
   // Test for update quality
   it('should update the quality of an Item', async () => {
     // Simulate being the user with id mockID
@@ -230,7 +218,7 @@ describe('Item', () => {
     const itemID = await foundItem[0].id;
     const retrievedItem = await adapter.getById<Item>(itemID);
 
-    expect(retrievedItem.itemHistory[3].type).to.be.eql('UPDATE');
+    expect(retrievedItem.itemHistory[2].type).to.be.eql('UPDATE');
   });
 
   // Test for update quality item
@@ -242,22 +230,8 @@ describe('Item', () => {
     expect(itemCtrl.updateQuality(itemID, "Bad").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
   });
 
-  // Test for update quality item
-  it('should throw an error, as this is not the owner of the item', async () => {
-    // Simulate being the user with id mockID2
-    adapter.stub['fingerprint'] = mockIdentity2;
-    const foundItem = await Item.query(Item, {
-      'selector': {
-        'name': "item1NewName",
-      }
-    });
-    const itemID = await foundItem[0].id;
-
-    expect(itemCtrl.updateQuality(itemID, "Bad").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
-  });
-
   //Test for transfer ownership
-  it('should propse a new owner of an Item', async () => {
+  it('should propose a new owner of an Item', async () => {
     // Simulate being the user with id mockID
     adapter.stub['fingerprint'] = mockIdentity;
     const foundItem = await Item.query(Item, {
@@ -286,7 +260,6 @@ describe('Item', () => {
     });
     const itemID = await foundItem[0].id;
 
-    // The fingerprint obtained here is literally the one for mockID2 (also the same as mockIndentity2), still it says the wrong participant is used
     const newpart = await Participant.getOne("mockID2");
     const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
     adapter.stub['fingerprint'] = newpartidentity.fingerprint;
@@ -302,7 +275,6 @@ describe('Item', () => {
 
   // Test for transfer Item Event
   it('should have used the correct event type after the transfer of an Item', async () => {
-    // The fingerprint obtained here is literally the one for mockID2 (also the same as mockIndentity2), still it says the wrong participant is used
     const newpart = await Participant.getOne("mockID2");
     const newpartidentity = newpart.identities.filter(identity => identity.status === true)[0];
     adapter.stub['fingerprint'] = newpartidentity.fingerprint;
@@ -317,7 +289,7 @@ describe('Item', () => {
     const itemID = await foundItem[0].id;
     const retrievedItem = await adapter.getById<Item>(itemID);
 
-    expect(retrievedItem.itemHistory[5].type).to.be.eql('TRANSFER');
+    expect(retrievedItem.itemHistory[3].type).to.be.eql('TRANSFER');
   });
 
   // Test for propose transfer item
@@ -327,29 +299,6 @@ describe('Item', () => {
     const itemID = "ItemIDNotExist"
 
     expect(itemCtrl.proposeTransfer(itemID, "mockID").catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
-  });
-
-  // Test for answer transfer item
-  it('should throw an error, as the item doesnt exist', async () => {
-    // Simulate being the user with id mockID
-    adapter.stub['fingerprint'] = mockIdentity2;
-    const itemID = "ItemIDNotExist"
-
-    expect(itemCtrl.answerProposal(itemID, true).catch(e => e.responses[0].error.message)).to.be.eventually.eql('Given item does not currently exist on the ledger');
-  });
-
-  // Test for propose transfer item
-  it('should throw an error, as this is not the owner of the item', async () => {
-    // Simulate being the user with id mockID2
-    adapter.stub['fingerprint'] = mockIdentity2;
-    const foundItem = await Item.query(Item, {
-      'selector': {
-        'name': "item1NewName",
-      }
-    });
-    const itemID = await foundItem[0].id;
-
-    expect(itemCtrl.proposeTransfer(itemID, "mockID").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName is allowed to`);
   });
 
   // Test for answer transfer item
@@ -367,7 +316,42 @@ describe('Item', () => {
     await itemCtrl.proposeTransfer(itemID, newOwner);
 
     // Try to answer proposal as the wrong user
-    adapter.stub['fingerprint'] = "WrongIdentity";
-    expect(itemCtrl.answerProposal(itemID, true).catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName2 is allowed to`);
+    expect(itemCtrl.$withUser('NotOwner').answerProposal(itemID, true).catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName2 is allowed to`);
   });
+
+  // Test for update quality item
+  it('should throw an error, as this is not the owner of the item', async () => {
+    const foundItem = await Item.query(Item, {
+      'selector': {
+        'name': "item1NewName",
+      }
+    });
+    const itemID = await foundItem[0].id;
+
+    expect(itemCtrl.$withUser('NotOwner').updateQuality(itemID, "Bad").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName2 is allowed to`);
+  });
+
+    // Test for rename item
+    it('should throw an error, as this is not the owner of the item', async () => {
+      const foundItem = await Item.query(Item, {
+        'selector': {
+          'name': "item1NewName",
+        }
+      });
+      const itemID = await foundItem[0].id;
+      expect(itemCtrl.$withUser('NotOwner').updateName(itemID, "item1NewName").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName2 is allowed to`);
+    });
+
+  // Test for propose transfer item
+  it('should throw an error, as this is not the owner of the item', async () => {
+    const foundItem = await Item.query(Item, {
+      'selector': {
+        'name': "item1NewName",
+      }
+    });
+    const itemID = await foundItem[0].id;
+
+    expect(itemCtrl.$withUser('NotOwner').proposeTransfer(itemID, "mockID").catch(e => e.responses[0].error.message)).to.be.eventually.eql(`You are not allowed to do this action, only mockName2 is allowed to`);
+  });
+
 });
