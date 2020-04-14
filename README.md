@@ -11,6 +11,7 @@ This is a blockchain implementation for Circular Housing, built on top of <a hre
 * [Webclient](#web)
 * [Tests](#tests)
 * [Upgrade chaincode](#upgrade)
+* [Example data](#example-data)
 * [Troubleshooting](#troubleshooting)
 
 <a name="network-overview"></a>
@@ -174,6 +175,14 @@ npm run cc:package
 # <org1> by the organization you want to upgrade the chaincode of. If you want to upgrade
 # on multiple organizations, you can add multiple -o arguments. 
 hurl upgrade circularhousing node <versionno> -P ./chaincode-circularhousing -o <org1>
+```
+
+<a name="exampledata"></a>
+## Example data
+To insert 4 participants and around 20 items on the network, with some example interactions and history, use the inputTestData script (make sure the server is running first):
+```
+npx lerna run start --scope server
+node packages/server/dist/inputTestData.js
 ```
 
 <a name="troubleshooting"></a>
