@@ -91,27 +91,36 @@ function randomQuality(): string {
   return quality[id];
 }
 
-async function inputTestData() {
-  for (let p of participants) {
-    console.log("Adding participant " + p.name);
-    await (await partAdapter("Government", "chaincodeAdmin")).register(p.type, p.id, p.name, p.msp, getCertificate(p.msp, p.user));
-  }
-  for (let i = 0; i++; i < itemNames.length) {
-    let itemName = itemNames[i];
-    console.log(`Processing item ${itemName} (${i} of ${itemNames.length})`);
-    const item = await (await itemAdapter("Manufacturer", "manu_user")).create(itemName, "manu_part", "Good", randomMaterials());
-    const id = item["_id"];
-    await (await itemAdapter("Manufacturer", "manu_user")).proposeTransfer(id, "retailer_part");
-    await (await itemAdapter("Retailer", "retailer_user")).answerProposal(id, true);
-    await (await itemAdapter("Manufacturer", "manu_user")).transport(id, "transporter_part");
-    await (await itemAdapter("Transporter", "transporter_user")).deliverItem(id);
+function createParticipant(p) {
+  partAdapter("Government", "chaincodeAdmin").then(function (ctrl) {
+    ctrl.register(p.type, p.id, p.name, p.msp, getCertificate(p.msp, p.user)).then(r => console.log("Added " + p.name));
+  })
+}
 
-    await (await itemAdapter("Retailer", "retailer_user")).proposeTransfer(id, "sho_part");
-    await (await itemAdapter("SocialHousingOrganization", "sho_user")).answerProposal(id, true);
-    await (await itemAdapter("Retailer", "retailer_user")).transport(id, "transporter_part");
-    await (await itemAdapter("Transporter", "transporter_user")).deliverItem(id);
-    await (await itemAdapter("SocialHousingOrganization", "sho_user")).updateQuality(id, randomQuality());
-  }
+async function createItem(itemName) {
+  const item = await (await itemAdapter("Manufacturer", "manu_user")).create(itemName, "manu_part", "Good", randomMaterials());
+  const id = item["_id"];
+  await (await itemAdapter("Manufacturer", "manu_user")).proposeTransfer(id, "retailer_part");
+  await (await itemAdapter("Retailer", "retailer_user")).answerProposal(id, true);
+  await (await itemAdapter("Manufacturer", "manu_user")).transport(id, "transporter_part");
+  await (await itemAdapter("Transporter", "transporter_user")).deliverItem(id);
+
+  await (await itemAdapter("Retailer", "retailer_user")).proposeTransfer(id, "sho_part");
+  await (await itemAdapter("SocialHousingOrganization", "sho_user")).answerProposal(id, true);
+  await (await itemAdapter("Retailer", "retailer_user")).transport(id, "transporter_part");
+  await (await itemAdapter("Transporter", "transporter_user")).deliverItem(id);
+  await (await itemAdapter("SocialHousingOrganization", "sho_user")).updateQuality(id, randomQuality());
+}
+
+async function inputTestData() {
+  await participants.forEach(function (p) {
+    console.log("Adding participant " + p.name);
+    createParticipant(p);
+  });
+  await itemNames.forEach(function(itemName, i) {
+    console.log(`Processing item ${itemName} (${i} of ${itemNames.length})`);
+    createItem(itemName);
+  })
 }
 
 function getCertificate(org: string, user: string) {
