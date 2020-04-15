@@ -94,7 +94,7 @@ function randomQuality(): string {
 async function inputTestData() {
   for (let p of participants) {
     console.log("Adding participant " + p.name);
-    await (await partAdapter("chaincodeAdmin", "Government")).register(p.type, p.id, p.name, p.msp, getCertificate(p.msp, p.user));
+    await (await partAdapter("Government", "chaincodeAdmin")).register(p.type, p.id, p.name, p.msp, getCertificate(p.msp, p.user));
   }
   for (let i = 0; i++; i < itemNames.length) {
     let itemName = itemNames[i];
