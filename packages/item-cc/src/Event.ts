@@ -1,3 +1,9 @@
+/*
+    This file contains Event classes used for the item history. The item history consists
+    of a list of Events that are defined here. All Event classes here extends from the Event class,
+    that has a number of fields that are shared between Events. The description is the only field
+    that differs between Event classes.
+*/
 export class Event {
     ownerId: string;
     itemName: string;
@@ -13,6 +19,9 @@ export class Event {
     }
 }
 
+/*
+    Event for creating an item. Has description object with quality field.
+*/
 export class CreateEvent extends Event {
     constructor(inputOwnerId: string, inputItemName: string, quality : string) {
         super(inputOwnerId, inputItemName, 'CREATE');
@@ -23,6 +32,9 @@ export class CreateEvent extends Event {
     }
 }
 
+/*
+    Event for renaming an item. Has description object with oldName field.
+*/
 export class RenameEvent extends Event {
     constructor(inputOwnerId: string, inputItemName: string, inputOldName: string) {
         super(inputOwnerId, inputItemName, 'RENAME');
@@ -33,6 +45,10 @@ export class RenameEvent extends Event {
     }
 }
 
+/*
+    Event for updating quality of an item. Stores oldQuality and newQuality in the description 
+    object.
+*/
 export class UpdateEvent extends Event {
     constructor(inputOwnerId: string, inputItemName: string, inputOldQuality: string, 
                 inputNewQuality: string) {
@@ -45,6 +61,9 @@ export class UpdateEvent extends Event {
     }
 }
 
+/*
+    Event for transferring an item. Stores the oldowner. 
+*/
 export class TransferEvent extends Event {
     constructor(inputOwnerId: string, inputItemName: string, inputOldOwner: string) {
         super(inputOwnerId, inputItemName, 'TRANSFER');

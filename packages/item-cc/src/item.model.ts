@@ -13,6 +13,7 @@ export class Item extends ConvectorModel<Item> {
   @Required()
   public readonly type = 'io.worldsibu.item';
 
+  // Name of an item
   @Required()
   @Validate(yup.string())
   public name: string;
@@ -32,12 +33,15 @@ export class Item extends ConvectorModel<Item> {
   @Validate(yup.string())
   public quality: string;
 
+  // proposedOwner of an item to transfer the item to
   @Validate(yup.string())
   public proposedOwner: string;
 
+  // boolean to indicate that a proposal has been accepted
   @Validate(yup.boolean())
   public proposalAccepted: boolean;
 
+  // Transporter to transport an item
   @Validate(yup.string())
   public transporter: string;
 

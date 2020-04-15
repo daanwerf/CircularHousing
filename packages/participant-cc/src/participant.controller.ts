@@ -9,7 +9,10 @@ import {
 import { Participant } from './participant.model';
 import { ClientIdentity } from 'fabric-shim';
 
-
+/*
+  Function to check if a given type is of one of the allowed types (which is participant
+  or transport currently).
+*/
 function checkValidType(type) {
   const allowedTypes = ['participant', 'transporter'];
 

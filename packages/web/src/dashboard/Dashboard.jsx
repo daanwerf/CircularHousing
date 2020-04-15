@@ -27,7 +27,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://github.com/daanwerf/CircularHousing/">
+      <Link color="inherit" target="_blank" href="https://github.com/daanwerf/CircularHousing/">
         Circular Housing
       </Link>{' '}
       {new Date().getFullYear()}

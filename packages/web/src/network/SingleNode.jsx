@@ -5,6 +5,7 @@ import TableRow from '@material-ui/core/TableRow';
 export default function SingleNode(props) {
 	let user = props.userObj;
 	let selectedUser = props.selectedUser;
+	let selectedOrg = props.selectedOrg;
 	let registeredFingerprint = props.fingerprint;
 	let [fingerprint, setFingerprint] = React.useState('');
 	let [usernames, setUsernames] = React.useState([]);
@@ -44,7 +45,8 @@ export default function SingleNode(props) {
 	return (
 		<React.Fragment>
 			<TableRow
-              	style={{backgroundColor: selectedUser === user.user ? '#A9A9A9' : 'white'}}>
+              	style={{backgroundColor: selectedUser === user.user && selectedOrg === user.org 
+              				? '#A9A9A9' : 'white'}}>
               	<TableCell>{user.user}</TableCell>
               	<TableCell>{user.org}</TableCell>
               	<TableCell>{fingerprint}</TableCell>

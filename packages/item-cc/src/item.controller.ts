@@ -19,6 +19,10 @@ import {
   TransferEvent
 } from './Event';
 
+/*
+  Function to check if the quality that a client gave as parameter is one
+  of the allowed qualities. If not, the function will throw an error. 
+*/
 function checkQuality(quality) {
   const allowedQualities = ['Good', 'Usable', 'Bad', 'Broken'];
 
@@ -29,8 +33,18 @@ function checkQuality(quality) {
   return quality;
 }
 
+/*
+  Controller for the Item model. This controller handles everything related to items,
+  including creating, retrieving, updating and transferring items.
+*/
 @Controller('item')
 export class ItemController extends ConvectorController {
+
+  /*
+    Create an item with a name, owner (which should be an existing participant),
+    quality (which should be one of the four strings defined above), and materials,
+    which should be a comma separated list.
+  */
   @Invokable()
   public async create(
     @Param(yup.string())
@@ -67,6 +81,12 @@ export class ItemController extends ConvectorController {
     return item;
   }
 
+  /*
+    Function to update the name of an item. Takes as input the id of the item and 
+    the new name. 
+
+    Can only be invoked by owner of the item. 
+  */
   @Invokable()
   public async updateName(
     @Param(yup.string())
@@ -85,9 +105,15 @@ export class ItemController extends ConvectorController {
     item.itemHistory.push(e);
 
     await item.save();
-    console.log(`${item.itemOwner} changed the name of item ${item.id} to ${item.name}`)
   }
 
+  /*
+    Function to update the quality of an item. Takes as input the id and the new quality of
+    the item.
+
+    Can only be invoked by the owner of the item. Also, the new quality should be one of the
+    allowed strings.
+  */
   @Invokable()
   public async updateQuality(
     @Param(yup.string())
@@ -106,9 +132,11 @@ export class ItemController extends ConvectorController {
     item.itemHistory.push(e);
 
     await item.save();
-    console.log(`${item.itemOwner} changed the quality of item ${item.id} to ${item.quality}`)
   }
 
+  /*
+    Gets an item.
+  */
   @Invokable()
   public async get(
     @Param(yup.string())
@@ -117,11 +145,22 @@ export class ItemController extends ConvectorController {
     return await Item.getOne(id);
   }
 
+  /*
+    Gets all items.
+  */
   @Invokable()
   public async getAll() {
     return await Item.getAll('io.worldsibu.item');
   }
 
+  /*
+    Proposes a transfer of an item to a different participant. Takes as input the id of the item
+    and the proposed owner. 
+
+    Can only be done by the owner of the item, and if a proposal of this item to any participant
+    has already been accepted, a new proposal cannot be made anymore (since the item is 
+    already set to transfer to someone). 
+  */
   @Invokable()
   public async proposeTransfer(
     @Param(yup.string())
@@ -149,9 +188,14 @@ export class ItemController extends ConvectorController {
     item.proposedOwner = transferTarget;
     item.proposalAccepted = false;
     await item.save();
-    console.log(`$Participant ${item.itemOwner} proposed a transfer of ownership of item ${item.name} to participant ${item.proposedOwner}`);
   }
 
+  /*
+    Answers a proposal with true (=yes) or false (=no). Takes as other input the id of the item.
+
+    If a proposal has already been accepted, this cannot be undone anymore. Proposal can only
+    be accepted by the proposedOwner. 
+  */
   @Invokable()
   public async answerProposal(
     @Param(yup.string())
@@ -180,6 +224,16 @@ export class ItemController extends ConvectorController {
     await item.save();
   }
 
+  /*
+    Function to send item to transporter for transportation. Takes input the id of the item
+    and the id of the transporter (which is a participant). 
+
+    Can only be done the owner of the item, and the participant that is meant to transport
+    the item should be a transporter. 
+
+    Also, the item can only be sent to a transporter if it has a proposedOwner and the proposal
+    has been accepted. 
+  */
   @Invokable()
   public async transport(
     @Param(yup.string())
@@ -206,6 +260,10 @@ export class ItemController extends ConvectorController {
     await item.save();
   }
 
+  /*
+    Delivers an item to its new owner. Only takes the item id as input, this is done by the transporter
+    that was transporting the item.
+  */
   @Invokable()
   public async deliverItem(
     @Param(yup.string())
@@ -226,6 +284,9 @@ export class ItemController extends ConvectorController {
     await item.save();
   }
 
+  /*
+    Returns all items for a given participant.
+  */
   @Invokable()
   public async getParticipantItems(
     @Param(yup.string())
@@ -240,6 +301,9 @@ export class ItemController extends ConvectorController {
     });
   }
 
+  /*
+    Returns all proposals for a given participant.
+  */
   @Invokable()
   public async getParticipantProposals(
     @Param(yup.string())
@@ -254,6 +318,9 @@ export class ItemController extends ConvectorController {
     });
   }
 
+  /*
+    Returns all items that a given transporter needs to deliver.
+  */
   @Invokable()
   public async getTransportItems(
     @Param(yup.string())
@@ -268,6 +335,10 @@ export class ItemController extends ConvectorController {
     });
   }
 
+  /*
+    Helper function to check if the owner of an item is the same one that as the invoker
+    of the function (=sender). 
+  */
   private static async checkValidOwner(sender: string, itemOwner: string) {
     const owner = await Participant.getOne(itemOwner);
     if (!owner || !owner.identities) {
@@ -281,6 +352,9 @@ export class ItemController extends ConvectorController {
     return true;
   }
 
+  /*
+    Helper function to check if an item exists. 
+  */
   private static async checkValidItem(item: Item) {
     if (!item || !item.id) {
       throw new Error('Given item does not currently exist on the ledger')
@@ -288,14 +362,23 @@ export class ItemController extends ConvectorController {
     return true;
   }
 
+  /*
+    Helper function to check if a given participant is a transporter.
+  */
   private static async isTransporter(participantId: string) {
     return ItemController.isType(participantId, 'transporter');
   }
 
+  /*
+    Helper function to check if a given participant is a participant.
+  */
   private static async isParticipant(participantId: string) {
     return ItemController.isType(participantId, 'participant');
   }
 
+  /*
+    Helper function to check if a given participant is of a given type.
+  */
   private static async isType(participantId: string, type: string) {
     const participant = await Participant.getOne(participantId);
     if (participant.type !== type) {
