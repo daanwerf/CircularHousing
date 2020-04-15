@@ -91,10 +91,8 @@ function randomQuality(): string {
   return quality[id];
 }
 
-function createParticipant(p) {
-  partAdapter("Government", "chaincodeAdmin").then(function (ctrl) {
-    ctrl.register(p.type, p.id, p.name, p.msp, getCertificate(p.msp, p.user)).then(r => console.log("Added " + p.name));
-  })
+async function createParticipant(p) {
+  await (await partAdapter("Government", "chaincodeAdmin")).register(p.type, p.id, p.name, p.msp, getCertificate(p.msp, p.user));
 }
 
 async function createItem(itemName) {
@@ -113,14 +111,15 @@ async function createItem(itemName) {
 }
 
 async function inputTestData() {
-  await participants.forEach(function (p) {
+  for (let p of participants) {
     console.log("Adding participant " + p.name);
-    createParticipant(p);
-  });
-  await itemNames.forEach(function(itemName, i) {
+    await createParticipant(p);
+  }
+  for (let i = 0; i < itemNames.length; i++) {
+    const itemName = itemNames[i];
     console.log(`Processing item ${itemName} (${i} of ${itemNames.length})`);
-    createItem(itemName);
-  })
+    await createItem(itemName);
+  }
 }
 
 function getCertificate(org: string, user: string) {
