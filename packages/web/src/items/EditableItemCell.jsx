@@ -92,6 +92,7 @@ export default function EditableItemCell(props) {
 								: <TextField 
 									id="standard-basic" 
 									value={newValue}
+									style={{width:80}}
 									onInput={(e) => setNewvalue(e.target.value)}
 								/>
 							}

@@ -45,6 +45,7 @@ export default function NetworkNodes(props) {
                   key={user.user} 
                   userObj={user} 
                   selectedUser={selectedUser} 
+                  selectedOrg={selectedOrg}
                   fingerprint={props.fingerprint} />
               ))}
             </TableBody>
